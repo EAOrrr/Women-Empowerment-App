@@ -11,7 +11,8 @@
 **Permissions required** : 
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
 2. 对于企业详细信息，只有发帖者可以修改
-4. 评论职业`job`的修改请查看[增加职业]()和[修改职业]()
+4. 职业`job`的修改请查看[增加职业](./job/post.md)和[修改职业](./job/put.md),[删除职业](./job/delete.md)
+4. 评论的修改请查看[发表评论](./comment/post.md)和[修改评论](./comment/put.md)
 
 **Data constraints** : 
 ```json
@@ -76,3 +77,4 @@
 **Code** : `404 NOT FOUND`
 
 **Content** : `{}`
+

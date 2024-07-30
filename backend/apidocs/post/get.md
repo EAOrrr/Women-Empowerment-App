@@ -38,3 +38,16 @@
     }
 ]
 ```
+
+## Notes 
+### Query
+
+The `/api/articles/` endpoint supports the following query parameters:
+
+| Parameter | Type   | Description                                      |
+|-----------|--------|--------------------------------------------------|
+| type      | string |按类型筛选留言。可能的值: `activity`, `policy`, `law` |
+|keyWord     | string | 根据关键词在筛选标题或内容含该关键词的留言                   |
+| limit     | number | 限制返回的文章数量       |
+| offset    | number | 偏移返回文章的起始点 |
+|ordering   | string | 根据给定的功能排序留言，可能的值:`createdTime`, `likes`, `views`, "updatedTime"

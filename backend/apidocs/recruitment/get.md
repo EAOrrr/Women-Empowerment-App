@@ -51,3 +51,21 @@
     }
 ]
 ```
+
+## Notes 
+### Query
+
+The `/api/articles/` endpoint supports the following query parameters:
+
+## Notes 
+### Query
+
+The `/api/recruitments/` endpoint supports the following query parameters:
+
+| Parameter | Type   | Description                                      |
+|-----------|--------|--------------------------------------------------|
+|keyWord     | string | 根据关键词在筛选标题或介绍或职业内容含该关键词的招聘启事                   |
+| limit     | number | 限制返回的文章数量       |
+| offset    | number | 偏移返回文章的起始点 |
+|ordering   | string | 根据给定的功能排序文章，可能的值:`createdTime`, `likes`, `views`，`updatedTime`
+

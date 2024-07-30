@@ -36,3 +36,27 @@
     }
 ]
 ```
+
+## Notes 
+### Query
+
+The `/api/articles/` endpoint supports the following query parameters:
+
+| Parameter | Type   | Description                                      |
+|-----------|--------|--------------------------------------------------|
+| type      | string |按类型筛选文章。可能的值: `activity`, `policy`, `law` |
+|keyWord     | string | 根据关键词在筛选标题或内容含该关键词的文章                   |
+| tags      | array  | 根据标签筛选文章        |
+| limit     | number | 限制返回的文章数量       |
+| offset    | number | 偏移返回文章的起始点 |
+|ordering   | string | 根据给定的功能排序文章，可能的值:`createdTime`, `likes`, `views`
+
+Example usage:
+
+```
+/api/articles/?type=activity&tags=work&limit=10&offset=0
+```
+
+This query will retrieve the first 10 articles of type "activity" written by "John Doe" and tagged with "work".
+
+

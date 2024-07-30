@@ -12,7 +12,7 @@
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
 2. 对于帖子的状态`status`,只有可以发帖者可以修改
 3. 对于标题`title`和内容`content`以及日期类字条，任何用户不可修改
-4. 评论`comment`的修改请查看[发表评论]()和[修改评论]()
+4. 评论`comment`的修改请查看[发表评论](./comment/post.md)和[修改评论](./comment/put.md)
 
 **Data constraints** : 
 ```json
