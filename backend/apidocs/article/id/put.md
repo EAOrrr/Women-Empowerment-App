@@ -1,8 +1,8 @@
-# 修改特定id留言
+# 修改特定id文章
 
 修改特定id留言
 
-**URL** : `/api/posts/:id`
+**URL** : `/api/articles/:id`
 
 **Method** : `PUT`
 
@@ -10,9 +10,8 @@
 
 **Permissions required** : 
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
-2. 对于帖子的状态`status`,只有可以发帖者可以修改
-3. 对于标题`title`和内容`content`以及日期类字条，任何用户不可修改
-4. 评论`comment`的修改请查看[发表评论]()和[修改评论]()
+2. 对于标题`title`、内容`content`、文章分类`type`和文章标签`tags`字条，只有管理员可修改
+3. 其他栏目不可修改
 
 **Data constraints** : 
 ```json
@@ -39,19 +38,16 @@
 
 ```json
 {
-  "id": "帖子id",
-  "title": "帖子标题",
-  "content": "帖子内容",
-  "status": "in progress", 
-  "likes": 234, 
-  "views": 1224, 
-  "poster": {
-    "userId": "123456",
-    "username": "human",
-  },
-  "createdAt": "2024-07-30T09:45:25.614Z", 
-  "updatedAt": "2024-07-30T04:31:55.614Z",
-  "comments": []
+  "id": "文章id，格式为uuid",
+  "title": "文章标题",
+  "content": "文章内容",
+  "author" : "文章作者", 
+  "type": "activity", 
+  "likes": 234,
+  "views": 1224,
+  "createdAt": "2024-07-30T04:31:55.614Z", 
+  "updatedAt": "2024-07-30T04:31:55.614Z", 
+  "tags": ["生育", "工作"]
 }
 ```
 
@@ -70,7 +66,7 @@
 
 ### Or
 
-**Condition** : 找不到对应`id`的留言
+**Condition** : 找不到对应id的文章
 
 **Code** : `404 NOT FOUND`
 

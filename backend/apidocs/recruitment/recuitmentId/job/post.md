@@ -1,21 +1,26 @@
-# 在特定id留言下发布评论
+# 增加特定id的招聘启事的工种
 
-在特定id留言下发布评论
+增加特定id的招聘启事的工种
 
-**URL** : `/api/posts/:id/comments`
+**URL** : `/api/recruitments/:recruitmentId/jobs
 
 **Method** : `POST`
 
 **Auth required** : YES
 
-**Permissions required** : 
-1. 管理员
-2. 发帖者
+**Permissions required** : 仅发帖者
 
 **Data constraints** : 
+新增加的职业
+
 ```json
 {
-  "content": "评论内容"
+  "job": "职业名称",  
+  "intro": "职业介绍", 
+  "salary": {
+    "lowerBound": 113,
+    "upperBound": 220, 
+  }
 }
 ```
 

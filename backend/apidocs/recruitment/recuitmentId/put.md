@@ -10,9 +10,8 @@
 
 **Permissions required** : 
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
-2. 对于帖子的状态`status`,只有可以发帖者可以修改
-3. 对于标题`title`和内容`content`以及日期类字条，任何用户不可修改
-4. 评论`comment`的修改请查看[发表评论]()和[修改评论]()
+2. 对于企业详细信息，只有发帖者可以修改
+4. 评论职业`job`的修改请查看[增加职业]()和[修改职业]()
 
 **Data constraints** : 
 ```json
@@ -25,8 +24,7 @@
 **Data example** : 
 ```json
 {
-  "likes": 234,
-  "views": 1224
+  "intro": "家人们谁懂啊，这个企业绝绝子"
 }
 ```
 
@@ -39,19 +37,22 @@
 
 ```json
 {
-  "id": "帖子id",
-  "title": "帖子标题",
-  "content": "帖子内容",
-  "status": "in progress", 
-  "likes": 234, 
-  "views": 1224, 
-  "poster": {
-    "userId": "123456",
-    "username": "human",
+  {
+  "title": "招聘启事标题", // 必填
+  "intro": "家人们谁懂啊，这个企业绝绝子", 
+  "addr": { 
+    "province": "企业所在省份",
+    "city": "企业所在城市",
+    "street": "企业所在街道",
+    "detail": "企业具体地址"
   },
-  "createdAt": "2024-07-30T09:45:25.614Z", 
-  "updatedAt": "2024-07-30T04:31:55.614Z",
-  "comments": []
+  "phone": "企业联系电话", 
+  "views": 0,
+  "likes": 0,
+  "poster": {
+    "username": "human"
+  }
+}
 }
 ```
 
@@ -70,7 +71,7 @@
 
 ### Or
 
-**Condition** : 找不到对应`id`的留言
+**Condition** : 找不到对应`id`的招聘启事
 
 **Code** : `404 NOT FOUND`
 

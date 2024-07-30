@@ -1,8 +1,8 @@
-# 在特定id留言下发布评论
+# 在特定id招聘启事下发布评论
 
 在特定id留言下发布评论
 
-**URL** : `/api/posts/:id/comments`
+**URL** : `/api/recruitments/:id/comments`
 
 **Method** : `POST`
 

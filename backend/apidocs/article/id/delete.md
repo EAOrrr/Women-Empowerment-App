@@ -1,16 +1,14 @@
-# 删除特定id留言
+# 删除特定id的文章
 
-删除特定id留言，当留言被删除时，也其对应的评论也自动被删除
+删除特定id文章
 
-**URL** : `/api/posts/:id`
+**URL** : `/api/articles/:id`
 
 **Method** : `DELETE`
 
 **Auth required** : YES
 
-**Permissions required** : 
-1. 管理者
-2. 发帖者
+**Permissions required** : 仅允许管理员对文章进行管理
 
 **Data constraints** : `{}`
 
@@ -35,7 +33,7 @@
 ```
 ### Or
 
-**Condition** :  找不到对应`id`的留言·
+**Condition** : If Account does not exist with `id` of provided `id` parameter.
 
 **Code** : `404 NOT FOUND`
 

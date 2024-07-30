@@ -11,6 +11,7 @@
 **Permissions required** : None
 
 **Data constraints** : 
+`title` 和 `content` 都不可为空
 ```json
 {
   "title": "帖子标题",

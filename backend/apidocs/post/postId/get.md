@@ -45,3 +45,10 @@
       ]
     }
 ```
+## Error Responses
+
+**Condition** : 找不到对应`id`的留言
+
+**Code** : `404 NOT FOUND`
+
+**Content** : `{}`

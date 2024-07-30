@@ -1,44 +1,40 @@
-# 修改特定postId下的特定commentId评论
+# 修改特定recruitment下的特定jobId职业
 
-修改特定postId下的特定commentId评论
+修改特定recruitment下的特定jobId职业
 
-**URL** : `/api/posts/:postid/comments/:commentId`
+**URL** : `/api/recruitments/:recruitmentId/jobs/:jobId`
 
 **Method** : `PUT`
 
 **Auth required** : YES
 
-**Permissions required** : 
-1. 任何登录用户可以修改likes
-2. 任何用户不可以修改其他区域
+**Permissions required** : 仅发帖者可修改
 
 **Data constraints** : 
 ```json
 {
-  "likes": 23
+  "salary": {
+    "upperBound": 220,
+    "lowerBound": 113
+  }
 }
 ```
-
-
 
 ## Success Responses
 
 **Code** : `200 OK`
 
 **Content** : 
-修改后的帖子
+修改后的职业
 
 ```json
 {
-  "id": "评论id",
-  "content": "评论内容",
-  "likes": 23,
-  "commenter": {
-    "userId": "123456",
-    "username": "human",
-  },
-  "createdAt": "2024-07-30T04:31:55.614Z", 
-  "updatedAt": "2024-07-30T04:31:55.614Z",
+  "job": "职业名称",  
+  "intro": "职业介绍", 
+  "salary": {
+    "lowerBound": 113,
+    "upperBound": 220, 
+  }
 }
 ```
 
@@ -64,7 +60,7 @@
 
 ### Or
 
-**Condition** : `commentId`对应的评论并不是`postId`对应的留言下的评论
+**Condition** : `jobId`对应的评论并不是`recruitmetnId`对应的留言下的职业
 
 **Code** : `400 BAD REQUEST`
 

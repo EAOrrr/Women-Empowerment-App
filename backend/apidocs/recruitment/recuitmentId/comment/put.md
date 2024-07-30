@@ -1,8 +1,8 @@
-# 修改特定postId下的特定commentId评论
+# 修改特定recruitmentId下的特定commentId评论
 
-修改特定postId下的特定commentId评论
+修改特定recrtuitmentId下的特定commentId评论
 
-**URL** : `/api/posts/:postid/comments/:commentId`
+**URL** : `/api/posts/:recruitmentId/comments/:commentId`
 
 **Method** : `PUT`
 
@@ -18,8 +18,6 @@
   "likes": 23
 }
 ```
-
-
 
 ## Success Responses
 
@@ -64,13 +62,13 @@
 
 ### Or
 
-**Condition** : `commentId`对应的评论并不是`postId`对应的留言下的评论
+**Condition** : `commentId`对应的评论并不是`postId`对应的招聘启事下的评论
 
 **Code** : `400 BAD REQUEST`
 
 **Content** : 
 ```json
 {
-  "error": "The comment does not belong to the specified post."
+  "error": "The comment does not belong to the specified recruitment."
 }
 ```
