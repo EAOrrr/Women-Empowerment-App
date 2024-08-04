@@ -43,8 +43,9 @@
   "intro": "家人们谁懂啊，这个企业绝绝子", 
   "province": "企业所在省份",
   "city": "企业所在城市",
+  "district": "企业所在区/县",
   "street": "企业所在街道",
-  "detail": "企业具体地址"
+  "address": "企业具体地址",
   "phone": "企业联系电话", 
   "views": 0,
   "likes": 0,
