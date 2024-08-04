@@ -27,12 +27,10 @@
       "title": "招聘启事标题",
       "name": "招聘企业名称",
       "intro": "招聘企业介绍",
-      "addr": {  //招聘企业地址"
-        "province": "企业所在省份",
-        "city": "企业所在城市",
-        "street": "企业所在街道",
-        "detail": "企业具体地址"
-      },
+      "province": "企业所在省份",
+      "city": "企业所在城市",
+      "street": "企业所在街道",
+      "detail": "企业具体地址",
       "status": "in progress", // 帖子状态，分为"in progress"（进行中）和"done"（已完成）
       "likes": 23, // 关注数
       "views": 123, // 浏览数
