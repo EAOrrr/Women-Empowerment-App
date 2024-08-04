@@ -17,10 +17,8 @@
 {
   "job": "职业名称",  
   "intro": "职业介绍", 
-  "salary": {
-    "lowerBound": 113,
-    "upperBound": 220, 
-  }
+  "lowerBound": 113,
+  "upperBound": 220, 
 }
 ```
 
@@ -32,15 +30,11 @@
 
 ```json
 {
-  "id": "评论id",
-  "content": "评论内容",
-  "likes": 0, // 初始化为0
-  "commenter": {
-    "userId": "123456",
-    "username": "human",
-  },
-  "createdAt": "2024-07-30T04:31:55.614Z", 
-  "updatedAt": "2024-07-30T04:31:55.614Z",
+  "id": "一个id",
+  "job": "职业名称",  
+  "intro": "职业介绍", 
+  "lowerBound": 113,
+  "upperBound": 220, 
 }
 ```
 

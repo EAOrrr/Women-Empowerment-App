@@ -37,10 +37,8 @@
     {
       "job": "职业名称",  
       "intro": "职业介绍", 
-      "salary": {
-        "lowerBound": 123,
-        "upperBound": 345, 
-      }
+      "lowerBound": 123,
+      "upperBound": 345, 
     }
   ],
   "comments": [

@@ -13,10 +13,8 @@
 **Data constraints** : 
 ```json
 {
-  "salary": {
-    "upperBound": 220,
-    "lowerBound": 113
-  }
+  "upperBound": 220,
+  "lowerBound": 113
 }
 ```
 
@@ -31,10 +29,8 @@
 {
   "job": "职业名称",  
   "intro": "职业介绍", 
-  "salary": {
-    "lowerBound": 113,
-    "upperBound": 220, 
-  }
+  "lowerBound": 113,
+  "upperBound": 220, 
 }
 ```
 
