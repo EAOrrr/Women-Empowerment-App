@@ -22,17 +22,18 @@ Article.init({
     type: DataTypes.STRING,
     defaultValue: null
   },
-  cover: {
-    type: DataTypes.BLOB,
-    defaultValue: null
-  },
+  
   type: {
     type: DataTypes.ENUM(
-      'activity', 
+      'activity',
       'policy',
       'law',
     ),
     allowNull: false
+  },
+  cover: {
+    type: DataTypes.BLOB,
+    defaultValue: null
   },
   views: { // 浏览数
     type: DataTypes.INTEGER,
@@ -45,7 +46,7 @@ Article.init({
     defaultValue: 0,
   },
 }, {
-  sequelize, 
+  sequelize,
   underscored: true,
   modelName: 'article'
 })

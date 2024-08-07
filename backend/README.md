@@ -1,15 +1,22 @@
-# RESTAPIDocs Examples
+# RESTAPIDocs
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
 服务器运行端口：暂未购置服务器
+
+**HTTP状态码**将明确指示请求结果。
+- **`401 UNAUTHROIZED`** 表明令牌`token`错误，请检查并重新发送或重新登录。
+- **`404 NOT FOUND`** 表示目标资源不存在，请检查发送地址是否正确。
+- **`500 INTERNAL SERVER ERROR`** 表明服务器内部发生错误，请联系我协助解决。
+- **其余状态码** 请参考对应接口文档获取更多信息
 
 ## 开放端点
 
 开放端点不需要进行用户认证
 
 * [通过微信登录](./apidocs/login/login-wechat.md) : `POST /api/login/wechat/`
-> 此接口仅供调试使用
+> 此接口仅供调试使用<br>
+> *new*: 管理员登录可用
 > * [通过密码登录](./apidocs/login/login-pwd.md) : `POST /api/login/pwd/` 
 
 
@@ -20,10 +27,11 @@
 ### 与用户`user`有关
 
 一下每个端点都会处理或显示与用户相关的信息，发送请求时要求提供用户的令牌`token`：
-* [更改用户信息](./apidocs/user/put.md) : `PUT /api/users/`
+* [更改用户信息](./apidocs/user/put.md) : `PUT /api/users/:id`
 * [显示对应用户信息](./apidocs/user/get.md) : `GET /api/users/:id`
+* [通过微信注册新用户](./apidocs/user/post/post-wechat.md): `POST /api/users/wechat`
 > 此端口仅供调试使用
-> * [注册新用户()](./apidocs/user/post.md): `POST /api/users/`
+> * [通过密码注册新用户](./apidocs/user/post/post-pwd.md): `POST /api/users/pwd`
 
 ### 与文章`article`有关
 

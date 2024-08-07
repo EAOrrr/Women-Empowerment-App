@@ -1,6 +1,6 @@
 # 创建新用户-微信
 
-创建新用户-微信
+创建新用户-微信（可附上密码`passowrd`、头像`avatar`等字段
 
 **URL** : `/api/users/pwd`
 
@@ -11,7 +11,7 @@
 **Permissions required** : None
 
 **Data constraints** : 
-`username` 和 `code` 都不可为空
+`username` 和 `code` 都不可为空，其中`username`不可与其他用户重复
 ```json
 {
   "username": "[用户名]",
@@ -47,13 +47,13 @@
 
 ### Or
 
-**Condition** : 发送的数据缺失 `code` 或 `username` 字段
+**Condition** : 发送的数据缺失 `code` 或 `username` 字段，或者`username`与其他用户重复
 
 **Code** : `400 Bad Request`
 
 **Content** : 
 ```json
 {
-  "error": "username missing"
+  "error": "[对应的错误信息]"
 }
 ```

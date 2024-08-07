@@ -10,6 +10,9 @@ User.init({
     allowNull: false,
     defaultValue: UUIDV4(),
   },
+  openid: {
+    type: DataTypes.STRING,
+  },
   phone: {
     type: DataTypes.STRING
   },
@@ -19,6 +22,7 @@ User.init({
   username: {
     type: DataTypes.STRING,
     allowNull: false,
+    unique: true,
   },
   password: {
     type: DataTypes.STRING,

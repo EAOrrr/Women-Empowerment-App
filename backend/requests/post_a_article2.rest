@@ -1,0 +1,7 @@
+POST http://localhost:3001/api/articles
+Content-Type: application/json
+
+{
+  "title": "second article",
+  "content": "content of second article"
+}

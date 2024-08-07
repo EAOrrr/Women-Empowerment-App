@@ -1,0 +1,10 @@
+POST http://localhost:3001/api/articles
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWludGVzdCIsImlkIjoiZDM5NTUxZWEtNzQ2Yi00YWEwLThmM2ItZmQ4NThlYjE2ZDliIiwiaWF0IjoxNzIzMDA3NDc3fQ.XMar4GkIV-6U86SPL7zK84OyEqAQBgqgYccCsLcbBNw
+
+{
+  "title": "first article",
+  "content": "content of first article",
+  "author": "first author",
+  "type": "activity"
+}
