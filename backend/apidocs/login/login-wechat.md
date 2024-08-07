@@ -1,8 +1,7 @@
 # 用户通过微信登录
 
 为已注册用户分配一个令牌`token`
-> 注：使用方法登录，若用户不存在，则自动注册
-> 有待解决：若用户不存在，弹出页面让用户输入信息？？
+> 注：使用该方法登录，若用户不存在，则返回代码 `401 Unauthorized`，前端可以在 `/api/login/wechat`进行注册
 
 **URL** : `/api/login/wechat`
 
@@ -40,14 +39,14 @@
 
 **Condition** : If 'username' and 'password' combination is wrong.
 
-**Code** : `400 Unauthorized`
+**Code** : `401 UNAUTHORIZED`
 
 **Content** :
 
 ```json
 {
     "error": [
-        "invalid username or password."
+        "user does not exist."
     ]
 }
 ```

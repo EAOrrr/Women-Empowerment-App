@@ -2,7 +2,7 @@
 
 允许已验证用户更新自己的信息
 
-**URL** : `/api/user/`
+**URL** : `/api/user/:id`
 
 **Method** : `PUT`
 
@@ -53,3 +53,9 @@ User with `id` of '1234' sets their name, passing `UAPP` header of 'ios1_2':
     ]
 }
 ```
+
+### Or
+
+**Condition**: 用户对应的id不存在
+
+**Code**: `404 NOT FOUND`
