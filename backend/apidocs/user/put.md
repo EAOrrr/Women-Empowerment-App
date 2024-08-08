@@ -2,7 +2,7 @@
 
 允许已验证用户更新自己的信息
 
-**URL** : `/api/user/:id`
+**URL** : `/api/user/`
 
 **Method** : `PUT`
 
@@ -11,6 +11,7 @@
 **Permissions required** : None
 
 **Data constraints**
+用户权限不可以更改。密码，手机号头像等可以更改
 
 ```json
 {

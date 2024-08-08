@@ -27,6 +27,7 @@
       "title": "文章标题",
       "abstract": "文章摘要",
       "author" : "文章作者", // 可能为null
+      "cover": "文章封面图片", // 可能为空，建议前端在assets文件夹下设置默认图片应对null情况，图片格式
       "type": "activity", // 文章类型，分为"activity"（活动）、"policy"（政策）"law"（法律）
       "likes": 23, // 关注数
       "views": 123, // 浏览数

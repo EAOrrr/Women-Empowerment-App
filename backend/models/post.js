@@ -24,6 +24,7 @@ Model.init({
       'done' // 已完成
     ),
     allowNull: false,
+    defaultValue: 'in progress',
   },
   likes: { // 点赞数
     type: DataTypes.INTEGER,

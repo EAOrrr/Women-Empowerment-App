@@ -320,11 +320,11 @@ describe('Updating an article', () => {
       .post('/api/users/pwd')
       .send(rootUser)
       .expect(201)
-    
+
     const result = await api
       .post('/api/login/pwd')
       .send(rootUser)
-    
+
     const headers = {
       'Authorization': `Bearer ${result.body.token}`
     }

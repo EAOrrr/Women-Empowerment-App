@@ -7,11 +7,11 @@ const Post = require('./post')
 const Recruitment = require('./recruitment')
 const User = require('./user')
 
-/*
 // 与用户发表行为有关的关联
-User.hasMany(Post, {foreignKey: 'authorId'})
-Post.belongsTo(User, {foreignKey: 'postId'})
+User.hasMany(Post, )
+Post.belongsTo(User, )
 
+/*
 User.hasMany(Comment, {foreignKey: 'authorId'})
 Comment.belongsTo(User, {foreignKey: 'commentId'})
 
@@ -71,6 +71,7 @@ Article.belongsToMany(User, {
 module.exports = {
   Article,
   Comment,
+  Follow,
   Job,
   Notification,
   Post,

@@ -1,4 +1,4 @@
-const Article = require('../models/article')
+const { Article } = require('../models')
 
 const router = require('express').Router()
 const { userExtractor, authorize } = require('../utils/middleware')
@@ -26,10 +26,12 @@ router.get('/:id', async(req, res) => {
 
 router.put('/:id', userExtractor, async(req, res) => {
   const article = await Article.findByPk(req.params.id)
-  const { views, likes, title, content, type } = req.body
+  if (!article) {
+    return res.status(404).end()
+  }
+  const { views, likes, title, content, type, follow } = req.body
   if (views) article.views = views
   if (likes) article.likes = likes
-  // TODO: implement authorization
   if (req.user.role !== 'admin') {
     if (title || content || type) {
       return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
@@ -40,12 +42,13 @@ router.put('/:id', userExtractor, async(req, res) => {
     if (type) article.type = type
   }
 
-  if (article) {
-    await article.update(req.body)
-    res.json(article)
-  } else {
-    res.status(404).end()
+  // TODO: FOLLOW function
+  if (follow) {
+    // follow
   }
+
+  await article.update(req.body)
+  res.json(article)
 })
 
 router.delete('/:id', userExtractor, authorize(['admin']), async(req, res) => {

@@ -26,6 +26,7 @@
   "title": "文章标题",
   "content": "文章内容",
   "author" : "文章作者", // 可能为null
+  "cover": "文章封面图片", // 可能为空，格式为照片
   "type": "activity", // 文章类型，分为"activity"（活动）、"policy"（政策）"law"（法律）
   "likes": 23, // 关注数
   "views": 123, // 浏览数

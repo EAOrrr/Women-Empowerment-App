@@ -28,7 +28,7 @@
 ```json
 {
   "username": "username",
-  "password": "password" 
+  "id": "userid"
 }
 ```
 
