@@ -31,8 +31,10 @@
 ### 与用户`user`有关
 
 一下每个端点都会处理或显示与用户相关的信息，发送请求时要求提供用户的令牌`token`：
-* [更改用户信息](./apidocs/user/put.md) : `PUT /api/users/:id`
-* [显示对应用户信息](./apidocs/user/get.md) : `GET /api/users/:id`
+<!-- * [获取所有用户信息](./apidocs/user/get.md):
+`GET /api/users` -->
+* [更改用户信息](./apidocs/user/me/put.md) : `PUT /api/users/me`
+* [显示对应用户信息](./apidocs/user/me/get.md) : `GET /api/users/me`
 * [通过微信注册新用户](./apidocs/user/post/post-wechat.md): `POST /api/users/wechat`
 > 此端口仅供调试使用
 > * [通过密码注册新用户](./apidocs/user/post/post-pwd.md): `POST /api/users/pwd`

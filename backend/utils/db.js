@@ -11,7 +11,7 @@ const migrationConf = {
   storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
   context: sequelize.getQueryInterface(),
   logger: console,
-};
+}
 
 const rollbackMigration = async () => {
   await sequelize.authenticate()

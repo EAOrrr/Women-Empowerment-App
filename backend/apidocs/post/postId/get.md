@@ -22,9 +22,9 @@
 
 ```json
 {
-      "id": "帖子id，格式为uuid"
-      "title": "帖子标题"
-      "content": "帖子内容"
+      "id": "帖子id，格式为uuid",
+      "title": "帖子标题",
+      "content": "帖子内容",
       "status": "in progress", // 帖子状态，分为"in progress"（进行中）和"done"（已完成）
       "likes": 23, // 关注数
       "views": 123, // 浏览数

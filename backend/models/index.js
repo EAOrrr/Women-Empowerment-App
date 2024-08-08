@@ -11,27 +11,30 @@ const User = require('./user')
 User.hasMany(Post, )
 Post.belongsTo(User, { as: 'poster', foreignKey: 'userId' })
 
-/*
-User.hasMany(Comment, {foreignKey: 'authorId'})
-Comment.belongsTo(User, {foreignKey: 'commentId'})
 
+User.hasMany(Comment,)
+Comment.belongsTo(User, { as: 'commenter', foreignKey: 'userId' })
+
+/*
 User.hasMany(Notification, {foreignKey: 'userId'})
 Notification.belongsTo(User, {foreignKey: 'notificationId'})
 
-
+*/
 // 与评论有关的关联
 Post.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
   scope: {
-    commentable: 'post'
+    commentableType: 'post'
   }
 })
+
 Comment.belongsTo(Post, {
   constraints: false,
   foreignKey: 'commentableId'
 })
 
+/*
 Article.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
@@ -55,6 +58,20 @@ Comment.belongsTo(Recruitment, {
   foreignKey: 'commentableId',
   constraints: false,
 })
+*/
+
+Comment.addHook('afterFind', findResult => {
+  if (!Array.isArray(findResult)) findResult = [findResult]
+  for (const instance of findResult) {
+    if (instance.commentableType === 'post' && instance.post !== undefined) {
+      instance.commentable = instance.post
+    }
+    // To prevent mistakes:
+    delete instance.post
+    delete instance.dataValues.post
+  }
+})
+/*
 
 // 与用户关注有关的关联
 User.belongsToMany(Article, {

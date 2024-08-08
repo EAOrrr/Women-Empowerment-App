@@ -1,8 +1,7 @@
-POST http://localhost:3001/api/posts
+POST http://localhost:3001/api/posts/41d966bf-ad86-46f2-86fa-9881d892435f/comments
 Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWludGVzdCIsImlkIjoiNWJmZmYwMDYtZTc1Ni00ZDBjLThlNzMtNzMyM2NhODZkMTdhIiwiaWF0IjoxNzIzMTIzMzczfQ.NhErVUln1YZzhqDEjS-3tWHEK2Qs7U6VXMkO3RokqJU
- 
-{
-  "title": "My first post",
-  "content": "Hello world!"
-}
+  
+  {
+    "content": "Hello world!"
+  }

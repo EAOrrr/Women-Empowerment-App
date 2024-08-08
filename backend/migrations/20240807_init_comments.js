@@ -18,6 +18,14 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
+      commentable_type: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      commentable_id: {
+        type: DataTypes.UUID,
+        allowNull: false
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -26,6 +34,15 @@ module.exports = {
         type: DataTypes.DATE,
         allowNull: false,
       },
+    })
+
+    await queryInterface.addColumn('comments', 'user_id', {
+
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     })
   },
 

@@ -11,7 +11,10 @@ const requestLogger = (request, response, next) => {
 }
 
 const errorHandler = (error, req, res, next) => {
+  console.log('\n\n', 'ERRORRRRRRRRRRRRRRRRRRRRRRR!!!!')
   console.log('From errorHandler:', error.name, error.message)
+  console.error('error', error.name, error.message)
+  console.log('\n\n')
   if (error.name === 'CastError') {
     return res.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'SequelizeUniqueConstraintError') {
@@ -75,8 +78,21 @@ const authorize = (roles = null) => {
     }
     next()
   }
+
 }
 
+const checkFields = (allowedFields) => {
+  return (req, res, next) => {
+    const receivedFields = Object.keys(req.body)
+    const hasIllegalFields = receivedFields.some(field => !allowedFields.includes(field))
+
+    if (hasIllegalFields) {
+      return res.status(403).json({ error: 'The data is modified without permission' })
+    }
+
+    next()
+  }
+}
 
 const unknownEndpoint = (req, res) => {
   res.status(404).send('unknown endpoint')
@@ -87,5 +103,6 @@ module.exports = {
   errorHandler,
   userExtractor,
   authorize,
+  checkFields,
   unknownEndpoint
 }

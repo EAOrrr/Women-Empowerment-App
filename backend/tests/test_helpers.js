@@ -1,4 +1,4 @@
-const { Article, User, Post } = require('../models')
+const { Article, User, Post, Comment } = require('../models')
 
 const initialArticles = [
   {
@@ -57,6 +57,11 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON())
 }
 
+const commentsInDb = async () => {
+  const comments = await Comment.findAll()
+  return comments.map(c => c.toJSON())
+}
+
 const nonExistingId = async () => {
   const article = await Article.create({
     title: 'willremovethissoon',
@@ -69,12 +74,26 @@ const nonExistingId = async () => {
   return id
 }
 
+const newComments = [
+  {
+    content: 'content of first comment',
+  },
+  {
+    content: 'content of second comment',
+  },
+  {
+    content: 'content of third comment',
+  }
+]
+
 
 module.exports = {
   initialArticles,
   initialPosts,
+  newComments,
   articlesInDb,
   usersInDb,
   postsInDb,
+  commentsInDb,
   nonExistingId,
 }
