@@ -9,7 +9,7 @@ const User = require('./user')
 
 // 与用户发表行为有关的关联
 User.hasMany(Post, )
-Post.belongsTo(User, )
+Post.belongsTo(User, { as: 'poster', foreignKey: 'userId' })
 
 /*
 User.hasMany(Comment, {foreignKey: 'authorId'})

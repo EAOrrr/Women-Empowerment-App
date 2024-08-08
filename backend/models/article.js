@@ -1,5 +1,5 @@
 const { sequelize } = require('../utils/db')
-const { DataTypes, Model, UUIDV4 } = require("sequelize");
+const { DataTypes, Model, UUIDV4 } = require('sequelize')
 
 class Article extends Model {}
 
@@ -16,13 +16,16 @@ Article.init({
   },
   content: { // 内容
     type: DataTypes.TEXT,
-    allowNull:false,
+    allowNull: false,
+  },
+  abstract: {
+    type: DataTypes.TEXT,
+    allowNull: false,
   },
   author: {
     type: DataTypes.STRING,
     defaultValue: null
   },
-  
   type: {
     type: DataTypes.ENUM(
       'activity',

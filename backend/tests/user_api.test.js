@@ -5,14 +5,14 @@ const app = require('../app')
 const supertest = require('supertest')
 const api = supertest(app)
 const User = require('../models/user')
-const { connectToDatabase } = require('../utils/db')
+const { connectToDatabase, sequelize } = require('../utils/db')
 
 beforeEach(async () => {
   // empty the database
   await connectToDatabase()
   await User.destroy({ where: {} })
 })
-describe('test User model', () => {
+describe('create a user', () => {
   test('create a new user', async () => {
     const newUser1 = {
       username: 'testuser',
@@ -30,7 +30,7 @@ describe('test User model', () => {
       .send(newUser1)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-    
+
     await api
       .post('/api/users/pwd')
       .send(newUser2)
@@ -59,6 +59,27 @@ describe('test User model', () => {
     assert.strictEqual(usersAtEnd.length, usersAtStart.length)
   })
 
+  test('create a new user with returned field id and username', async () => {
+    const newUser = {
+      username: 'testuser',
+      password: 'testpassword',
+      role: 'admin'
+    }
+    const response = await api
+      .post('/api/users/pwd')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const user = response.body
+    assert(user.userId !== undefined)
+    assert(user.username !== undefined)
+    assert(user.password === undefined)
+    assert(user.role === undefined)
+  })
+})
+
+describe('update a user', () => {
+
   test('update a user password', async () => {
     const newUser = {
       username: 'testuser',
@@ -70,12 +91,21 @@ describe('test User model', () => {
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
+    
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
     const updatedUser = {
       password: 'newpassword',
     }
     const updated = await api
-      .put(`/api/users/${user.body.id}`)
+      .put('/api/users/')
       .send(updatedUser)
+      .set(headers)
       .expect(200)
       .expect('Content-Type', /application\/json/)
     assert(updated.body.password !== user.body.password)
@@ -87,17 +117,27 @@ describe('test User model', () => {
       password: 'testpassword',
       admin: true,
     }
-    const user = await api
+    await api
       .post('/api/users/pwd')
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
+
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
+
     const updatedUser = {
       password: 'no',
     }
     await api
-      .put(`/api/users/${user.body.id}`)
+      .put(`/api/users`)
       .send(updatedUser)
+      .set(headers)
       .expect(400)
       .expect('Content-Type', /application\/json/)
   })
@@ -114,16 +154,56 @@ describe('test User model', () => {
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
+
     const updatedUser = {
       phone: '987654321',
     }
     const updated = await api
-      .put(`/api/users/${user.body.id}`)
+      .put('/api/users')
       .send(updatedUser)
+      .set(headers)
       .expect(200)
       .expect('Content-Type', /application\/json/)
     assert.notStrictEqual(updated.body.phone, user.body.phone)
     assert.strictEqual(updated.body.phone, '987654321')
+  })
+
+  test('update a user info with invalid field', async () => {
+    const newUser = {
+      username: 'testuser',
+      password: 'testpassword',
+    }
+
+    await api
+      .post('/api/users/pwd')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
+    const updatedUser = {
+      role: 'admin'
+    }
+
+    await api
+      .put('/api/users')
+      .send(updatedUser)
+      .set(headers)
+      .expect(403)
+      .expect('Content-Type', /application\/json/)
   })
 
 })
@@ -178,6 +258,46 @@ describe('test login (with pwd) function', () => {
       .expect('Content-Type', /application\/json/)
   })
 })
+
+describe('get a user info', () => {
+  test('get a user info', async () => {
+    const newUser = {
+      username: 'testuser',
+      password: 'testpassword',
+      role: 'admin',
+      phone: '123456789',
+    }
+    await api
+      .post('/api/users/pwd')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
+    await api
+      .put('/api/users')
+      .send({ phone: newUser.phone })
+      .set(headers)
+      .expect(200)
+
+    const response = await api
+      .get('/api/users')
+      .set(headers)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const user = response.body
+    assert.strictEqual(user.username, newUser.username)
+    assert.strictEqual(user.phone, newUser.phone)
+    assert(user.role === undefined)
+    assert(user.password === undefined)
+    assert(user.userId)
+  })
+})
 after(async () => {
   await User.destroy({ where: {} })
+  sequelize.close()
 })

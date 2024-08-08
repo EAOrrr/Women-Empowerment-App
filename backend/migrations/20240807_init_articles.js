@@ -13,6 +13,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      abstract: {
+        type: DataTypes.TEXT,
+        allowNull: false,
+      },
       content: {
         type: DataTypes.TEXT,
         allowNull:false,

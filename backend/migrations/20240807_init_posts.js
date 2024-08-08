@@ -49,10 +49,12 @@ module.exports = {
       type: DataTypes.UUID,
       allowNull: false,
       references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE',
     })
   },
 
   down: async ({ context: queryInterface }) => {
-    await queryInterface.dropTable('posts', {})
+    await queryInterface.dropTable('posts')
   }
 }

@@ -1,5 +1,4 @@
-const Article = require('../models/article')
-const User = require('../models/user')
+const { Article, User, Post } = require('../models')
 
 const initialArticles = [
   {
@@ -8,6 +7,7 @@ const initialArticles = [
     'likes': 0,
     'title': 'first article',
     'content': 'content of first article',
+    'abstract': 'content of first article',
     'author': 'first author',
     'type': 'activity',
     'updatedAt': '2024-08-06T03:12:46.344Z',
@@ -20,15 +20,36 @@ const initialArticles = [
     'likes': 0,
     'title': 'second article',
     'content': 'content of second article',
+    'abstract': 'content of second article',
     'type': 'law',
     'updatedAt': '2024-08-06T03:13:51.259Z',
     'createdAt': '2024-08-06T03:13:51.259Z'
   }
 ]
 
+const initialPosts = [
+  {
+    'title': 'first post',
+    'content': 'content of first post',
+  },
+  {
+    'title': 'second post',
+    'content': 'content of second post',
+  },
+  {
+    'title': 'third post',
+    'content': 'content of third post',
+  }
+]
+
 const articlesInDb = async () => {
   const articles = await Article.findAll()
   return articles.map(article => article.toJSON())
+}
+
+const postsInDb = async () => {
+  const posts = await Post.findAll()
+  return posts.map(post => post.toJSON())
 }
 
 const usersInDb = async () => {
@@ -41,6 +62,7 @@ const nonExistingId = async () => {
     title: 'willremovethissoon',
     content: 'content of willremovethissoon',
     type: 'policy',
+    abstract: 'content of willremovethissoon',
   })
   const id = article.id
   await article.destroy()
@@ -50,7 +72,9 @@ const nonExistingId = async () => {
 
 module.exports = {
   initialArticles,
+  initialPosts,
   articlesInDb,
   usersInDb,
+  postsInDb,
   nonExistingId,
 }

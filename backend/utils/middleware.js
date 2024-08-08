@@ -67,7 +67,10 @@ const userExtractor = async (req, res, next) => {
 const authorize = (roles = null) => {
   return (req, res, next) => {
     console.log(req.user.role, roles)
-    if (roles && (!req.user || !roles.includes(req.user.role)) ) {
+    if (!req.user) {
+      return res.status(401).json({ error: 'token missing' })
+    }
+    if (roles && !roles.includes(req.user.role) ) {
       return res.status(403).json({ error: 'unauthorized' })
     }
     next()

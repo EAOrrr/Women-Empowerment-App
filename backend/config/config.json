@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "mysecretpassword",
+    "database": "my_sequelize_project_development",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "your_database_username",
+    "password": "your_database_password",
+    "database": "my_sequelize_project_test",
+    "host": "127.0.0.3",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "your_database_username",
+    "password": "your_database_password",
+    "database": "my_sequelize_project_production",
+    "host": "127.0.0.3",
+    "dialect": "postgres"
+  }
+}

@@ -1,4 +1,4 @@
-const { Model, DataTypes, UUIDV4 } = require("sequelize");
+const { Model, DataTypes, UUIDV4 } = require('sequelize')
 const { sequelize } = require('../utils/db')
 
 class Post extends Model {}
@@ -36,8 +36,16 @@ Model.init({
     allowNull: false,
     defaultValue: 0,
   },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false,
+    references: {
+      model: 'Users',
+      key: 'id',
+    }
+  }
 }, {
-  sequelize, 
+  sequelize,
   underscored: true,
   modelName: 'post'
 })

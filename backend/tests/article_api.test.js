@@ -4,33 +4,57 @@ const helper = require('./test_helpers')
 const app = require('../app')
 const supertest = require('supertest')
 const api = supertest(app)
-const Article = require('../models/article')
 const { connectToDatabase, sequelize } = require('../utils/db')
+const { User, Article } = require('../models')
 
 beforeEach(async () => {
   await connectToDatabase()
   // init articles
   await Article.destroy({ where: {} })
+  await User.destroy({ where: {} })
   await Article.bulkCreate(helper.initialArticles)
 })
 
 describe('Get article information', () => {
   test('articles are returned as json', async () => {
-    await api
+    const response = await api
       .get('/api/articles')
       .expect(200)
       .expect('Content-Type', /application\/json/)
+    console.log(response.body)
   })
+
 
   test('there are two articles', async () => {
     const response = await api.get('/api/articles').expect(200)
     assert.strictEqual(response.body.length, helper.initialArticles.length)
   })
 
+  test('article contains title, abstract, author, type, views,\
+     likes, and id, but not content', async () => {
+    const response = await api.get('/api/articles').expect(200)
+    const titles = response.body.map(article => article.title)
+    const abstracts = response.body.map(article => article.abstract)
+    const authors = response.body.map(article => article.author)
+    const types = response.body.map(article => article.type)
+    const views = response.body.map(article => article.views)
+    const likes = response.body.map(article => article.likes)
+    const ids = response.body.map(article => article.id)
+    const contents = response.body.map(article => article.content)
+    assert(titles.every(title => title !== undefined))
+    assert(abstracts.every(abstract => abstract !== undefined))
+    assert(authors.every(author => author !== undefined))
+    assert(types.every(type => type !== undefined))
+    assert(views.every(view => view !== undefined))
+    assert(likes.every(like => like !== undefined))
+    assert(ids.every(id => id !== undefined))
+    assert(contents.every(content => content === undefined))
 })
 
-describe.only('Create a new article', () => {
-  // TODO: create a root user and login
+
+})
+
+describe('Create a new article', () => {
   describe('when logged in as root user', () => {
     let headers
 
@@ -82,6 +106,7 @@ describe.only('Create a new article', () => {
       assert(titles.includes('first article'))
     })
 
+
     test('article without title is not added', async () => {
       const articlesAtStart = await helper.articlesInDb()
       const newArticle = {
@@ -96,6 +121,7 @@ describe.only('Create a new article', () => {
       const articlesAtEnd = await helper.articlesInDb()
       assert.strictEqual(articlesAtEnd.length, articlesAtStart.length)
     })
+
 
     test('article without content is not added', async () => {
       const articlesAtStart = await helper.articlesInDb()
@@ -142,9 +168,33 @@ describe.only('Create a new article', () => {
       const articlesAtEnd = await helper.articlesInDb()
       assert.strictEqual(articlesAtEnd.length, articlesAtStart.length)
     })
+
+    test('abstract will be created automatically', async () => {
+      const articlesAtStart = await helper.articlesInDb()
+      const newArticle = {
+        title: 'New Article',
+        content: 'This is a new article'.repeat(20),
+        type: 'policy',
+      }
+      console.log(newArticle)
+      // exit()
+      const response = await api
+        .post('/api/articles')
+        .send(newArticle)
+        .set(headers)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      const returnedArticle = response.body
+      assert.strictEqual(returnedArticle.abstract, newArticle.content.substring(0, 50))
+      const articlesAtEnd = await helper.articlesInDb()
+      assert.strictEqual(articlesAtEnd.length, articlesAtStart.length + 1)
+      const titles = articlesAtEnd.map(article => article.title)
+      assert(titles.includes('New Article'))
+    })
+
   })
 
-  describe.only('logged in as normal user', () => {
+  describe('logged in as normal user', () => {
     let headers
 
     beforeEach(async () => {
@@ -167,7 +217,7 @@ describe.only('Create a new article', () => {
       }
     })
 
-    test.only('not authorized to create an article', async () => {
+    test('not authorized to create an article', async () => {
       const articlesAtStart = await helper.articlesInDb()
       const newArticle = {
         title: 'an article',
@@ -184,6 +234,7 @@ describe.only('Create a new article', () => {
       assert.strictEqual(articlesAtEnd.length, articlesAtStart.length)
     })
   })
+
 
   describe('not logged in', () => {
     test('not authorized to create an article', async () => {
@@ -202,7 +253,9 @@ describe.only('Create a new article', () => {
       assert.strictEqual(articlesAtEnd.length, articlesAtStart.length)
     })
   })
+
 })
+
 
 describe('Viewing a specific article', () => {
   test('succeeds with a valid id', async () => {
@@ -218,7 +271,7 @@ describe('Viewing a specific article', () => {
     assert.deepStrictEqual(resultArticle.body, processedArticleToView)
   })
 
-  test('fails with statuscode 404 if article does not exist', async () => {
+  test.only('fails with statuscode 404 if article does not exist', async () => {
     const validNonexistingId = await helper.nonExistingId()
     await api
       .get(`/api/articles/${validNonexistingId}`)
