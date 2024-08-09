@@ -55,7 +55,7 @@ router.post('/wechat', async (req, res) => {
   res.status(201).json(userForResponse)
 })
 
-router.get('/', userExtractor, authorize(['user', 'admin']), async (req, res) => {
+router.get('/me', userExtractor, authorize(['user', 'admin']), async (req, res) => {
   const user = req.user
   const returnedUser = {
     phone: user.phone,
@@ -69,12 +69,9 @@ router.get('/', userExtractor, authorize(['user', 'admin']), async (req, res) =>
 
 
 // TODO test
-router.get('/:username', userExtractor, authorize(['admin']), async (req, res) => {
-  const user = await User.findOne({
-    where: {
-      username: req.params.username
-    },
-    attributes: { exclude: ['password', 'role'] }
+router.get('/', userExtractor, authorize(['admin']), async (req, res) => {
+  const user = await User.findAll({
+    attributes: { exclude: ['password', 'role', 'openid'] }
   })
   if (!user) {
     return res.status(404).end()
@@ -82,7 +79,7 @@ router.get('/:username', userExtractor, authorize(['admin']), async (req, res) =
   res.json(user)
 })
 
-router.put('/', userExtractor, authorize(['admin', 'user']), async (req, res) => {
+router.put('/me', userExtractor, authorize(['admin', 'user']), async (req, res) => {
   const body = req.body
   const user = req.user
   if (body.role && user.role !== 'admin') {

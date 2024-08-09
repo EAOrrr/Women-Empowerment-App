@@ -42,7 +42,12 @@ router.post('/pwd', async (req, res) => {
 router.post('/wechat', async (req, res) => {
   const { code } = req.body
   const response = await axios.get(`https://api.weixin.qq.com/sns/jscode2session?appid=${WECHAT_APPID}&secret=${WECHAT_SECRET}&js_code=${code}&grant_type=authorization_code`)
-  const { openid } = response.data
+  const { errcode, openid } = response.data
+  if (errcode) {
+    return res.status(502).json({
+      error: 'something went wrong when trying to get openid'
+    })
+  }
   const user = await User.findOne({
     where: {
       openid
@@ -51,7 +56,7 @@ router.post('/wechat', async (req, res) => {
 
   if (! user) {
     return res.status(401).json({
-      error: 'invalid openid'
+      error: 'user does not exist'
     })
   }
 

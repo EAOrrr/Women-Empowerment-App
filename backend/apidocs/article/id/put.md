@@ -10,7 +10,7 @@
 
 **Permissions required** : 
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
-2. 对于标题`title`、内容`content`、文章分类`type`和文章标签`tags`字条，只有管理员可修改
+2. 对于标题`title`、内容`content`、文章分类`type`字条，只有管理员可修改
 3. 其他栏目不可修改
 
 **Data constraints** : 
@@ -47,7 +47,6 @@
   "views": 1224,
   "createdAt": "2024-07-30T04:31:55.614Z", 
   "updatedAt": "2024-07-30T04:31:55.614Z", 
-  "tags": ["生育", "工作"]
 }
 ```
 

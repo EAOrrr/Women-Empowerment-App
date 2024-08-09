@@ -37,7 +37,7 @@
 
 ## Error Response
 
-**Condition** : If 'username' and 'password' combination is wrong.
+**Condition** : 不能根据微信 `openid` 找到对应的已注册的用户
 
 **Code** : `401 UNAUTHORIZED`
 
@@ -45,8 +45,19 @@
 
 ```json
 {
-    "error": [
-        "user does not exist."
-    ]
+    "error": "user does not exist."
 }
 ```
+
+### Or
+
+**Condition**：在根据用户提供的`code`调用微信官方API找对应的 `openid`时出错
+
+**Code**: `502 BAD GATEWAY`
+
+**Content**: 
+```json
+{
+  "error": "something went wrong when trying to get openid"
+}
+

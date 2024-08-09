@@ -103,7 +103,7 @@ describe('update a user', () => {
       password: 'newpassword',
     }
     const updated = await api
-      .put('/api/users/')
+      .put('/api/users/me')
       .send(updatedUser)
       .set(headers)
       .expect(200)
@@ -135,7 +135,7 @@ describe('update a user', () => {
       password: 'no',
     }
     await api
-      .put(`/api/users`)
+      .put('/api/users/me')
       .send(updatedUser)
       .set(headers)
       .expect(400)
@@ -166,7 +166,7 @@ describe('update a user', () => {
       phone: '987654321',
     }
     const updated = await api
-      .put('/api/users')
+      .put('/api/users/me')
       .send(updatedUser)
       .set(headers)
       .expect(200)
@@ -199,7 +199,7 @@ describe('update a user', () => {
     }
 
     await api
-      .put('/api/users')
+      .put('/api/users/me')
       .send(updatedUser)
       .set(headers)
       .expect(403)
@@ -279,13 +279,13 @@ describe('get a user info', () => {
       .expect('Content-Type', /application\/json/)
     const headers = { 'Authorization': `Bearer ${result.body.token}` }
     await api
-      .put('/api/users')
+      .put('/api/users/me')
       .send({ phone: newUser.phone })
       .set(headers)
       .expect(200)
 
     const response = await api
-      .get('/api/users')
+      .get('/api/users/me')
       .set(headers)
       .expect(200)
       .expect('Content-Type', /application\/json/)
@@ -297,6 +297,71 @@ describe('get a user info', () => {
     assert(user.userId)
   })
 })
+
+describe.only('get all user info with admin', () => {
+  beforeEach(async () => {
+    const initialUsers = [
+      {
+        username: 'testuser',
+        password: 'testpassword',
+        role: 'admin',
+        phone: '123456789',
+      },
+      {
+        username: 'testuser2',
+        password: 'testpassword2',
+        role: 'user',
+        phone: '987654321',
+      },
+      {
+        username: 'testuser3',
+        password: 'testpassword3',
+        role: 'user',
+        phone: '135792468',
+      }
+    ]
+    await User.bulkCreate(initialUsers)
+  })
+  test.only('get all user info with admin', async () => {
+    const usersInDb = await helper.usersInDb()
+    console.log(usersInDb)
+    const newUser = {
+      username: 'testuserAdmin',
+      password: 'testpassword',
+      role: 'admin',
+      phone: '123456789',
+    }
+    await api
+      .post('/api/users/pwd')
+      .send(newUser)
+      .expect(201)
+      .expect('Content-Type', /application\/json/)
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const headers = { 'Authorization': `Bearer ${result.body.token}` }
+
+    const response = await api
+      .get('/api/users')
+      .set(headers)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const users = response.body
+    console.log(users)
+    assert.strictEqual(users.length, 4)
+    const usernames = users.map(user => user.username)
+    assert(usernames.includes('testuser'))
+    assert(usernames.includes('testuser2'))
+    assert(usernames.includes('testuser3'))
+    assert(users.every(user => user.phone !== undefined))
+    assert(users.every(user => user.role === undefined))
+    assert(users.every(user => user.password === undefined))
+    assert(users.every(user => user.id !== undefined))
+  })
+})
+
 after(async () => {
   await User.destroy({ where: {} })
   sequelize.close()

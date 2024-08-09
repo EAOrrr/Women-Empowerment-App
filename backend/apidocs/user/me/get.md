@@ -33,13 +33,8 @@ For a user with ID 4321 on the local database but no details have been set yet.
 ```json
 {
     "id": 4321,
-    "first_name": "",
-    "last_name": "",
-    "email": ""
+    "phone": null,
+    "avatar": null,
+    "username": "又一个用户"
 }
 ```
-
-## Notes
-
-* If the User does not have a `UserInfo` instance when requested then one will
-  be created for them.

@@ -6,6 +6,7 @@ const supertest = require('supertest')
 const api = supertest(app)
 const { Post, User, Comment, } = require('../models')
 const { connectToDatabase, sequelize } = require('../utils/db')
+const TestAgent = require('supertest/lib/agent')
 
 beforeEach(async () => {
   await connectToDatabase()
@@ -34,7 +35,7 @@ describe.only('get infomation of posts', () => {
           userId: createdUser.body.userId
         }
       ))
-    Post.bulkCreate(initialPosts)
+    await Post.bulkCreate(initialPosts)
     const postsInDb = await helper.postsInDb()
     console.log('postinDb', postsInDb)
   })
@@ -555,7 +556,7 @@ describe.only('test comment function', () => {
       }))
     })
 
-    test.only('test get /api/posts', async () => {
+    test('test get /api/posts', async () => {
       const response = await api
         .get('/api/posts')
         .expect(200)
@@ -569,13 +570,13 @@ describe.only('test comment function', () => {
 
     })
 
-    test.only('test get /api/posts/:id', async() => {
-      
+    test.only('test get /api/posts/:id with query comments', async() => {
+
       const response = await api
-        .get(`/api/posts/${postToComment.id}`)
+        .get(`/api/posts/${postToComment.id}?comments=true`)
         .expect(200)
         .expect('Content-Type', /application\/json/)
-      
+
       // console.log(response.body)
       // const comments = response.body.comments
       // console.log(comments)
@@ -586,6 +587,33 @@ describe.only('test comment function', () => {
       const comments = post.comments
       assert(comments)
       assert(comments.length === 3)
+      assert(comments.every(c => c.id !== undefined))
+      assert(comments.every(c => c.content !== undefined))
+      assert(comments.every(c => c.likes !== undefined))
+      assert(comments.every(c => c.createdAt !== undefined))
+      assert(comments.every(c => c.updatedAt !== undefined))
+      assert(comments.every(c => c.commenter !== undefined))
+      assert(comments.every(c => c.commenter.username !== undefined))
+    })
+
+    test.only('test get /api/posts/:id without query comments', async() => {
+      const response = await api
+        .get(`/api/posts/${postToComment.id}`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+      const post = response.body
+      console.log(post)
+      assert(post.comments === undefined)
+    })
+
+    test.only('test get /api/posts/:id/comments', async() => {
+      const response = await api
+        .get(`/api/posts/${postToComment.id}/comments`)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+      const comments = response.body
+      console.log(comments)
+      assert.strictEqual(comments.length, 3)
       assert(comments.every(c => c.id !== undefined))
       assert(comments.every(c => c.content !== undefined))
       assert(comments.every(c => c.likes !== undefined))

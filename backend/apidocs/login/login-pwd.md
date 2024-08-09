@@ -38,9 +38,9 @@
 
 ## Error Response
 
-**Condition** : If 'username' and 'password' combination is wrong.
+**Condition** : 密码和用户名的组合错误
 
-**Code** : `400 Unauthorized`
+**Code** : `401 UNAUTHORIZED`
 
 **Content** :
 

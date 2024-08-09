@@ -41,7 +41,7 @@ User with `id` of '1234' sets their name, passing `UAPP` header of 'ios1_2':
 
 ## Error Response
 
-**Condition** : If provided data is invalid, e.g. a name field is too long.
+**Condition** : 提供的数据非法，比如密码`password`过短，用户名`username`非法.
 
 **Code** : `400 BAD REQUEST`
 
@@ -49,9 +49,7 @@ User with `id` of '1234' sets their name, passing `UAPP` header of 'ios1_2':
 
 ```json
 {
-    "first_name": [
-        "Please provide maximum 30 character or empty string",
-    ]
+    "error": "[对应的错误信息]"
 }
 ```
 

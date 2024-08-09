@@ -52,3 +52,11 @@
 **Code** : `404 NOT FOUND`
 
 **Content** : `{}`
+
+## Note
+
+he `/api/articles/` endpoint supports the following query parameters:
+
+| Parameter | Type   | Description                                      |
+|-----------|--------|--------------------------------------------------|
+| comments      | boolean |若为`true`，返回所有该留言下的评论，否则不返回评论 |

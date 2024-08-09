@@ -48,13 +48,19 @@ router.get('/:id', async (req, res) => {
     attributes: {
       exclude: ['userId'],
     },
-    include: [{
+    include: {
       model: User,
       as: 'poster',
       attributes: ['username']
     },
-    {
-      model: Comment,
+
+  })
+  if (!post) {
+    return res.status(404).end()
+  }
+  let comments = undefined
+  if (req.query.comments) {
+    comments = await post.getComments({
       attributes: {
         exclude: ['commentableId', 'commentableType', 'userId']
       },
@@ -63,16 +69,30 @@ router.get('/:id', async (req, res) => {
         as: 'commenter',
         attributes: ['username']
       }
-    }]
-  })
-  if (post) {
-    res.json(post)
-  } else {
-    res.status(404).end()
+    })
   }
+  res.json({ ...post.toJSON(), comments })
 })
 
-// TODO DELETE /api/posts/:id
+router.get('/:id/comments', async (req, res) => {
+  const post = await Post.findByPk(req.params.id)
+  if (!post) {
+    return res.status(404).end()
+  }
+  const comments = await post.getComments({
+    attributes: {
+      exclude: ['commentableId', 'commentableType', 'userId']
+    },
+    include: {
+      model: User,
+      as: 'commenter',
+      attributes: ['username']
+    }
+  })
+  
+  res.json(comments)
+})
+
 router.delete('/:id', userExtractor, authorize(['admin', 'user']), async (req, res) => {
   const post = await Post.findByPk(req.params.id)
   if (!post) {
@@ -85,7 +105,6 @@ router.delete('/:id', userExtractor, authorize(['admin', 'user']), async (req, r
   res.status(204).end()
 })
 
-// TODO PUT /api/posts/:id
 router.put('/:id',
   userExtractor,
   checkFields(['views', 'likes', 'status', 'follow']),
@@ -95,7 +114,7 @@ router.put('/:id',
     if (!post) {
       return res.status(404).end()
     }
-    const { views, likes, status, title, content, follow } = req.body
+    const { views, likes, status } = req.body
 
     // 对于帖子的状态status,只有可以发帖者可以修改
     if (status) {

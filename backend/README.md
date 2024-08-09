@@ -2,7 +2,7 @@
 
 > 当前进度： 文章功能、用户功能和留言模块可以正常使用（用户功能微信登录板块未测试）。
 
-> 当前目标：改报错信息 + API 修改 + 文章评论 + 通知信息（收到回复 + 管理员发布信息）
+> 当前目标： 通知信息（收到回复 + 管理员发布信息）
 
 > 还剩工程：招聘启示，招聘启事各职业，招聘启事的评论，收藏（Follow）功能
 
@@ -33,8 +33,8 @@
 ### 与用户`user`有关
 
 一下每个端点都会处理或显示与用户相关的信息，发送请求时要求提供用户的令牌`token`：
-<!-- * [获取所有用户信息](./apidocs/user/get.md):
-`GET /api/users` -->
+* [获取所有用户信息](./apidocs/user/get.md):
+`GET /api/users`
 * [更改用户信息](./apidocs/user/me/put.md) : `PUT /api/users/me`
 * [显示对应用户信息](./apidocs/user/me/get.md) : `GET /api/users/me`
 * [通过微信注册新用户](./apidocs/user/post/post-wechat.md): `POST /api/users/wechat`
@@ -61,6 +61,7 @@
 * [显示特定id的留言](./apidocs/post/postId/get.md) : `GET /api/posts/:id`
 * [修改特定id的留言](./apidocs/post/postId/put.md): `PUT /api/posts/:id/`
 * [删除特定id的留言](./apidocs/post/postId/delete.md): `DELETE /api/posts/:id/`
+* [显示特定id的留言](./apidocs/post/postId/comment/get.md) `GET /api/posts/:id/comments/`
 * [在特定id留言下发布评论](./apidocs/post/postId/comment/post.md): `POST /api/posts/:postId/comments/`
 * [修改特定postId下的特定commentId评论](./apidocs/post/postId/comment/put.md): `PUT /api/posts/:postId/commments/:commentId/`
 <!-- * [删除postId下的特定commentId评论](): `DELETE /api/posts/:postId/commments/:commentId/` -->

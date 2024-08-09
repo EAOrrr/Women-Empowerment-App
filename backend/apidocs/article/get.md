@@ -33,7 +33,6 @@
       "views": 123, // 浏览数
       "createdAt": "2024-07-30T04:31:55.614Z", 
       "updatedAt": "2024-07-30T04:31:55.614Z", 
-      "tags": ["生育", "工作"]
     }
 ]
 ```
@@ -47,7 +46,6 @@ The `/api/articles/` endpoint supports the following query parameters:
 |-----------|--------|--------------------------------------------------|
 | type      | string |按类型筛选文章。可能的值: `activity`, `policy`, `law` |
 |keyWord     | string | 根据关键词在筛选标题或内容含该关键词的文章                   |
-| tags      | array  | 根据标签筛选文章        |
 | limit     | number | 限制返回的文章数量       |
 | offset    | number | 偏移返回文章的起始点 |
 |ordering   | string | 根据给定的功能排序文章，可能的值:`createdTime`, `likes`, `views`
@@ -55,9 +53,9 @@ The `/api/articles/` endpoint supports the following query parameters:
 Example usage:
 
 ```
-/api/articles/?type=activity&tags=work&limit=10&offset=0
+/api/articles/?type=activity&limit=10&offset=0
 ```
 
-This query will retrieve the first 10 articles of type "activity" written by "John Doe" and tagged with "work".
+This query will retrieve the first 10 articles of type "activity" 
 
 
