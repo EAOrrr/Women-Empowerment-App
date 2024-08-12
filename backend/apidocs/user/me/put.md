@@ -2,7 +2,7 @@
 
 允许已验证用户更新自己的信息
 
-**URL** : `/api/user/`
+**URL** : `/api/user/me`
 
 **Method** : `PUT`
 

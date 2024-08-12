@@ -18,6 +18,18 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
+      jump_to: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      type: {
+        type: DataTypes.ENUM(
+          'global',
+          'comment_reply',
+          'post_created',
+        ),
+        allowNull: false,
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -26,6 +38,14 @@ module.exports = {
         type: DataTypes.DATE,
         allowNull: false,
       },
+    })
+
+    await queryInterface.addColumn('notifications', 'user_id', {
+      type: DataTypes.UUID,
+      allowNull: false,
+      references: { model: 'users', key: 'id' },
+      onUpdate: 'CASCADE',
+      onDelete: 'CASCADE'
     })
   },
 

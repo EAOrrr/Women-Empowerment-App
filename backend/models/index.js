@@ -71,6 +71,11 @@ Comment.addHook('afterFind', findResult => {
     delete instance.dataValues.post
   }
 })
+
+// 与通知有关的关联
+User.hasMany(Notification, )
+Notification.belongsTo(User, { as: 'notifiedUser', foreignKey: 'userId' })
+
 /*
 
 // 与用户关注有关的关联
@@ -80,7 +85,7 @@ User.belongsToMany(Article, {
 })
 
 Article.belongsToMany(User, {
-  through: 'user_article_likes',
+  through: 'Follow',
   as: 'likers'
 })
 */

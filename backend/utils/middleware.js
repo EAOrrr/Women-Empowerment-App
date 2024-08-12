@@ -47,7 +47,6 @@ const userExtractor = async (req, res, next) => {
 
   if (!token) {
     // return res.status(401).json({ error: 'token missing' })
-    req.user = { role: 'guest' }
     return next()
   }
 
@@ -69,7 +68,7 @@ const userExtractor = async (req, res, next) => {
 
 const authorize = (roles = null) => {
   return (req, res, next) => {
-    console.log(req.user.role, roles)
+    // console.log(req.user.role, roles)
     if (!req.user) {
       return res.status(401).json({ error: 'token missing' })
     }

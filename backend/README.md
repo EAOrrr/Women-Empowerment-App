@@ -1,10 +1,10 @@
 # RESTAPIDocs
 
-> 当前进度： 文章功能、用户功能和留言模块可以正常使用（用户功能微信登录板块未测试）。
+> 当前进度： 文章功能、用户功能、留言模块和消息模块可以正常使用（用户功能微信登录板块未测试）。
 
-> 当前目标： 通知信息（收到回复 + 管理员发布信息）
+> 当前目标：招聘启示，招聘启事各职业，招聘启事的评论
 
-> 还剩工程：招聘启示，招聘启事各职业，招聘启事的评论，收藏（Follow）功能
+> 还剩工程：收藏（Follow）功能，富文本编辑器的编辑文档的后端储存
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
@@ -79,3 +79,17 @@
 * [在特定id招聘启事下发布评论](./apidocs/recruitment//recuitmentId/comment/post.md): `POST /api/recruitments/:recuitmentId/comments/`
 * [修改特定recuitmentId下的特定commentId评论](./apidocs/recruitment/recuitmentId/comment/put.md): `PUT /api/recruitments/:recuitmentId/commments/:commentId/`
 <!-- * [删除recuitmentId下的特定commentId评论](): `DELETE /api/recruitments/:recuitmentId/commments/:commentId/` -->
+
+### 与消息`notification`相关
+以下每个端点会处理与显示与用户相关的信息，发送请求时要求用户提供令牌`token`
+* [显示特定用户的消息列表](./apidocs/notification/get.md) : `GET /api/notifications/`
+* [显示所有招聘启事](./apidocs/notification/post.md) : `GET /api/notifications/`
+
+**消息通知触发规则**
+* **全局通知** 管理员发布全局通知时，所有用户都会收到通知
+* **创建留言:** 当用户创建一条新的留言时，系统会自动向所有管理员发送一条留言创建通知。
+* **回复留言:**
+    * 当用户回复一条留言时，系统会自动向所有管理员发送一条留言回复通知。
+    * 当管理员回复一条留言时，系统会自动向该留言的发起用户发送一条留言回复通知。
+    
+  

@@ -19,6 +19,18 @@ Notification.init({
     allowNull: false,
     defaultValue: false,
   },
+  jumpTo: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  type: {
+    type: DataTypes.ENUM(
+      'global',
+      'post_created',
+      'comment_reply',
+    ),
+    allowNull: false,
+  }
 }, {
   sequelize,
   underscored: true,

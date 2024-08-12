@@ -1,4 +1,4 @@
-const { Article, User, Post, Comment } = require('../models')
+const { Article, User, Post, Comment, Notification } = require('../models')
 
 const initialArticles = [
   {
@@ -62,6 +62,11 @@ const commentsInDb = async () => {
   return comments.map(c => c.toJSON())
 }
 
+const notificationsInDb = async () => {
+  const notifications = await Notification.findAll()
+  return notifications.map(n => n.toJSON())
+}
+
 const nonExistingId = async () => {
   const article = await Article.create({
     title: 'willremovethissoon',
@@ -72,6 +77,14 @@ const nonExistingId = async () => {
   const id = article.id
   await article.destroy()
   return id
+}
+
+const getToken = async (api, user) => {
+  const response = await api
+    .post('/api/login/pwd')
+    .send(user)
+    .expect(200)
+  return response.body.token
 }
 
 const newComments = [
@@ -86,14 +99,36 @@ const newComments = [
   }
 ]
 
+const initialNotifications = [
+  {
+    message: 'first notification',
+  },
+  {
+    message: 'second notification',
+  },
+  {
+    message: 'third notification',
+  },
+]
+
+const createUser = async (api, user) => {
+  await api
+    .post('/api/users/pwd')
+    .send(user)
+    .expect(201)
+}
 
 module.exports = {
   initialArticles,
   initialPosts,
+  initialNotifications,
   newComments,
   articlesInDb,
   usersInDb,
   postsInDb,
   commentsInDb,
+  notificationsInDb,
   nonExistingId,
+  createUser,
+  getToken,
 }

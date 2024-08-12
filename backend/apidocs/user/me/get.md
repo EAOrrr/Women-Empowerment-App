@@ -2,7 +2,7 @@
 
 获取当前已验证用户的详细信息以及基本订阅信息。
 
-**URL** : `/api/user/`
+**URL** : `/api/user/me`
 
 **Method** : `GET`
 

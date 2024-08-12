@@ -22,7 +22,7 @@ const rollbackMigration = async () => {
 
 const runMigrations = async () => {
   const migrator = new Umzug(migrationConf)
-  await migrator.down()
+  // await migrator.down()
   const migrations = await migrator.up()
 
   console.log('Migrations up to date', {

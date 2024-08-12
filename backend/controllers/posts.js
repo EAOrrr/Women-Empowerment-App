@@ -1,4 +1,4 @@
-const { User, Post, Comment } = require('../models')
+const { User, Post, Comment, Notification } = require('../models')
 const { Sequelize } = require('sequelize')
 
 const router = require('express').Router()
@@ -39,10 +39,31 @@ router.post('/',
       ...req.body,
       userId: req.user.id
     })
+
+    // 发送信息给所有管理员
+    const admins = await User.findAll({
+      where: {
+        role: 'admin'
+      }
+    })
+    // admins.forEach(async admin => {
+    //   await Notification.create({
+    //     message: `用户 ${req.user.username} 发表了新帖子 ${post.title}`,
+    //     userId: admin.id,
+    //     jumpTo: `/posts/${post.id}`
+    //   })
+    // })
+    await Promise.all(admins.map(admin => 
+      Notification.create({
+        message: `用户 ${req.user.username} 发表了新帖子 ${post.title}`,
+        userId: admin.id,
+        jumpTo: `/posts/${post.id}`,
+        type: 'post_created'
+      })
+    ))
     res.status(201).json(post)
   })
 
-// TODO GET /api/posts/:id
 router.get('/:id', async (req, res) => {
   const post = await Post.findByPk(req.params.id, {
     attributes: {
@@ -142,12 +163,7 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
   if (req.user.role !== 'admin' && post.userId !== req.user.id) {
     return res.status(403).json({ error: 'No Permission' })
   }
-  // const comment = await Comment.create({
-  //   ...req.body,
-  //   commentableType: 'post',
-  //   commentableId: post.id,
-  //   commenterId: req.user.id
-  // })
+
   const comment = await post.createComment({
     ...req.body,
     commentableType: 'post',
@@ -167,6 +183,30 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
     commentedPost: {
       postId: post.id,
     }
+  }
+  if (req.user.id === post.userId) {
+    // 发帖者回复信息，给所有管理员发送信息
+    const admins = await User.findAll({
+      where: {
+        role: 'admin'
+      }
+    })
+    await Promise.all(admins.map(admin =>
+      Notification.create({
+        message: `用户 ${req.user.username} 回应了留言 ${post.title}`,
+        userId: admin.id,
+        jumpTo: `/posts/${post.id}/comments/${comment.id}`,
+        type: 'comment_reply'
+      })
+    ))
+  } else {
+    // 管理员回复信息，给发帖者发送信息
+    await Notification.create({
+      message: `管理员回应了您的留言 ${post.title}`,
+      userId: post.userId,
+      jumpTo: `/posts/${post.id}/comments/${comment.id}`,
+      type: 'comment_reply'
+    })
   }
   res.status(201).json(commentToReturn)
 })

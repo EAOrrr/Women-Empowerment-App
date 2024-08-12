@@ -4,9 +4,8 @@ const helper = require('./test_helpers')
 const app = require('../app')
 const supertest = require('supertest')
 const api = supertest(app)
-const { Post, User, Comment, } = require('../models')
+const { Post, User, Comment, Notification } = require('../models')
 const { connectToDatabase, sequelize } = require('../utils/db')
-const TestAgent = require('supertest/lib/agent')
 
 beforeEach(async () => {
   await connectToDatabase()
@@ -15,7 +14,7 @@ beforeEach(async () => {
   await User.destroy({ where: {} })
 })
 
-describe.only('get infomation of posts', () => {
+describe('get infomation of posts', () => {
   beforeEach(async () => {
     const user = {
       username: 'user',
@@ -40,7 +39,7 @@ describe.only('get infomation of posts', () => {
     console.log('postinDb', postsInDb)
   })
 
-  test.only('there are three posts', async() => {
+  test('there are three posts', async() => {
     const response = await api
       .get('/api/posts')
       .expect(200)
@@ -315,6 +314,7 @@ describe.only('test comment function', () => {
   let creatorToken
   let postToComment
   beforeEach(async () => {
+    Notification.destroy({ where: {} })
     const newUser = {
       username: 'testuser',
       password: 'testpassword'
@@ -344,8 +344,9 @@ describe.only('test comment function', () => {
       .expect('Content-Type', /application\/json/)
     postToComment = response.body
   })
-  describe('addition of a comment', () => {
+  describe.only('addition of a comment', () => {
     test('a comment can be added to a post by the post owner', async () => {
+      const notificationsAtStart = await helper.notificationsInDb()
       const commentsAtStart = await helper.commentsInDb()
       const newComment = {
         content: 'This is a test comment'
@@ -360,6 +361,11 @@ describe.only('test comment function', () => {
       assert.strictEqual(response.body.content, newComment.content)
       const commentsAtEnd = await helper.commentsInDb()
       assert.strictEqual(commentsAtEnd.length, commentsAtStart.length + 1)
+
+      const notificationsAtEnd = await helper.notificationsInDb()
+      console.log(notificationsAtEnd)
+      assert.strictEqual(notificationsAtEnd.length, notificationsAtStart.length + 1)
+      assert(notificationsAtEnd.some(n => n.message.includes(newComment.content)))
     })
 
     test('check comment return field', async () => {
@@ -383,6 +389,7 @@ describe.only('test comment function', () => {
       assert(comment.commenter.userId)
       assert.strictEqual(comment.commentedPost.postId, postToComment.id)
     })
+
 
     test('a comment can be added to a post by admin', async () => {
       const commentsAtStart = await helper.commentsInDb()
@@ -570,7 +577,7 @@ describe.only('test comment function', () => {
 
     })
 
-    test.only('test get /api/posts/:id with query comments', async() => {
+    test('test get /api/posts/:id with query comments', async() => {
 
       const response = await api
         .get(`/api/posts/${postToComment.id}?comments=true`)
@@ -596,7 +603,7 @@ describe.only('test comment function', () => {
       assert(comments.every(c => c.commenter.username !== undefined))
     })
 
-    test.only('test get /api/posts/:id without query comments', async() => {
+    test('test get /api/posts/:id without query comments', async() => {
       const response = await api
         .get(`/api/posts/${postToComment.id}`)
         .expect(200)
@@ -606,7 +613,7 @@ describe.only('test comment function', () => {
       assert(post.comments === undefined)
     })
 
-    test.only('test get /api/posts/:id/comments', async() => {
+    test('test get /api/posts/:id/comments', async() => {
       const response = await api
         .get(`/api/posts/${postToComment.id}/comments`)
         .expect(200)
