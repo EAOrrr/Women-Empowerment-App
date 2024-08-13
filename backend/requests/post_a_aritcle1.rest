@@ -1,5 +1,5 @@
 POST http://localhost:3001/api/articles
-Content-Type: application/json
+# Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWludGVzdCIsImlkIjoiOWFkY2UyOTEtN2Y3ZC00ODc5LTk1NmMtMmUzZmQxN2ZmYzk0IiwiaWF0IjoxNzIzMDQ2NTc1fQ.losD1j4gzB3TTMw4VsF7es1sZ-x0DjZhoZNCXevLNEw
 
 {

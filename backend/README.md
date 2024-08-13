@@ -4,7 +4,7 @@
 
 > 当前目标：招聘启示，招聘启事各职业，招聘启事的评论
 
-> 还剩工程：收藏（Follow）功能，富文本编辑器的编辑文档的后端储存
+> 还剩工程：收藏（Follow）功能
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
@@ -51,6 +51,13 @@
 * [显示特定id的文章](./apidocs/article/id/get.md) : `GET /api/articles/:id`
 * [修改特定id的文章](./apidocs/article/id/put.md): `PUT /api/articles/:id/`
 * [删除特定id的文章](./apidocs/article/id/delete.md): `DELETE /api/articles/:id/`
+> 以下端点与管理员发布文章有关
+* [上传图片](): `POST /api/upload/images`
+* [删除特定上传的图片](): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
+* [获取特定的图片](): `GET /imageUrl` （其中`imageUrl`为在POST中返回的链接）
+* [上传编辑中的文章草稿](): `POST /api/upload/draft`
+* [获取编辑中的文章草稿](): `GET /api/upload/draft`
+* [删除编辑中的文章草稿](): `DELETE /api/upload/draft`
 
 ### 与留言和建议`post`有关
 
@@ -67,6 +74,8 @@
 <!-- * [删除postId下的特定commentId评论](): `DELETE /api/posts/:postId/commments/:commentId/` -->
 
 ### 与招聘帖子`Recuitment`有关
+> 施工中...
+
 以下每个端点都会处理与显示与用户有关的信息，发送请求时要求提供用户的令牌`token`（`get`方法除外）
 * [显示所有招聘启事](./apidocs/recruitment/get.md) : `GET /api/recruitments/`
 * [发布一篇新的招聘启事](./apidocs/recruitment/post.md): `POST /api/recruitments/`

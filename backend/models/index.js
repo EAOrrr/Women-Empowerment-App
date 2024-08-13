@@ -1,6 +1,8 @@
 const Article = require('./article')
 const Comment = require('./comment')
+const Draft = require('./draft')
 const Follow = require('./follow')
+const Image = require('./image')
 const Job = require('./job')
 const Notification = require('./notification')
 const Post = require('./post')
@@ -24,6 +26,7 @@ Notification.belongsTo(User, {foreignKey: 'notificationId'})
 Post.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
+  onDelete: 'cascade',
   scope: {
     commentableType: 'post'
   }
@@ -73,7 +76,9 @@ Comment.addHook('afterFind', findResult => {
 })
 
 // 与通知有关的关联
-User.hasMany(Notification, )
+User.hasMany(Notification, {
+  onDelete: 'cascade',
+})
 Notification.belongsTo(User, { as: 'notifiedUser', foreignKey: 'userId' })
 
 /*
@@ -90,10 +95,20 @@ Article.belongsToMany(User, {
 })
 */
 
+// 与用户行为有关的关联
+User.hasOne(Draft, {
+  onDelete: 'cascade',
+})
+
+Draft.belongsTo(User, {as: 'author', foreignKey: 'userId'})
+
+
 module.exports = {
   Article,
   Comment,
+  Draft,
   Follow,
+  Image,
   Job,
   Notification,
   Post,

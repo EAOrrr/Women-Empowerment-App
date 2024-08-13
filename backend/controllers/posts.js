@@ -46,13 +46,7 @@ router.post('/',
         role: 'admin'
       }
     })
-    // admins.forEach(async admin => {
-    //   await Notification.create({
-    //     message: `用户 ${req.user.username} 发表了新帖子 ${post.title}`,
-    //     userId: admin.id,
-    //     jumpTo: `/posts/${post.id}`
-    //   })
-    // })
+  
     await Promise.all(admins.map(admin => 
       Notification.create({
         message: `用户 ${req.user.username} 发表了新帖子 ${post.title}`,

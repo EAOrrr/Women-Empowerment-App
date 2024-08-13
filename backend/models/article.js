@@ -48,6 +48,10 @@ Article.init({
     allowNull: false,
     defaultValue: 0,
   },
+  tags: {
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    defaultValue: []
+  },
 }, {
   sequelize,
   underscored: true,

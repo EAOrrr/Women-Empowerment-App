@@ -37,6 +37,10 @@ module.exports = {
         type: DataTypes.BLOB,
         defaultValue: null
       },
+      tags: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        defaultValue: []
+      },
       views: {
         type: DataTypes.INTEGER,
         allowNull: false,
