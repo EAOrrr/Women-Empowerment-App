@@ -14,7 +14,7 @@ beforeEach(async () => {
   await Draft.destroy({ where: {} })
 })
 
-describe('UPLOAD API', () => {
+describe.only('UPLOAD API', () => {
   let adminToken
   let adminUserId
   beforeEach(async () => {
@@ -28,7 +28,7 @@ describe('UPLOAD API', () => {
     adminToken = await helper.getToken(api, adminUser)
   })
 
-  describe('UPLOAD IMAGES API', () => {
+  describe.only('UPLOAD IMAGES API', () => {
     test('upload image with valid token', async () => {
       const imagesAtStart = await helper.imagesInDb()
       const res = await api
@@ -41,6 +41,20 @@ describe('UPLOAD API', () => {
       const imagesAtEnd = await helper.imagesInDb()
       assert.strictEqual(res.body.message, 'Image uploaded successfully')
       assert.strictEqual(imagesAtEnd.length, imagesAtStart.length + 1)
+    })
+
+    test.only('invalid type cannot be uploaded', async () => {
+      const imagesAtStart = await helper.imagesInDb()
+      const response = await api
+        .post('/api/upload/images')
+        .set('Authorization', `Bearer ${adminToken}`)
+        .set('Content-Type', 'image/jpeg')
+        .attach('image', 'tests/assets/test.txt')
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+      assert.strictEqual(response.body.error, 'No file uploaded or invalid file type')
+      const imagesAtEnd = await helper.imagesInDb()
+      assert.strictEqual(imagesAtEnd.length, imagesAtStart.length)
     })
 
   })

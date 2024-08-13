@@ -3,20 +3,38 @@ const { Image, Draft } = require('../models')
 const router = require('express').Router()
 const { userExtractor, authorize } = require('../utils/middleware')
 const multer = require('multer')
+const path = require('path')
 
-const upload = multer({ storage: multer.memoryStorage() })
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  fileFilter: function(req, file, cb) {
+    checkFileType(req, file, cb)
+  }
+})
 
+function checkFileType(req, file, cb) {
+  const filetypes = /jpeg|jpg|png|gif/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (mimetype && extname) {
+    return cb(null, true)
+  } else {
+    return cb(null, false)
+  }
+}
+
+// TODO: file validation
 router.post('/images',
   userExtractor,
   authorize(['admin']),
   upload.single('image'),
   async(req, res) => {
-
     const file = req.file
     if (!file) {
-      return res.status(400).json({ error: 'No file uploaded' })
+      return res.status(400).json({ error: 'No file uploaded or invalid file type' })
     }
-    // console.log(file)
+  // console.log(file)
     const image = await Image.create({
       data: file.buffer,
       mimeType: file.mimetype
