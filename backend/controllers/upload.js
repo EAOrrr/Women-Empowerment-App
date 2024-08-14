@@ -25,7 +25,6 @@ function checkFileType(req, file, cb) {
   }
 }
 
-// TODO: file validation
 router.post('/images',
   userExtractor,
   authorize(['admin']),

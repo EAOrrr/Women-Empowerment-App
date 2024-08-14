@@ -1,17 +1,23 @@
 const { User, Post, Comment, Notification } = require('../models')
-const { Sequelize } = require('sequelize')
+const { Sequelize, Op } = require('sequelize')
 
 const router = require('express').Router()
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
+const { buildOrderClause, generateCursor, buildPaginationCondition } = require('../utils/helper')
 
-// TODO numberofComments and Query
+// TODO Query
 router.get('/', async (req, res) => {
+  const { keyword, status, limit, ordering, cursor } = req.query
+  const where = buildWhereClause({ status, keyword, cursor })
+  const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views', 'updatedAt'])
+
+  if (!order) {
+    return res.status(400).json({ error: 'Invalid ordering field' })
+  }
+
   const posts = await Post.findAll({
     attributes: {
       exclude: ['userId'],
-      include: [
-        [Sequelize.fn('COUNT', Sequelize.col('comments.id')), 'numberOfComments']
-      ]
     },
 
     include: [
@@ -20,15 +26,46 @@ router.get('/', async (req, res) => {
         as: 'poster',
         attributes: ['username']
       },
-      {
-        model: Comment,
-        attributes: [],
-      }
+      // {
+      //   model: Comment,
+      //   attributes: [],
+      // }
     ],
-    group: ['Post.id', 'poster.id'] // 按照 Post 的 ID 分组
+    where,
+    order,
+    limit: limit || 10,
   })
-  res.json(posts)
+
+  if (posts.length > 0) {
+    const cursor = generateCursor(posts[posts.length - 1].id, ordering)
+    res.json({ posts, cursor })
+  }
+  res.json({ posts })
+  // res.json(posts)
 })
+
+function buildWhereClause({ status, keyword, cursor }) {
+  const where = {}
+
+  if (status) {
+    where.status = status
+  }
+
+  if (keyword) {
+    where[Op.or] = [
+      { title: { [Op.iLike]: `%${keyword}%` } },
+      { content: { [Op.iLike]: `%${keyword}%` } },
+    ]
+  }
+
+  if (cursor) {
+    const paginationCondition = buildPaginationCondition(cursor)
+    if (paginationCondition) {
+      where[Op.and] = paginationCondition
+    }
+  }
+  return where
+}
 
 router.post('/',
   userExtractor,
@@ -82,7 +119,8 @@ router.get('/:id', async (req, res) => {
       include: {
         model: User,
         as: 'commenter',
-        attributes: ['username']
+        attributes: ['username'],
+        order: [['createdAt', 'DESC']]
       }
     })
   }
@@ -98,6 +136,7 @@ router.get('/:id/comments', async (req, res) => {
     attributes: {
       exclude: ['commentableId', 'commentableType', 'userId']
     },
+    order: [['createdAt', 'DESC']],
     include: {
       model: User,
       as: 'commenter',
@@ -147,7 +186,6 @@ router.put('/:id',
     res.json(post)
   })
 
-// TODO POST /api/posts/:id/comments
 router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async (req, res) => {
   const post = await Post.findByPk(req.params.id)
 
@@ -187,7 +225,7 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
     })
     await Promise.all(admins.map(admin =>
       Notification.create({
-        message: `用户 ${req.user.username} 回应了留言 ${post.title}`,
+        message: `用户 ${req.user.username} 回应了留言 ${post.title}，请查看`,
         userId: admin.id,
         jumpTo: `/posts/${post.id}/comments/${comment.id}`,
         type: 'comment_reply'
@@ -196,7 +234,7 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
   } else {
     // 管理员回复信息，给发帖者发送信息
     await Notification.create({
-      message: `管理员回应了您的留言 ${post.title}`,
+      message: `管理员回应了您的留言 ${post.title}，请查看`,
       userId: post.userId,
       jumpTo: `/posts/${post.id}/comments/${comment.id}`,
       type: 'comment_reply'
@@ -205,7 +243,6 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
   res.status(201).json(commentToReturn)
 })
 
-// TODO PUT /api/posts/:id/comments
 router.put('/:id/comments/:commentId', checkFields(['likes']), async (req, res) => {
   const { likes } = req.body
   console.log('herre')

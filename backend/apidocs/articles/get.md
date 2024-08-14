@@ -21,21 +21,26 @@
 **Content** : 
 
 ```json
-[ // 文章列表
-    {
-      "id": "文章id，格式为uuid",
-      "title": "文章标题",
-      "abstract": "文章摘要",
-      "author" : "文章作者", // 可能为null
-      "cover": "文章封面图片", // 可能为空，建议前端设置默认图片应对null情况，字符串格式，为封面对应的链接
-      "type": "activity", // 文章类型，分为"activity"（活动）、"policy"（政策）"law"（法律）
-      "likes": 23, // 关注数
-      "views": 123, // 浏览数
-      "tags": ["标签1：", "标签2"]
-      "createdAt": "2024-07-30T04:31:55.614Z", 
-      "updatedAt": "2024-07-30T04:31:55.614Z", 
-    }
-]
+{
+  "articles":
+  [ // 文章列表
+      {
+        "id": "文章id，格式为uuid",
+        "title": "文章标题",
+        "abstract": "文章摘要",
+        "author" : "文章作者", // 可能为null
+        "cover": "文章封面图片", // 可能为空，建议前端设置默认图片应对null情况，字符串格式，为封面对应的链接
+        "type": "activity", // 文章类型，分为"activity"（活动）、"policy"（政策）"law"（法律）
+        "likes": 23, // 关注数
+        "views": 123, // 浏览数
+        "tags": ["标签1：", "标签2"],
+        "createdAt": "2024-07-30T04:31:55.614Z", 
+        "updatedAt": "2024-07-30T04:31:55.614Z", 
+      }
+  ],
+  "cursor": "下次获取开始的光标"
+}
+
 ```
 
 ## Notes 
@@ -46,18 +51,21 @@ The `/api/articles/` endpoint supports the following query parameters:
 | Parameter | Type   | Description                                      |
 |-----------|--------|--------------------------------------------------|
 | type      | string |按类型筛选文章。可能的值: `activity`, `policy`, `law` |
-|keyWord     | string | 根据关键词在筛选标题或内容含该关键词的文章                   |
-| limit     | number | 限制返回的文章数量       |
-| offset    | number | 偏移返回文章的起始点 |
-|ordering   | string | 根据给定的功能排序文章，可能的值:`createdTime`, `likes`, `views`
+|keyword     | string | 根据关键词在筛选标题或内容含该关键词的文章                   |
+| limit     | number | 限制返回的文章数量, 默认为10       |
+|ordering   | string | 根据给定的功能排序文章，可能的值:`createdAt`, `likes`, `views`，默认为`createdAt`
 | tags       | string | 根据给定的标签返回含有对应标签的文章，多个标签用逗号分隔 |
+| cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
+
 
 Example usage:
 
 ```
-/api/articles/?type=activity&limit=10&offset=0&tags=tag1,tag2,tag3
+/api/articles/?type=activity&limit=10&tags=tag1,tag2,tag3&cursor=YWJjZCxlZmdoLGhlbGxvIHdvcmxk
 ```
 
-This query will retrieve the first 10 articles of type "activity"  and tagged with tag1, tag2, tag3
+上述查询会返回从`cursor`之后的前10篇类型为`activity`并且标签同时含有`tag1`, `tag2`, `tag3`的文章
+
+> 注意，如果要重新搜索显示，请不要附上`cursor`查询
 
 

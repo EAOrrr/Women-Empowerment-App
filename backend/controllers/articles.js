@@ -1,16 +1,70 @@
+const { Op } = require('sequelize')
 const { Article } = require('../models')
 
 const router = require('express').Router()
 const { userExtractor, authorize } = require('../utils/middleware')
+const { buildOrderClause, buildPaginationCondition, generateCursor } = require('../utils/helper')
 
 // TODO: implement query params
-router.get('/', async(req, res) => {
+router.get('/', async (req, res) => {
+  const { type, keyword, limit, ordering, tags, cursor } = req.query
+
+  const where = buildWhereClause({ type, keyword, tags, cursor, ordering })
+  const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views'])
+
+  if (!order) {
+    return res.status(400).json({ error: 'Invalid ordering field' })
+  }
 
   const articles = await Article.findAll({
-    attributes: { exclude: ['content'] }
+    attributes: { exclude: ['content'] },
+    where,
+    order,
+    limit: limit || 10,
   })
-  res.json(articles)
+
+  if (articles.length > 0) {
+    const cursor = generateCursor(articles[articles.length - 1], ordering)
+    res.json({ articles, cursor })
+  } else {
+    res.json({ articles })
+  }
 })
+
+function buildWhereClause({ type, keyword, tags, cursor }) {
+  const where = {}
+
+  if (type) where.type = type
+  if (keyword) {
+    where[Op.and] = [{
+      [Op.or]: [
+        { title: { [Op.iLike]: `%${keyword}%` } },
+        { content: { [Op.iLike]: `%${keyword}%` } },
+      ]
+    }]
+  }
+
+  if (tags) {
+    const tagArray = tags.split(',')
+    where.tags = { [Op.contains]: tagArray }
+  }
+
+  if (cursor) {
+    const paginationCondition = buildPaginationCondition(cursor)
+    if (paginationCondition) {
+      if (where[Op.and]) {
+        where[Op.and].push(paginationCondition)
+      } else {
+        where[Op.and] = [paginationCondition]
+      }
+    }
+  }
+
+  return where
+}
+
+
+
 
 router.post('/', userExtractor, authorize(['admin']), async(req, res) => {
 
@@ -36,7 +90,7 @@ router.put('/:id', userExtractor, async(req, res) => {
     return res.status(404).end()
   }
   const { views, likes, title, content, type, follow } = req.body
-  if (req.user.role !== 'admin') {
+  if (!req.user || req.user.role !== 'admin') {
     if (title || content || type) {
       return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
     }

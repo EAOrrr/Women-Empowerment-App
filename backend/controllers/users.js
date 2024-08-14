@@ -67,8 +67,6 @@ router.get('/me', userExtractor, authorize(['user', 'admin']), async (req, res) 
 
 })
 
-
-// TODO test
 router.get('/', userExtractor, authorize(['admin']), async (req, res) => {
   const user = await User.findAll({
     attributes: { exclude: ['password', 'role', 'openid'] }

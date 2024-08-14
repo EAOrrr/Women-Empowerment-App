@@ -3,7 +3,6 @@ const router = require('express').Router()
 const { Notification, User } = require('../models')
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
 
-// TODO: 获取用户的通知信息
 router.get('/', userExtractor, authorize(['admin', 'user']), async (req, res) => {
   // console.log('req.user', req.user)
   const notifications = await Notification.findAll({
@@ -17,7 +16,6 @@ router.get('/', userExtractor, authorize(['admin', 'user']), async (req, res) =>
   res.json(notifications)
 })
 
-// TODO: 管理员发送全局通知信息
 router.post('/',
   userExtractor,
   authorize(['admin']),

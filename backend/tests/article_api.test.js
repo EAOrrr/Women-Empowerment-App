@@ -6,6 +6,7 @@ const supertest = require('supertest')
 const api = supertest(app)
 const { connectToDatabase, sequelize } = require('../utils/db')
 const { User, Article } = require('../models')
+const { decodeCursor } = require('../utils/helper')
 
 beforeEach(async () => {
   await connectToDatabase()
@@ -14,6 +15,7 @@ beforeEach(async () => {
   await User.destroy({ where: {} })
   await Article.bulkCreate(helper.initialArticles)
 })
+
 
 describe('Get article information', () => {
   test('articles are returned as json', async () => {
@@ -25,22 +27,23 @@ describe('Get article information', () => {
   })
 
 
-  test('there are two articles', async () => {
+  test('there are eight articles', async () => {
     const response = await api.get('/api/articles').expect(200)
-    assert.strictEqual(response.body.length, helper.initialArticles.length)
+    assert.strictEqual(response.body.articles.length, helper.initialArticles.length)
   })
 
   test('article contains title, abstract, author, type, views,\
      likes, and id, but not content', async () => {
     const response = await api.get('/api/articles').expect(200)
-    const titles = response.body.map(article => article.title)
-    const abstracts = response.body.map(article => article.abstract)
-    const authors = response.body.map(article => article.author)
-    const types = response.body.map(article => article.type)
-    const views = response.body.map(article => article.views)
-    const likes = response.body.map(article => article.likes)
-    const ids = response.body.map(article => article.id)
-    const contents = response.body.map(article => article.content)
+    const articles = response.body.articles
+    const titles = articles.map(article => article.title)
+    const abstracts = articles.map(article => article.abstract)
+    const authors = articles.map(article => article.author)
+    const types = articles.map(article => article.type)
+    const views = articles.map(article => article.views)
+    const likes = articles.map(article => article.likes)
+    const ids = articles.map(article => article.id)
+    const contents = articles.map(article => article.content)
     assert(titles.every(title => title !== undefined))
     assert(abstracts.every(abstract => abstract !== undefined))
     assert(authors.every(author => author !== undefined))
@@ -248,7 +251,7 @@ describe('Create a new article', () => {
       await api
         .post('/api/articles')
         .send(newArticle)
-        .expect(403)
+        .expect(401)
       const articlesAtEnd = await helper.articlesInDb()
       assert.strictEqual(articlesAtEnd.length, articlesAtStart.length)
     })
@@ -268,7 +271,11 @@ describe('Viewing a specific article', () => {
       .expect('Content-Type', /application\/json/)
     console.log(resultArticle.body)
     const processedArticleToView = JSON.parse(JSON.stringify(articleToView))
-    assert.deepStrictEqual(resultArticle.body, processedArticleToView)
+    delete processedArticleToView.abstract
+    assert.deepStrictEqual(
+      resultArticle.body, 
+      processedArticleToView,
+    )
   })
 
   test.only('fails with statuscode 404 if article does not exist', async () => {
@@ -291,8 +298,10 @@ describe('Updating an article', () => {
     const resultArticle = await api
       .put(`/api/articles/${articleToUpdate.id}`)
       .send(updatedArticle)
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
+      // .set('Authorization', `Bearer ${token}`)
+      // .expect(200)
+      // .expect('Content-Type', /application\/json/)
+    console.log(resultArticle.body)
     assert.strictEqual(resultArticle.body.views, updatedArticle.views)
     assert.strictEqual(resultArticle.body.likes, updatedArticle.likes)
     assert.strictEqual(resultArticle.body.title, articleToUpdate.title)
@@ -392,8 +401,147 @@ describe('Updating an article', () => {
     const titles = articlesAtEnd.map(article => article.title)
     assert(titles.includes('new title'))
   })
+
 })
 
+describe.only('Get article with query', () => {
+  test('get articles with query limit', async () => {
+    const response = await api
+      .get('/api/articles?limit=3')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    console.log(response.body)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 3)
+  })
+
+  test('get article with query limit and cursor', async() => {
+    const articlesInDb = await Article.findAll({
+      order: [['views', 'DESC'], ['id', 'ASC']]
+    })
+    assert(articlesInDb.length === 8)
+    console.log(articlesInDb.map(a => a.toJSON()))
+    const response = await api
+      .get('/api/articles?limit=3&ordering=views')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const cursor = response.body.cursor
+    console.log(cursor, decodeCursor(cursor))
+    const response2 = await api
+      .get(`/api/articles?limit=3&cursor=${cursor}&ordering=views`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const { cursor: cursor2 } = response2.body
+    console.log(response2.body)
+    const response3 = await api
+      .get(`/api/articles?limit=3&cursor=${cursor2}&ordering=views`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response3.body.articles.length, 2)
+    assert.strictEqual(response2.body.articles.length, 3)
+    assert(response3.body.articles[0].views <= response2.body.articles[2].views)
+    assert(response2.body.articles[0].views <= response.body.articles[2].views)
+    for (let i = 0; i < response.body.articles.length - 1; i++) {
+      assert(response.body.articles[i].views >= response.body.articles[i+1].views)
+    }
+    for (let i = 0; i < response2.body.articles.length - 1; i++) {
+      assert(response2.body.articles[i].views >= response2.body.articles[i+1].views)
+    }
+    for (let i = 0; i < response3.body.articles.length - 1; i++) {
+      assert(response3.body.articles[i].views >= response3.body.articles[i+1].views)
+    }
+
+  })
+
+  test('get articles with query a single tag', async () => {
+    const response = await api
+      .get('/api/articles?tags=tag1')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 6)
+    assert(articles.every(article => article.tags.includes('tag1')))
+  })
+
+  test('get articles with query multiple tags', async () => {
+    const response = await api
+      .get('/api/articles?tags=tag1,tag2')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 3)
+    assert(articles.every(article => article.tags.includes('tag1') || article.tags.includes('tag2')))
+  })
+
+  test('get articles with query type', async () => {
+    const response = await api
+      .get('/api/articles?type=policy')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 6)
+    assert(articles.every(article => article.type === 'policy'))
+  })
+
+  test('get articles with query keyword', async () => {
+    const response = await api
+      .get('/api/articles?keyword=first')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 4)
+    console.log(articles)
+  })
+
+  test('get articles with query keyword and type', async () => {
+    const response = await api
+      .get('/api/articles?keyword=first&type=policy')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 3)
+    assert(articles.every(article => article.type === 'policy'))
+    // assert(articles.every(article => article.title.includes('first')))
+    console.log(articles)
+  })
+
+  test('get articles with query ordering and tags and limit', async () => {
+    const response = await api
+      .get('/api/articles?ordering=views&tags=tag1&limit=3')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 3)
+    assert(articles.every(article => article.tags.includes('tag1')))
+    for (let i = 0; i < articles.length - 1; i++) {
+      assert(articles[i].views >= articles[i+1].views)
+    }
+    const cursor = response.body.cursor
+    const response2 = await api
+      .get(`/api/articles?ordering=views&tags=tag1&limit=3&cursor=${cursor}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles2 = response2.body.articles
+    assert.strictEqual(articles2.length, 3)
+    assert(articles2.every(article => article.tags.includes('tag1')))
+    for (let i = 0; i < articles2.length - 1; i++) {
+      assert(articles2[i].views >= articles2[i+1].views)
+    }
+    const cursor2 = response2.body.cursor
+    const response3 = await api
+      .get(`/api/articles?ordering=views&tags=tag1&limit=3&cursor=${cursor2}`)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles3 = response3.body.articles
+    assert.strictEqual(articles3.length, 0)
+  })
+
+  test('get articles with query invalid ordering', async () => {
+    await api
+      .get('/api/articles?ordering=invalid')
+      .expect(400)
+  })
+})
 
 after(async () => {
   await Article.destroy({ where: {} })

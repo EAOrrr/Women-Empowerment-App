@@ -3,7 +3,7 @@ const { Article, User, Post, Comment, Notification, Image, Draft } = require('..
 const initialArticles = [
   {
     'id': '61c95099-031e-4f60-adcf-08deea328620',
-    'views': 0,
+    'views': 8,
     'likes': 0,
     'title': 'first article',
     'content': 'content of first article',
@@ -16,15 +16,66 @@ const initialArticles = [
   {
     'id': 'ab233b3f-4516-4bf3-8fdd-fedec3c61ce9',
     'author': null,
-    'views': 0,
+    'views': 8,
     'likes': 0,
     'title': 'second article',
     'content': 'content of second article',
     'abstract': 'content of second article',
     'type': 'law',
     'updatedAt': '2024-08-06T03:13:51.259Z',
-    'createdAt': '2024-08-06T03:13:51.259Z'
-  }
+    'createdAt': '2024-08-06T03:13:51.259Z',
+    'tags': ['tag1', 'tag2']
+  }, {
+    'title': 'third article first',
+    'content': 'content of third article',
+    'abstract': 'content of third article',
+    'type': 'policy',
+    'tags': ['tag1', 'tag2'],
+    'views': 7,
+  },
+  {
+    'title': 'fourth article',
+    'content': 'content of fourth article',
+    'abstract': 'content of fourth article',
+    'type': 'policy',
+    'tags': ['tag1', 'tag2'],
+    'views': 6,
+  },
+  {
+    'title': 'fifth article',
+    'content': 'content of fifth article',
+    'abstract': 'content of fifth article',
+    'type': 'policy',
+    'tags': ['tag1'],
+    'views': 5,
+    'author': 'first author',
+  },
+  {
+    'title': 'sixth article',
+    'content': 'content of sixth article first',
+    'abstract': 'content of sixth article',
+    'type': 'policy',
+    'tags': ['tag1'],
+    'author': 'first author',
+    'views': 4,
+  },
+  {
+    'title': 'seventh article',
+    'content': 'content of seventh article',
+    'abstract': 'content of seventh article',
+    'type': 'policy',
+    'tags': ['tag1'],
+    'views': 3,
+  },
+  {
+    'title': 'eighth article',
+    'content': 'content of eighth article first',
+    'abstract': 'content of eighth article',
+    'type': 'policy',
+    'tags': ['tag2'],
+    'views': 2,
+    'author': 'first author',
+  },
 ]
 
 const initialPosts = [

@@ -34,7 +34,7 @@
       },
       "createdAt": "2024-07-30T04:31:55.614Z", 
       "updatedAt": "2024-07-30T04:31:55.614Z", 
-      "numberOfComments":"3" // 回复数，字符串形式返回
+      // "numberOfComments":"3" // 回复数，字符串形式返回,正在施工中
     }
 ]
 ```
@@ -46,8 +46,10 @@ The `/api/articles/` endpoint supports the following query parameters:
 
 | Parameter | Type   | Description                                      |
 |-----------|--------|--------------------------------------------------|
-| type      | string |按类型筛选留言。可能的值: `activity`, `policy`, `law` |
 |keyWord     | string | 根据关键词在筛选标题或内容含该关键词的留言                   |
 | limit     | number | 限制返回的文章数量       |
-| offset    | number | 偏移返回文章的起始点 |
+|status| string| 可选 'done' 'in progress'
 |ordering   | string | 根据给定的功能排序留言，可能的值:`createdTime`, `likes`, `views`, "updatedTime"
+| cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
+
+query用法同article，详见[article GET API](../articles/get.md)

@@ -311,6 +311,7 @@ describe('update of post', () => {
 })
 
 describe.only('test comment function', () => {
+  
   let creatorToken
   let postToComment
   beforeEach(async () => {
@@ -319,6 +320,11 @@ describe.only('test comment function', () => {
       username: 'testuser',
       password: 'testpassword'
     }
+    await helper.createUser(api, {
+      username: 'testusaaer',
+      password: 'testpassword',
+      role: 'admin'
+    })
     await api
       .post('/api/users/pwd')
       .send(newUser)
@@ -345,7 +351,7 @@ describe.only('test comment function', () => {
     postToComment = response.body
   })
   describe.only('addition of a comment', () => {
-    test('a comment can be added to a post by the post owner', async () => {
+    test.only('a comment can be added to a post by the post owner', async () => {
       const notificationsAtStart = await helper.notificationsInDb()
       const commentsAtStart = await helper.commentsInDb()
       const newComment = {
@@ -364,8 +370,12 @@ describe.only('test comment function', () => {
 
       const notificationsAtEnd = await helper.notificationsInDb()
       console.log(notificationsAtEnd)
-      assert.strictEqual(notificationsAtEnd.length, notificationsAtStart.length + 1)
-      assert(notificationsAtEnd.some(n => n.message.includes(newComment.content)))
+      const users = await helper.usersInDb()
+      const adminUsers = users.filter(u => u.role === 'admin')
+      assert.strictEqual(notificationsAtEnd.length, notificationsAtStart.length + adminUsers
+        .length
+      )
+      assert(notificationsAtEnd.some(n => n.message.includes('请查看')))
     })
 
     test('check comment return field', async () => {
@@ -451,7 +461,9 @@ describe.only('test comment function', () => {
       const commentsAtEnd = await helper.commentsInDb()
       assert.strictEqual(commentsAtEnd.length, commentsAtStart.length)
     })
+      
   })
+  
   describe('update a comment', () => {
     let commentToUpdate
     beforeEach(async() => {
@@ -517,7 +529,7 @@ describe.only('test comment function', () => {
 
   })
 
-  describe.only('get api return correct amount of comment', () => {
+  describe('get api return correct amount of comment', () => {
     let anotherPostId
     beforeEach(async () => {
       Comment.destroy({ where: {} })

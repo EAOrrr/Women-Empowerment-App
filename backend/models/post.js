@@ -43,7 +43,7 @@ Model.init({
       model: 'Users',
       key: 'id',
     }
-  }
+  },
 }, {
   sequelize,
   underscored: true,
