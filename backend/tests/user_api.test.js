@@ -91,13 +91,13 @@ describe('update a user', () => {
       .send(newUser)
       .expect(201)
       .expect('Content-Type', /application\/json/)
-    
+
     const result = await api
       .post('/api/login/pwd')
       .send(newUser)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    
+
     const headers = { 'Authorization': `Bearer ${result.body.token}` }
     const updatedUser = {
       password: 'newpassword',
@@ -192,7 +192,7 @@ describe('update a user', () => {
       .send(newUser)
       .expect(200)
       .expect('Content-Type', /application\/json/)
-    
+
     const headers = { 'Authorization': `Bearer ${result.body.token}` }
     const updatedUser = {
       role: 'admin'

@@ -49,7 +49,7 @@ describe('Get article information', () => {
     assert(likes.every(like => like !== undefined))
     assert(ids.every(id => id !== undefined))
     assert(contents.every(content => content === undefined))
-})
+  })
 
 
 })

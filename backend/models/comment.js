@@ -1,11 +1,11 @@
-const { Model, DataTypes, UUIDV4 } = require("sequelize");
+const { Model, DataTypes, UUIDV4 } = require('sequelize')
 const { sequelize } = require('../utils/db')
 
 const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`
 
 class Comment extends Model{
   getCommentable(options) {
-    if (!this.commentableType) return Promise.resolve(null);
+    if (!this.commentableType) return Promise.resolve(null)
     const mixinMethodName = `get${uppercaseFirst(this.commentableType)}`
     return this[mixinMethodName](options)
   }

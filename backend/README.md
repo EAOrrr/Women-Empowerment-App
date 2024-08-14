@@ -11,7 +11,7 @@
 服务器运行端口：暂未购置服务器
 
 **HTTP状态码**将明确指示请求结果。
-- **`401 UNAUTHROIZED`** 表明令牌`token`错误，请检查并重新发送或重新登录。
+- **`401 UNAUTHROIZED`** 表明令牌`token`不存在或错误，请检查并重新发送或重新登录。
 - **`404 NOT FOUND`** 表示目标资源不存在，请检查发送地址是否正确。
 - **`500 INTERNAL SERVER ERROR`** 表明服务器内部发生错误，请联系我协助解决。
 - **其余状态码** 请参考对应接口文档获取更多信息
@@ -52,12 +52,12 @@
 * [修改特定id的文章](./apidocs/article/id/put.md): `PUT /api/articles/:id/`
 * [删除特定id的文章](./apidocs/article/id/delete.md): `DELETE /api/articles/:id/`
 > 以下端点与管理员发布文章有关
-* [上传图片](): `POST /api/upload/images`
-* [删除特定上传的图片](): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
-* [获取特定的图片](): `GET /imageUrl` （其中`imageUrl`为在POST中返回的链接）
-* [上传编辑中的文章草稿](): `POST /api/upload/draft`
-* [获取编辑中的文章草稿](): `GET /api/upload/draft`
-* [删除编辑中的文章草稿](): `DELETE /api/upload/draft`
+* [上传图片](./apidocs/upload/images/post.md): `POST /api/upload/images`
+* [删除特定上传的图片](./apidocs/imageUrl/delete.md): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
+* [获取特定的图片](./apidocs/imageUrl/get.md): `GET /imageUrl` （其中`imageUrl`为在POST中返回的链接）
+* [上传编辑中的文章草稿](./apidocs/upload/draft/post.md): `POST /api/upload/draft`
+* [获取编辑中的文章草稿](./apidocs/upload/draft/get.md): `GET /api/upload/draft`
+* [删除编辑中的文章草稿](./apidocs/upload/draft/delete.md): `DELETE /api/upload/draft`
 
 ### 与留言和建议`post`有关
 

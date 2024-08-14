@@ -1,5 +1,5 @@
 const { sequelize } = require('../utils/db')
-const { DataTypes, Model, UUIDV4 } = require("sequelize");
+const { DataTypes, Model, UUIDV4 } = require('sequelize')
 
 class Recruitment extends Model {}
 
@@ -34,7 +34,7 @@ Recruitment.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
-  street: {// 街道
+  street: { // 街道
     type: DataTypes.STRING,
     allowNull: false,
   },
@@ -47,7 +47,7 @@ Recruitment.init({
     allowNull: false,
   },
 }, {
-  sequelize, 
+  sequelize,
   underscored: true,
   modelName: 'recruitment'
 })

@@ -10,12 +10,8 @@
 **Permissions required** : 仅管理员可用
 
 **Data constraints** : 
-`message` 都不可为空
-```json
-{
-  "message": "全局message信息"
-}
-```
+- **Format**: 必须是 JPEG, PNG 或 GIF 格式
+- **Size**: 文件大小不得超过 5MB
 
 ## Success Responses
 

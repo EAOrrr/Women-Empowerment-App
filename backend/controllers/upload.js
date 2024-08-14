@@ -5,17 +5,18 @@ const { userExtractor, authorize } = require('../utils/middleware')
 const multer = require('multer')
 const path = require('path')
 
-const upload = multer({ 
+const upload = multer({
   storage: multer.memoryStorage(),
+  limits: { fileSize: 1024 * 1024 * 5 }, // 5MB
   fileFilter: function(req, file, cb) {
     checkFileType(req, file, cb)
   }
 })
 
 function checkFileType(req, file, cb) {
-  const filetypes = /jpeg|jpg|png|gif/;
-  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  const filetypes = /jpeg|jpg|png|gif/
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
+  const mimetype = filetypes.test(file.mimetype)
 
   if (mimetype && extname) {
     return cb(null, true)
@@ -34,14 +35,14 @@ router.post('/images',
     if (!file) {
       return res.status(400).json({ error: 'No file uploaded or invalid file type' })
     }
-  // console.log(file)
+    // console.log(file)
     const image = await Image.create({
       data: file.buffer,
       mimeType: file.mimetype
     })
-    res.status(201).json({ 
-      message: 'Image uploaded successfully', 
-      imageId: image.id, 
+    res.status(201).json({
+      message: 'Image uploaded successfully',
+      imageId: image.id,
       imageUrl: `/api/upload/images/${image.id}` })
     // res.status(201).end()
   })
@@ -81,7 +82,7 @@ router.get('/draft',
       ...draft.toJSON(),
       userId: undefined
     })
-})
+  })
 
 router.post('/draft',
   userExtractor,

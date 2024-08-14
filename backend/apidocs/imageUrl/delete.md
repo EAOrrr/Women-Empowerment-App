@@ -1,14 +1,14 @@
-# 删除特定id消息
+# 删除特定id图片
 
-删除特定id消息
+删除特定id图片
 
-**URL** : `/api/notifications/:id`
+**URL** : `/imageUrl`
 
 **Method** : `DELETE`
 
 **Auth required** : YES
 
-**Permissions required** : 拥有消息的用户
+**Permissions required** : 仅管理员
 
 **Data constraints** : `{}`
 
@@ -28,13 +28,14 @@
 **Content** : 
 ```json
 {
-  "error": "You are not allowed to delete this notification"
+  "error": "The data is modified without permission"
 }
 ```
 ### Or
 
-**Condition** :  找不到对应`id`的写欧系·
+**Condition** :  找不到对应链接对应的图片·
 
 **Code** : `404 NOT FOUND`
 
 **Content** : `{}`
+

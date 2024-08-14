@@ -100,7 +100,7 @@ User.hasOne(Draft, {
   onDelete: 'cascade',
 })
 
-Draft.belongsTo(User, {as: 'author', foreignKey: 'userId'})
+Draft.belongsTo(User, { as: 'author', foreignKey: 'userId' })
 
 
 module.exports = {

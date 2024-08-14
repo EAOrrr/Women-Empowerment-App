@@ -59,11 +59,11 @@ describe('Notification API', () => {
       helper.initialNotifications.concat({
         message: 'forth notification'
       })
-      .map(n => ({
-        ...n,
-        type: 'global',
-        userId,
-       }))
+        .map(n => ({
+          ...n,
+          type: 'global',
+          userId,
+        }))
     )
 
     const notifications = await helper.notificationsInDb()

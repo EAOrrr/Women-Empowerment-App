@@ -150,7 +150,7 @@ describe.only('UPLOAD API', () => {
       assert.deepStrictEqual(adminDraft.content, newDraft)
 
     })
-    
+
     test('get draft with valid token', async () => {
       await api
         .post('/api/upload/draft')
@@ -166,7 +166,7 @@ describe.only('UPLOAD API', () => {
       // console.log(response.body)
       assert.deepStrictEqual(response.body.content, draft)
     })
-      
+
     test('delete draft with valid token', async () => {
       await api
         .post('/api/upload/draft')

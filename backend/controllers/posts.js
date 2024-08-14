@@ -46,8 +46,8 @@ router.post('/',
         role: 'admin'
       }
     })
-  
-    await Promise.all(admins.map(admin => 
+
+    await Promise.all(admins.map(admin =>
       Notification.create({
         message: `用户 ${req.user.username} 发表了新帖子 ${post.title}`,
         userId: admin.id,
@@ -104,7 +104,7 @@ router.get('/:id/comments', async (req, res) => {
       attributes: ['username']
     }
   })
-  
+
   res.json(comments)
 })
 

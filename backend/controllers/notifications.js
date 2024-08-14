@@ -37,7 +37,7 @@ router.post('/',
   })
 
 router.put('/:id',
-   userExtractor,
+  userExtractor,
   authorize(['admin', 'user']),
   checkFields(['read']),
   async (req, res) => {
