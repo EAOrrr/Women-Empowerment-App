@@ -51,5 +51,12 @@ The `/api/articles/` endpoint supports the following query parameters:
 |status| string| 可选 'done' 'in progress'
 |ordering   | string | 根据给定的功能排序留言，可能的值:`createdTime`, `likes`, `views`, "updatedTime"
 | cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
+| offset  | number| 用于分页的偏移量，从 `offset+1`篇文章后返回，默认为0 |
 
 query用法同article，详见[article GET API](../articles/get.md)
+
+> 注意，如果要重新搜索显示，请不要附上`cursor`查询
+
+> 注意： `offset`和`cursor`不能同时是哟个
+
+

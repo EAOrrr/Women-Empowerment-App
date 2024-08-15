@@ -21,6 +21,7 @@
 开放端点不需要进行用户认证
 
 * [通过微信登录](./apidocs/login/login-wechat.md) : `POST /api/login/wechat/`
+* [用户通过刷新令牌获取新的访问令牌和刷新令牌](./apidocs/login/refresh.md) : `POST /api/login/refresh`
 > 此接口仅供调试使用<br>
 > *new*: 管理员登录可用
 > * [通过密码登录](./apidocs/login/login-pwd.md) : `POST /api/login/pwd/` 

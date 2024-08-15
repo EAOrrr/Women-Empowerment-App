@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 require('express-async-errors')
 const app = express()
 
@@ -10,6 +11,8 @@ const postsRouter = require('./controllers/posts')
 const notificationRouter = require('./controllers/notifications')
 const uploadRouter = require('./controllers/upload')
 
+
+app.use(cors())
 app.use(express.json())
 app.use(middleware.requestLogger)
 

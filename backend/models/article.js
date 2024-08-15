@@ -52,6 +52,10 @@ Article.init({
     type: DataTypes.ARRAY(DataTypes.STRING),
     defaultValue: []
   },
+  isAnnouncement: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
 }, {
   sequelize,
   underscored: true,

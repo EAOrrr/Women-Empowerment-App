@@ -1,6 +1,6 @@
 # 用户通过密码登录
 
-为已注册用户分配一个令牌`token`
+为已注册用户分配一个访问令牌`token`和一个刷新令牌`refrestToken`
 
 **URL** : `/api/login/pwd`
 
@@ -32,7 +32,10 @@
 
 ```json
 {
-    "token": "93144b288eb1fdccbe46d6fc0f241a51766ecd3d"
+    "token": "93144b288eb1fdccbe46d6fc0f241a51766ecd3d",
+    "refreshToken": "刷新令牌",
+    "username": "用户名",
+    "avater": "用户头像"
 }
 ```
 

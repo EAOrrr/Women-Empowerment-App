@@ -56,6 +56,7 @@ The `/api/articles/` endpoint supports the following query parameters:
 |ordering   | string | 根据给定的功能排序文章，可能的值:`createdAt`, `likes`, `views`，默认为`createdAt`
 | tags       | string | 根据给定的标签返回含有对应标签的文章，多个标签用逗号分隔 |
 | cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
+| offset  | number| 用于分页的偏移量，从 `offset+1`篇文章后返回，默认为0 |
 
 
 Example usage:
@@ -66,6 +67,14 @@ Example usage:
 
 上述查询会返回从`cursor`之后的前10篇类型为`activity`并且标签同时含有`tag1`, `tag2`, `tag3`的文章
 
+```
+/api/articles/?type=activity&limit=10&tags=tag1,tag2,tag3&offset=23
+```
+
+上述查询会返回检索结果的第24篇开始的10篇（即24篇到33篇共10篇）类型为`activity`并且标签同时含有`tag1`, `tag2`, `tag3`的文章
+
 > 注意，如果要重新搜索显示，请不要附上`cursor`查询
+
+> 注意： `offset`和`cursor`不能同时是哟个
 
 

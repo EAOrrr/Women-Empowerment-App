@@ -541,6 +541,26 @@ describe.only('Get article with query', () => {
       .get('/api/articles?ordering=invalid')
       .expect(400)
   })
+
+  test('get article with limit and offset', async () => {
+    const response = await api
+      .get('/api/articles?limit=3&offset=4&ordering=views')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    assert.strictEqual(articles.length, 3)
+    for (let i = 0; i < articles.length - 1; i++) {
+      assert(articles[i].views >= articles[i+1].views)
+    }
+    console.log(articles)
+  })
+
+  test.only('cannot use both cursor and offset', async () => {
+    const res = await api
+      .get('/api/articles?limit=3&offset=4&cursor=123')
+      .expect(400)
+    assert.strictEqual(res.body.error, 'Cannot use both cursor and offset')
+  })
 })
 
 after(async () => {

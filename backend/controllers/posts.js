@@ -7,7 +7,10 @@ const { buildOrderClause, generateCursor, buildPaginationCondition } = require('
 
 // TODO Query
 router.get('/', async (req, res) => {
-  const { keyword, status, limit, ordering, cursor } = req.query
+  const { keyword, status, limit, ordering, cursor, offset } = req.query
+  if (offset && cursor) {
+    return res.status(400).json({ error: 'Cannot use both cursor and offset' })
+  }
   const where = buildWhereClause({ status, keyword, cursor })
   const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views', 'updatedAt'])
 
@@ -34,6 +37,7 @@ router.get('/', async (req, res) => {
     where,
     order,
     limit: limit || 10,
+    offset: (!cursor && offset) || 0
   })
 
   if (posts.length > 0) {

@@ -298,7 +298,7 @@ describe('get a user info', () => {
   })
 })
 
-describe.only('get all user info with admin', () => {
+describe('get all user info with admin', () => {
   beforeEach(async () => {
     const initialUsers = [
       {
@@ -322,7 +322,7 @@ describe.only('get all user info with admin', () => {
     ]
     await User.bulkCreate(initialUsers)
   })
-  test.only('get all user info with admin', async () => {
+  test('get all user info with admin', async () => {
     const usersInDb = await helper.usersInDb()
     console.log(usersInDb)
     const newUser = {
@@ -359,6 +359,40 @@ describe.only('get all user info with admin', () => {
     assert(users.every(user => user.role === undefined))
     assert(users.every(user => user.password === undefined))
     assert(users.every(user => user.id !== undefined))
+  })
+})
+
+describe.only('test refresh token', () => {
+  test.only('test refresh token', async () => {
+    const newUser = {
+      username: 'testuser',
+      password: 'abcpassowred'
+    }
+    await helper.createUser(api, newUser)
+    const result = await api
+      .post('/api/login/pwd')
+      .send(newUser)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const { token, refreshToken } = result.body
+    const response = await api
+      .post('/api/login/refresh')
+      .send({ refreshToken })
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    console.log(token)
+    console.log(response.body.token)
+    assert(response.body.token !== token)
+    assert(response.body.refreshToken !== refreshToken)
+    // test new token function
+    
+    const newToken = response.body.token
+    const headers = { 'Authorization': `Bearer ${newToken}` }
+    await api
+      .get('/api/users/me')
+      .set(headers)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
   })
 })
 

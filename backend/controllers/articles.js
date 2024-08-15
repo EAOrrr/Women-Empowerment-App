@@ -7,9 +7,12 @@ const { buildOrderClause, buildPaginationCondition, generateCursor } = require('
 
 // TODO: implement query params
 router.get('/', async (req, res) => {
-  const { type, keyword, limit, ordering, tags, cursor } = req.query
+  const { type, keyword, limit, ordering, tags, cursor, offset } = req.query
+  if (offset && cursor) {
+    return res.status(400).json({ error: 'Cannot use both cursor and offset' })
+  }
 
-  const where = buildWhereClause({ type, keyword, tags, cursor, ordering })
+  const where = buildWhereClause({ type, keyword, tags, cursor, ordering, offset })
   const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views'])
 
   if (!order) {
@@ -21,6 +24,7 @@ router.get('/', async (req, res) => {
     where,
     order,
     limit: limit || 10,
+    offset: (!cursor && offset) || 0
   })
 
   if (articles.length > 0) {
@@ -49,6 +53,7 @@ function buildWhereClause({ type, keyword, tags, cursor }) {
     where.tags = { [Op.contains]: tagArray }
   }
 
+
   if (cursor) {
     const paginationCondition = buildPaginationCondition(cursor)
     if (paginationCondition) {
@@ -59,7 +64,6 @@ function buildWhereClause({ type, keyword, tags, cursor }) {
       }
     }
   }
-
   return where
 }
 

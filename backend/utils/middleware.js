@@ -1,6 +1,7 @@
 const jwt = require('jsonwebtoken')
 const logger = require('./logger')
 const { User } = require('../models')
+const { ACCESS_TOKEN_SECRET } = require('./config')
 
 const requestLogger = (request, response, next) => {
   logger.info('Method:', request.method)
@@ -58,7 +59,7 @@ const userExtractor = async (req, res, next) => {
     return next()
   }
 
-  const decodedToken = jwt.verify(token, process.env.SECRET)
+  const decodedToken = jwt.verify(token, ACCESS_TOKEN_SECRET)
   if (!decodedToken.id) {
     return res.status(401).json({ error: 'token invalid' })
   }

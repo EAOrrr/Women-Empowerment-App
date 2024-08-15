@@ -43,6 +43,16 @@ function buildOrderClause(ordering, defaultOrdering, validOrderingFields) {
   }
 }
 
+function generateExpiration(baseExpiration) {
+  const adjustmentRange = 1 / 60 * baseExpiration;  // 10% 的范围
+  const randomAdjustment = Math.floor(Math.random() * (2 * adjustmentRange)) - adjustmentRange;
+
+  // 最终的有效期
+  const finalExpiration = baseExpiration + randomAdjustment;
+
+  return finalExpiration;
+}
+
 
 module.exports = {
   encodeCursor,
@@ -51,4 +61,5 @@ module.exports = {
   buildPaginationCondition,
   buildOrderClause,
   generateCursor,
+  generateExpiration
 }

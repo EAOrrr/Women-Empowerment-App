@@ -58,7 +58,12 @@ module.exports = {
       updated_at: {
         type: DataTypes.DATE,
         allowNull: false,
-      }
+      },
+      is_announcement: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
+
     })
   },
 
