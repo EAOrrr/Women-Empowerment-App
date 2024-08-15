@@ -46,11 +46,11 @@
 文章包含政策文件、法律文件、政府活动等
 以下每个端点都会处理或显示与用户有关的信息，发送请求时要求提供用户的令牌`token`（`get`方法除外）：
 
-* [显示所有文章](./apidocs/article/get.md) : `GET /api/articles/`
-* [发布一篇新的文章](./apidocs/article/post.md): `POST /api/articles/`
-* [显示特定id的文章](./apidocs/article/id/get.md) : `GET /api/articles/:id`
-* [修改特定id的文章](./apidocs/article/id/put.md): `PUT /api/articles/:id/`
-* [删除特定id的文章](./apidocs/article/id/delete.md): `DELETE /api/articles/:id/`
+* [显示所有文章](./apidocs/articles/get.md) : `GET /api/articles/`
+* [发布一篇新的文章](./apidocs/articles/post.md): `POST /api/articles/`
+* [显示特定id的文章](./apidocs/articles/id/get.md) : `GET /api/articles/:id`
+* [修改特定id的文章](./apidocs/articles/id/put.md): `PUT /api/articles/:id/`
+* [删除特定id的文章](./apidocs/articles/id/delete.md): `DELETE /api/articles/:id/`
 > 以下端点与管理员发布文章有关
 * [上传图片](./apidocs/upload/images/post.md): `POST /api/upload/images`
 * [删除特定上传的图片](./apidocs/imageUrl/delete.md): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
@@ -63,36 +63,36 @@
 
 以下每个端点都会处理与显示与用户有关的信息，发送请求时要求提供用户的令牌`token`（`get`方法除外）
 
-* [显示所有留言](./apidocs/post/get.md) : `GET /api/posts/`
-* [发布一篇新的留言](./apidocs/post/post.md): `POST /api/posts/`
-* [显示特定id的留言](./apidocs/post/postId/get.md) : `GET /api/posts/:id`
-* [修改特定id的留言](./apidocs/post/postId/put.md): `PUT /api/posts/:id/`
-* [删除特定id的留言](./apidocs/post/postId/delete.md): `DELETE /api/posts/:id/`
-* [显示特定id的留言](./apidocs/post/postId/comment/get.md) `GET /api/posts/:id/comments/`
-* [在特定id留言下发布评论](./apidocs/post/postId/comment/post.md): `POST /api/posts/:postId/comments/`
-* [修改特定postId下的特定commentId评论](./apidocs/post/postId/comment/put.md): `PUT /api/posts/:postId/commments/:commentId/`
+* [显示所有留言](./apidocs/posts/get.md) : `GET /api/posts/`
+* [发布一篇新的留言](./apidocs/posts/post.md): `POST /api/posts/`
+* [显示特定id的留言](./apidocs/posts/postId/get.md) : `GET /api/posts/:id`
+* [修改特定id的留言](./apidocs/posts/postId/put.md): `PUT /api/posts/:id/`
+* [删除特定id的留言](./apidocs/posts/postId/delete.md): `DELETE /api/posts/:id/`
+* [显示特定id的留言](./apidocs/posts/postId/comment/get.md) `GET /api/posts/:id/comments/`
+* [在特定id留言下发布评论](./apidocs/posts/postId/comment/post.md): `POST /api/posts/:postId/comments/`
+* [修改特定postId下的特定commentId评论](./apidocs/posts/postId/comment/put.md): `PUT /api/posts/:postId/commments/:commentId/`
 <!-- * [删除postId下的特定commentId评论](): `DELETE /api/posts/:postId/commments/:commentId/` -->
 
 ### 与招聘帖子`Recuitment`有关
-> 施工中...
+> `Recruitment`相关内容未实现，施工中...
 
 以下每个端点都会处理与显示与用户有关的信息，发送请求时要求提供用户的令牌`token`（`get`方法除外）
-* [显示所有招聘启事](./apidocs/recruitment/get.md) : `GET /api/recruitments/`
-* [发布一篇新的招聘启事](./apidocs/recruitment/post.md): `POST /api/recruitments/`
-* [显示特定id的招聘启事](./apidocs/recruitment/recuitmentId/get.md) : `GET /api/recruitments/:id`
-* [修改特定id的招聘启事](./apidocs/recruitment/recuitmentId/put.md): `PUT /api/recruitments/:id/`
-* [删除特定id的招聘启事](./apidocs/recruitment/recuitmentId/delete.md): `DELETE /api/recruitments/:id/`
-* [增加特定id的招聘启事的工种](./apidocs/recruitment/recuitmentId/job/post.md): `POST /api/recruitments/:id/jobs`
-* [修改特定recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitment/recuitmentId/job/put.md): `PUT /api/recruitments/:recruitmentId/jobs/jobId`
-* [删除recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitment/recuitmentId/job/delete.md): `DELETE /api/recruitments/:recruitmentId/jobs/jobId`
-* [在特定id招聘启事下发布评论](./apidocs/recruitment//recuitmentId/comment/post.md): `POST /api/recruitments/:recuitmentId/comments/`
-* [修改特定recuitmentId下的特定commentId评论](./apidocs/recruitment/recuitmentId/comment/put.md): `PUT /api/recruitments/:recuitmentId/commments/:commentId/`
+* [显示所有招聘启事](./apidocs/recruitments/get.md) : `GET /api/recruitments/`
+* [发布一篇新的招聘启事](./apidocs/recruitments/post.md): `POST /api/recruitments/`
+* [显示特定id的招聘启事](./apidocs/recruitments/recuitmentId/get.md) : `GET /api/recruitments/:id`
+* [修改特定id的招聘启事](./apidocs/recruitments/recuitmentId/put.md): `PUT /api/recruitments/:id/`
+* [删除特定id的招聘启事](./apidocs/recruitments/recuitmentId/delete.md): `DELETE /api/recruitments/:id/`
+* [增加特定id的招聘启事的工种](./apidocs/recruitments/recuitmentId/job/post.md): `POST /api/recruitments/:id/jobs`
+* [修改特定recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/put.md): `PUT /api/recruitments/:recruitmentId/jobs/jobId`
+* [删除recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/delete.md): `DELETE /api/recruitments/:recruitmentId/jobs/jobId`
+* [在特定id招聘启事下发布评论](./apidocs/recruitments/recuitmentId/comment/post.md): `POST /api/recruitments/:recuitmentId/comments/`
+* [修改特定recuitmentId下的特定commentId评论](./apidocs/recruitments/recuitmentId/comment/put.md): `PUT /api/recruitments/:recuitmentId/commments/:commentId/`
 <!-- * [删除recuitmentId下的特定commentId评论](): `DELETE /api/recruitments/:recuitmentId/commments/:commentId/` -->
 
 ### 与消息`notification`相关
 以下每个端点会处理与显示与用户相关的信息，发送请求时要求用户提供令牌`token`
-* [显示特定用户的消息列表](./apidocs/notification/get.md) : `GET /api/notifications/`
-* [显示所有招聘启事](./apidocs/notification/post.md) : `GET /api/notifications/`
+* [显示特定用户的消息列表](./apidocs/notifications/get.md) : `GET /api/notifications/`
+* [显示所有招聘启事](./apidocs/notifications/post.md) : `GET /api/notifications/`
 
 **消息通知触发规则**
 * **全局通知** 管理员发布全局通知时，所有用户都会收到通知
