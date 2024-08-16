@@ -3,11 +3,11 @@ const { Sequelize, Op } = require('sequelize')
 
 const router = require('express').Router()
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
-const { buildOrderClause, generateCursor, buildPaginationCondition } = require('../utils/helper')
+const { buildOrderClause, generateCursor, buildPaginationCondition, hyphensToSpaces } = require('../utils/helper')
 
 // TODO Query
 router.get('/', async (req, res) => {
-  const { keyword, status, limit, ordering, cursor, offset } = req.query
+  const { keyword, status, limit, ordering, cursor, offset, total } = req.query
   if (offset && cursor) {
     return res.status(400).json({ error: 'Cannot use both cursor and offset' })
   }
@@ -40,11 +40,16 @@ router.get('/', async (req, res) => {
     offset: (!cursor && offset) || 0
   })
 
+  let count
+  if (total) {
+    count = await Post.count({ where })
+  }
+
   if (posts.length > 0) {
     const cursor = generateCursor(posts[posts.length - 1].id, ordering)
-    res.json({ posts, cursor })
+    res.json({ posts, cursor, count })
   }
-  res.json({ posts })
+  res.json({ posts, count })
   // res.json(posts)
 })
 
@@ -52,7 +57,7 @@ function buildWhereClause({ status, keyword, cursor }) {
   const where = {}
 
   if (status) {
-    where.status = status
+    where.status = hyphensToSpaces(status)
   }
 
   if (keyword) {

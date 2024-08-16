@@ -499,6 +499,7 @@ describe.only('Get article with query', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     const articles = response.body.articles
+    assert(!response.body.count)
     assert.strictEqual(articles.length, 3)
     assert(articles.every(article => article.type === 'policy'))
     // assert(articles.every(article => article.title.includes('first')))
@@ -507,9 +508,10 @@ describe.only('Get article with query', () => {
 
   test('get articles with query ordering and tags and limit', async () => {
     const response = await api
-      .get('/api/articles?ordering=views&tags=tag1&limit=3')
+      .get('/api/articles?ordering=views&tags=tag1&limit=3&total=true')
       .expect(200)
       .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.count, 6)
     const articles = response.body.articles
     assert.strictEqual(articles.length, 3)
     assert(articles.every(article => article.tags.includes('tag1')))
@@ -555,11 +557,37 @@ describe.only('Get article with query', () => {
     console.log(articles)
   })
 
-  test.only('cannot use both cursor and offset', async () => {
+  test('cannot use both cursor and offset', async () => {
     const res = await api
       .get('/api/articles?limit=3&offset=4&cursor=123')
       .expect(400)
     assert.strictEqual(res.body.error, 'Cannot use both cursor and offset')
+  })
+
+  test('get articles with total count', async () => {
+    const response = await api
+      .get('/api/articles?total=true')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    assert.strictEqual(response.body.count, 8)
+  })
+
+  test('get articles with invalid ordering field', async () => {
+    const response = await api
+      .get('/api/articles?ordering=invalid')
+      .expect(400)
+    assert.strictEqual(response.body.error.message, 'Invalid ordering field')
+  })
+
+  test('test created-at ordering', async () => {
+    const response = await api
+      .get('/api/articles?ordering=createdAt')
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const articles = response.body.articles
+    for (let i = 0; i < articles.length - 1; i++) {
+      assert(articles[i].createdAt >= articles[i+1].createdAt)
+    }
   })
 })
 

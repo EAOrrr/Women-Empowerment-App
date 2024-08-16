@@ -3,11 +3,11 @@ const { Article } = require('../models')
 
 const router = require('express').Router()
 const { userExtractor, authorize } = require('../utils/middleware')
-const { buildOrderClause, buildPaginationCondition, generateCursor } = require('../utils/helper')
+const { buildOrderClause, buildPaginationCondition, generateCursor, hyphensToCamel } = require('../utils/helper')
 
 // TODO: implement query params
 router.get('/', async (req, res) => {
-  const { type, keyword, limit, ordering, tags, cursor, offset } = req.query
+  const { type, keyword, limit, ordering, tags, cursor, offset, total } = req.query
   if (offset && cursor) {
     return res.status(400).json({ error: 'Cannot use both cursor and offset' })
   }
@@ -27,11 +27,16 @@ router.get('/', async (req, res) => {
     offset: (!cursor && offset) || 0
   })
 
-  if (articles.length > 0) {
+  let count
+  if (total) {
+    count = await Article.count({ where })
+  }
+
+  if (articles.length > 0 && !offset) {
     const cursor = generateCursor(articles[articles.length - 1], ordering)
-    res.json({ articles, cursor })
+    res.json({ articles, cursor, count })
   } else {
-    res.json({ articles })
+    res.json({ articles, count })
   }
 })
 

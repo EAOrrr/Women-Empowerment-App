@@ -53,10 +53,11 @@ The `/api/articles/` endpoint supports the following query parameters:
 | type      | string |按类型筛选文章。可能的值: `activity`, `policy`, `law` |
 |keyword     | string | 根据关键词在筛选标题或内容含该关键词的文章                   |
 | limit     | number | 限制返回的文章数量, 默认为10       |
-|ordering   | string | 根据给定的功能排序文章，可能的值:`createdAt`, `likes`, `views`，默认为`createdAt`
+|ordering   | string | 根据给定的功能排序文章，可能的值:`created-at`, `likes`, `views`，默认为`created-at`
 | tags       | string | 根据给定的标签返回含有对应标签的文章，多个标签用逗号分隔 |
 | cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
 | offset  | number| 用于分页的偏移量，从 `offset+1`篇文章后返回，默认为0 |
+| total | boolean | 如果`total`为真，则返回查询文章的总数`count`，否则`count`为`undefined`
 
 
 Example usage:
@@ -75,6 +76,6 @@ Example usage:
 
 > 注意，如果要重新搜索显示，请不要附上`cursor`查询
 
-> 注意： `offset`和`cursor`不能同时是哟个
+> 注意： `offset`和`cursor`不能同时使用，建议顺序浏览用`cursor`，如下滑浏览等，分页浏览用`offset`
 
 

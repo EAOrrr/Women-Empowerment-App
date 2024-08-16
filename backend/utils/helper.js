@@ -34,8 +34,9 @@ function generateCursor(lastArticle, feature){
 function buildOrderClause(ordering, defaultOrdering, validOrderingFields) {
   // const validOrderingFields = ['createdAt', 'likes', 'views']
   if (!ordering) return [[defaultOrdering, 'DESC'], ['id', 'ASC']]
+  const orderingCamel = hyphensToCamel(ordering)
   if (validOrderingFields.includes(ordering)) {
-    return [[ordering, 'DESC'], ['id', 'ASC']]
+    return [[orderingCamel, 'DESC'], ['id', 'ASC']]
   } else {
     const error = new Error('Invalid ordering field')
     error.statusCode = 400
@@ -53,6 +54,18 @@ function generateExpiration(baseExpiration) {
   return finalExpiration;
 }
 
+function hyphensToCamel(str) {
+  return str.split('-').map((word, index) => {
+    if (index === 0) {
+      return word;
+    }
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join('');
+}
+
+function hyphensToSpaces(str) {
+  return str.replace(/-/g, ' ');
+}
 
 module.exports = {
   encodeCursor,
@@ -61,5 +74,7 @@ module.exports = {
   buildPaginationCondition,
   buildOrderClause,
   generateCursor,
-  generateExpiration
+  generateExpiration,
+  hyphensToCamel,
+  hyphensToSpaces
 }
