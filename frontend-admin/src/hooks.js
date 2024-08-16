@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 export const useField = (label, type='text') => {
   const [value, setValue] = useState('')
+  const autoComplete = label
 
   const onChange =  (event) => {
     setValue(event.target.value)
@@ -15,6 +16,7 @@ export const useField = (label, type='text') => {
     label,
     type,
     value,
+    autoComplete,
     onChange,
     onReset
   }
