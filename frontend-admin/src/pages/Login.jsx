@@ -8,10 +8,12 @@ import Box from '@mui/material/Box'
 import { useField } from '../hooks'
 import { useDispatch } from 'react-redux'
 import { login } from '../reducers/userReducer'
+import { useNavigate } from 'react-router-dom'
 
 
 const Login = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
   const username = useField('用户名')
   const password = useField('密码', 'password')
@@ -25,6 +27,7 @@ const Login = () => {
         password: password.value
       }
       await dispatch(login(credentials))
+      navigate('/')
     }
     catch (exception) {
       console.log('wrong credentials')

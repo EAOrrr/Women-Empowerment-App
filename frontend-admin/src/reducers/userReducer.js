@@ -29,9 +29,26 @@ export const login = ( credential ) => {
       const user = await loginService.login(credential)
       storage.saveUser(user)
       dispatch(setUser(user))
+      console.log('login success')
     }
     catch (exception) {
       console.log('wrong credentials')
+    }
+  }
+}
+
+export const logout = () => {
+  return async dispatch => {
+    storage.clearUser()
+    dispatch(clearUser())
+  }
+}
+
+export const initializeUser = () => {
+  return async dispatch => {
+    const user = storage.loadUser()
+    if (user) {
+      dispatch(setUser(user))
     }
   }
 }
