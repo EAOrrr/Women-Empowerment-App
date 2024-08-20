@@ -57,12 +57,15 @@ router.post('/wechat', async (req, res) => {
 
 router.get('/me', userExtractor, authorize(['user', 'admin']), async (req, res) => {
   const user = req.user
+  const notificationCount = await user.countNotifications()
   const returnedUser = {
     phone: user.phone,
     avatar: user.avatar,
     username: user.username,
-    userId: user.id
+    userId: user.id,
+    notificationCount
   }
+  console.log(notificationCount)
   res.json(returnedUser)
 
 })

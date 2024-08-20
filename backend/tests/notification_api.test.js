@@ -279,7 +279,7 @@ describe('Notification API', () => {
 
 })
 
-/*
+
 describe.only('create notifications when post /api/post', () => {
   let adminToken, userToken
   beforeEach(async () => {
@@ -439,7 +439,7 @@ describe.only('create notifications when post /api/post', () => {
     })
   })
 })
-*/
+
 
 after(async () => {
   // User.destroy({ where: {} })

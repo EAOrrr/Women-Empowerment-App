@@ -45,7 +45,7 @@ describe('get infomation of posts', () => {
       .expect(200)
       .expect('Content-Type', /application\/json/)
     console.log(response.body)
-    assert.strictEqual(response.body.length, helper.initialPosts.length)
+    assert.strictEqual(response.body.posts.length, helper.initialPosts.length)
   })
 
 })
@@ -350,7 +350,7 @@ describe.only('test comment function', () => {
       .expect('Content-Type', /application\/json/)
     postToComment = response.body
   })
-  describe.only('addition of a comment', () => {
+  describe('addition of a comment', () => {
     test.only('a comment can be added to a post by the post owner', async () => {
       const notificationsAtStart = await helper.notificationsInDb()
       const commentsAtStart = await helper.commentsInDb()
@@ -529,7 +529,7 @@ describe.only('test comment function', () => {
 
   })
 
-  describe('get api return correct amount of comment', () => {
+  describe.only('get api return correct amount of comment', () => {
     let anotherPostId
     beforeEach(async () => {
       Comment.destroy({ where: {} })
@@ -575,17 +575,18 @@ describe.only('test comment function', () => {
       }))
     })
 
-    test('test get /api/posts', async () => {
+    test.only('test get /api/posts', async () => {
       const response = await api
         .get('/api/posts')
         .expect(200)
         .expect('Content-Type', /application\/json/)
       console.log(response.body)
-      assert.strictEqual(response.body.length, 2)
-      const numbersOfComments = response.body.map(p => p.numberOfComments)
+      assert.strictEqual(response.body.posts.length, 2)
+      const numbersOfComments = response.body.posts.map(p => p.numberOfComments)
       console.log(numbersOfComments)
       assert(numbersOfComments.includes('3'))
       assert(numbersOfComments.includes('32'))
+      console.log(response.body.posts)
 
     })
 

@@ -27,6 +27,7 @@ Article.init({
     defaultValue: null
   },
   type: {
+    // TODO: 增加工作报告，津贴领取，migrations同步
     type: DataTypes.ENUM(
       'activity',
       'policy',
@@ -56,6 +57,7 @@ Article.init({
     type: DataTypes.BOOLEAN,
     defaultValue: false
   },
+  // TODO: 单表继承，活动类型 活动评分+活动评价（comment关联）
 }, {
   sequelize,
   underscored: true,

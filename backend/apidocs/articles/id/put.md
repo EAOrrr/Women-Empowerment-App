@@ -10,7 +10,7 @@
 
 **Permissions required** : 
 1. 对于浏览数`views`和关注数`likes`，任何登录的用户都可以修改
-2. 对于标题`title`、内容`content`、文章分类`type`字条，只有管理员可修改
+2. 对于标题`title`、内容`content`、文章分类`type`，公告选择`isAnnouncement`字条，只有管理员可修改
 3. 其他栏目不可修改
 
 **Data constraints** : 

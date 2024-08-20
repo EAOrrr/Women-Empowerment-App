@@ -483,7 +483,7 @@ describe.only('Get article with query', () => {
     assert(articles.every(article => article.type === 'policy'))
   })
 
-  test('get articles with query keyword', async () => {
+  test.only('get articles with query keyword', async () => {
     const response = await api
       .get('/api/articles?keyword=first')
       .expect(200)

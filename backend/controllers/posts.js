@@ -20,6 +20,9 @@ router.get('/', async (req, res) => {
 
   const posts = await Post.findAll({
     attributes: {
+      include: [
+        [Sequelize.literal('(SELECT COUNT(*) from comments as c WHERE c.commentable_id = "Post"."id" AND c.commentable_type = \'post\')'), 'numberOfComments']
+      ],
       exclude: ['userId'],
     },
 

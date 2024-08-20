@@ -1,18 +1,23 @@
 const { Op } = require('sequelize')
 const { Article } = require('../models')
 
+const nodejieba = require('nodejieba')
 const router = require('express').Router()
-const { userExtractor, authorize } = require('../utils/middleware')
-const { buildOrderClause, buildPaginationCondition, generateCursor, hyphensToCamel } = require('../utils/helper')
+const { userExtractor, authorize, checkFields } = require('../utils/middleware')
+const { buildOrderClause, buildPaginationCondition, generateCursor } = require('../utils/helper')
 
-// TODO: implement query params
+// TODO: 根据相关度排序
 router.get('/', async (req, res) => {
   const { type, keyword, limit, ordering, tags, cursor, offset, total } = req.query
+  const keywords = keyword
+    ? [...new Set(nodejieba.cut(keyword, true))]
+    : null
+
   if (offset && cursor) {
     return res.status(400).json({ error: 'Cannot use both cursor and offset' })
   }
 
-  const where = buildWhereClause({ type, keyword, tags, cursor, ordering, offset })
+  const where = buildWhereClause({ type, keywords, tags, cursor, ordering, offset })
   const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views'])
 
   if (!order) {
@@ -40,17 +45,27 @@ router.get('/', async (req, res) => {
   }
 })
 
-function buildWhereClause({ type, keyword, tags, cursor }) {
+function buildWhereClause({ type, keywords, tags, cursor }) {
   const where = {}
 
   if (type) where.type = type
-  if (keyword) {
-    where[Op.and] = [{
+  if (keywords) {
+    // const keywords = nodejieba.cut(keyword, true)
+    console.log(keywords)
+    const keywordConditions = keywords.map(k => ({
       [Op.or]: [
-        { title: { [Op.iLike]: `%${keyword}%` } },
-        { content: { [Op.iLike]: `%${keyword}%` } },
+        { title: { [Op.iLike]: `%${k}%` } },
+        { content: { [Op.iLike]: `%${k}%` } },
       ]
-    }]
+    }))
+
+    // where[Op.and] = [{
+    //   [Op.or]: [
+    //     { title: { [Op.iLike]: `%${keyword}%` } },
+    //     { content: { [Op.iLike]: `%${keyword}%` } },
+    //   ]
+    // }]
+    where[Op.and] = [{ [Op.or]: keywordConditions }]
   }
 
   if (tags) {
@@ -93,32 +108,36 @@ router.get('/:id', async(req, res) => {
   }
 })
 
-router.put('/:id', userExtractor, async(req, res) => {
-  const article = await Article.findByPk(req.params.id)
-  if (!article) {
-    return res.status(404).end()
-  }
-  const { views, likes, title, content, type, follow } = req.body
-  if (!req.user || req.user.role !== 'admin') {
-    if (title || content || type) {
-      return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
+router.put('/:id',
+  userExtractor,
+  checkFields(['views', 'likes', 'title', 'content', 'type', 'follow', 'isAnnouncement']),
+  async(req, res) => {
+    const article = await Article.findByPk(req.params.id)
+    if (!article) {
+      return res.status(404).end()
     }
-  } else {
-    if (title) article.title = title
-    if (content) article.content = content
-    if (type) article.type = type
-  }
-  if (views) article.views = views
-  if (likes) article.likes = likes
+    const { views, likes, title, content, type, follow, isAnnouncement } = req.body
+    if (!req.user || req.user.role !== 'admin') {
+      if (title || content || type || isAnnouncement) {
+        return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
+      }
+    } else {
+      if (title) article.title = title
+      if (content) article.content = content
+      if (type) article.type = type
+      if (isAnnouncement) article.isAnnouncement = isAnnouncement
+    }
+    if (views) article.views = views
+    if (likes) article.likes = likes
 
-  // TODO: FOLLOW function
-  if (follow) {
+    // TODO: FOLLOW function
+    if (follow) {
     // follow
-  }
+    }
 
-  await article.update(req.body)
-  res.json(article)
-})
+    await article.update(req.body)
+    res.json(article)
+  })
 
 router.delete('/:id', userExtractor, authorize(['admin']), async(req, res) => {
   const article = await Article.findByPk(req.params.id)

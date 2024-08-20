@@ -24,7 +24,8 @@ email address and name information.
     "id": 1234,
     "phone": 4321,
     "avatar": "xx.img",
-    "username": "auser"
+    "username": "auser",
+    "notificationCount": 3 // 消息数
 }
 ```
 

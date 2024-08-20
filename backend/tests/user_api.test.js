@@ -6,6 +6,7 @@ const supertest = require('supertest')
 const api = supertest(app)
 const User = require('../models/user')
 const { connectToDatabase, sequelize } = require('../utils/db')
+const { Notification } = require('../models')
 
 beforeEach(async () => {
   // empty the database
@@ -362,7 +363,7 @@ describe('get all user info with admin', () => {
   })
 })
 
-describe.only('test refresh token', () => {
+describe('test refresh token', () => {
   test.only('test refresh token', async () => {
     const newUser = {
       username: 'testuser',
@@ -385,7 +386,7 @@ describe.only('test refresh token', () => {
     assert(response.body.token !== token)
     assert(response.body.refreshToken !== refreshToken)
     // test new token function
-    
+
     const newToken = response.body.token
     const headers = { 'Authorization': `Bearer ${newToken}` }
     await api
@@ -396,6 +397,69 @@ describe.only('test refresh token', () => {
   })
 })
 
+
+describe.only('test get notification count', () => {
+  let user1Token, user2Token
+  beforeEach(async () => {
+    const user1 = {
+      username: 'testuser1',
+      password: 'testpassword',
+    }
+    const user2 = {
+      username: 'testuser2',
+      password: 'testpassword',
+    }
+    const response1 = await helper.createUser(api, user1)
+    const response2 = await helper.createUser(api, user2)
+    const user1Id = response1.userId
+    const user2Id = response2.userId
+
+    user1Token = await helper.getToken(api, user1)
+    user2Token = await helper.getToken(api, user2)
+
+    await Notification.bulkCreate(
+      helper.initialNotifications.map(notification => ({
+        ...notification,
+        type: 'global',
+        userId: user1Id,
+      }))
+    )
+
+    await Notification.bulkCreate(
+      helper.initialNotifications.concat({
+        message: 'forth notification'
+      })
+        .map(notification => ({
+          ...notification,
+          type: 'global',
+          userId: user2Id,
+        }))
+    )
+
+  })
+
+  test.only('get notification count', async () => {
+    const headers = { 'Authorization': `Bearer ${user1Token}` }
+    const response = await api
+      .get('/api/users/me')
+      .set(headers)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const user = response.body
+    assert.strictEqual(user.notificationCount, 3)
+  })
+
+  test.only('get notification count with user2', async () => {
+    const headers = { 'Authorization': `Bearer ${user2Token}` }
+    const response = await api
+      .get('/api/users/me')
+      .set(headers)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+    const user = response.body
+    assert.strictEqual(user.notificationCount, 4)
+  })
+})
 after(async () => {
   await User.destroy({ where: {} })
   sequelize.close()
