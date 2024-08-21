@@ -12,13 +12,28 @@ import storage from '../services/storage'
 
 const userSlice = createSlice({
   name: 'user',
-  initialState: null,
+  initialState: {
+    info: null,
+    loading: true
+  },
   reducers: {
     setUser(state, action) {
-      return action.payload
+      return {
+        ...state,
+        info: action.payload
+      }
     },
     clearUser(state) {
-      return null
+      return {
+        info: null,
+        loading: false
+      }
+    },
+    setUserStatus(state, action) {
+      return {
+        ...state,
+        loading: action.payload
+      }
     }
   }
 })
@@ -26,9 +41,11 @@ const userSlice = createSlice({
 export const login = ( credential ) => {
   return async dispatch => {
     try {
+      dispatch(setUserStatus(true))
       const user = await loginService.login(credential)
       storage.saveUser(user)
       dispatch(setUser(user))
+      dispatch(setUserStatus(false))
       console.log('login success')
     }
     catch (exception) {
@@ -41,17 +58,33 @@ export const logout = () => {
   return async dispatch => {
     storage.clearUser()
     dispatch(clearUser())
+    dispatch(setUserStatus(false))
   }
 }
 
 export const initializeUser = () => {
   return async dispatch => {
-    const user = storage.loadUser()
-    if (user) {
+    const userWithOldToken = storage.loadUser()
+    if (!userWithOldToken) {
+      return
+    }
+    try {
+      dispatch(setUserStatus(true))
+      const response = await loginService.refreshToken({
+        refreshToken: userWithOldToken.refreshToken
+      })
+      const user = { ...userWithOldToken,
+        token: response.token,
+        refreshToken: response.refreshToken
+      }
       dispatch(setUser(user))
+      dispatch(setUserStatus(false))
+    } catch (exception) {
+      storage.clearUser()
+      dispatch(clearUser())
     }
   }
 }
 
-export const { setUser, clearUser } = userSlice.actions
+export const { setUser, clearUser, setUserStatus } = userSlice.actions
 export default userSlice.reducer

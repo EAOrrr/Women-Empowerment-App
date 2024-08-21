@@ -1,63 +1,63 @@
 /**
  * @description: This file contains the articles reducer
  * which is responsible for handling the articles state in the redux store.
+ * version: 1.0
+ * TODO: 预计网站初建立时数据库较小，直接抓取所有文章数据，
+ * 数据在前端进行处理
+ * 后续会分页抓取重新设计数据结构，用稀疏数组储存分页
+ * 
  * The articles reducer is responsible for handling the following actions:
- * 1. updateArticle: Updates an article in the store.
- * 2. setArticle: Sets the articles in the store.
- * 3. truncateArticles: Truncates the articles in the store.
- * 4. clearArticles: Clears the articles in the store.
+ * 1. setArticles: This action is dispatched when the articles are fetched from the server
+ * and stored in the redux store.
+ * 2. updateArticle: This action is dispatched when an article is updated.
+ * 3. deleteArticle: This action is dispatched when an article is deleted. 
+ * 4. clearArticles: This action is dispatched when all articles are removed from the redux store.
+ * 5. appendArticle: This action is dispatched when a new article is created.
  */
 
 import { createSlice } from '@reduxjs/toolkit'
-import array from 'lodash/array'
+// import array from 'lodash/array'
 import articleService from '../services/articles'
 
 const articlesSlice = createSlice({
   name: 'articles',
   initialState: {
-    articles: [],
-    totalPages: 0
+    datas: [],
+    count: 0
   },
   reducers: {
-    updateArticle(state, action) {
-      const { page, id } = action.payload
-      state.articles[page] = state.articles[page].map(article => {
-        article.id === id ? action.payload : article
-      })
-    },
-
     setArticles(state, action) {
-      const { page, articles, totalPages } = action.payload
-      console.log('in setArticles', articles, page)
-      state.articles[page] = articles
-      if (totalPages) state.totalPages = totalPages
+      state.datas = action.payload.data
+      state.count = action.payload.count
     },
-
-    truncateArticles(state, action) {
-      const { page } = action.payload
-      return array.take(state.articles, page)
+    updateArticle(state, action) {
+      const updatedArticle = action.payload
+      state.datas = state.datas.map(article => article.id === updatedArticle.id ? updatedArticle : article)
     },
-
+    deleteArticle(state, action) {
+      const id = action.payload
+      state.datas = state.datas.filter(article => article.id !== id)
+    },
     clearArticles(state) {
       return []
+    },
+    appendArticle(state, action) {
+      const newArticle = action.payload
+      state.datas.push(newArticle)
     }
   }
 })
 
-export const fetchFirstPage = (limit, ordering, type) => {
+export const initializeArticles = () => {
   return async dispatch => {
-    const query = `limit=${limit}&ordering=${ordering}&type=${type}&total=true`
-    const response = await articleService.getAll(query)
-    console.log('in fectch page', response.articles)
+    console.log('Fetching articles')
+    const response = await articleService.getAll('total=true')
     dispatch(setArticles({
-      page: 1,
-      articles: response.articles,
-      totalPages: parseInt((response.count + 1) / limit)
+      data: response.articles,
+      count: response.count
     }))
-    console.log('dispatched')
   }
 }
 
-// export const { setArticles, appendArticle, updateArticle, deleteArticle, concatArticles  } = articlesSlice.actions
 export const { updateArticle, setArticles, truncateArticles, clearArticles } = articlesSlice.actions
 export default articlesSlice.reducer

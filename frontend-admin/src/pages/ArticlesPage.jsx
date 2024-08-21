@@ -1,11 +1,14 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Selector from '../components/Selector'
-import { fetchFirstPage } from '../reducers/articlesReducer'
+import { initializeArticles } from '../reducers/articlesReducer'
+
 import Pagination from '@mui/material/Pagination';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
+import { useSearchParams } from 'react-router-dom';
+// import { useArticle } from '../hooks';
 
 const articlePerPage = 3
 const orderings = [
@@ -21,15 +24,40 @@ const types = [
   { label: '活动通知', value: 'activity' },
 ]
 
+const sortArticles = (articles, ordering) => {
+  if (ordering === 'views') {
+    return articles.sort((a, b) => b.views - a.views )
+  } else if (ordering === 'likes') {
+    return articles.sort((a, b) => b.likes - a.likes )
+  } else {
+    return articles.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt) )
+  }
+}
+
+const filterArticles = (articles, type) => {
+  if (type === '') {
+    return articles.slice()
+  } else {
+    return articles.filter(article => article.type === type)
+  }
+}
+
 const ArticlesPage = () => {
   const dispatch = useDispatch()
 
   const [page, setPage] = useState(1)
   const [ordering, setOrdering] = useState('')
   const [type, setType] = useState('')
+  // const [searchParams, setSearchParams] = useSearchParams
 
-  const articles = useSelector(state => state.articles.articles[page])
-  const count = useSelector(state => state.articles.totalPages)
+  const articles = useSelector(state => state.articles.datas)
+  console.log('articles', articles)
+
+  useEffect(() => {
+    console.log('Fetching articles')
+    dispatch(initializeArticles())
+    console.log('Fetched articles')
+  }, [dispatch])
 
   const handleOrderingChange = (event) => {
     setOrdering(event.target.value)
@@ -42,10 +70,12 @@ const ArticlesPage = () => {
     setPage(value)
   }
 
-  useEffect(() => {
-    console.log('Fetching articles')
-    dispatch(fetchFirstPage(articlePerPage, ordering, type))
-  }, [dispatch, ordering, type])
+  const processedArticle =  articles === undefined
+    ? null
+    : sortArticles(filterArticles(articles, type), ordering)
+  const pagedArticles = processedArticle
+    ? processedArticle.slice((page - 1) * articlePerPage, page * articlePerPage)
+    : null
 
   return (
     <div>
@@ -53,8 +83,8 @@ const ArticlesPage = () => {
       <Selector label="排序方式" value={ordering} options={orderings} handleChange={handleOrderingChange} />
       <Selector label="文章类型" value={type} options={types} handleChange={handleTypeChange} />
 
-      {articles
-        ? articles.map(article => (
+      {pagedArticles
+        ? pagedArticles.map(article => (
           <li key={article.id}>
             {article.title} {article.type}<br></br>
             {article.abstract}<br></br>
@@ -63,8 +93,7 @@ const ArticlesPage = () => {
         : <p>Loading...</p>
       }
       <Stack spacing={2}>
-        <Typography>Page: {page}</Typography>
-        <Pagination count={count} page={page} onChange={handlePageChange} />
+        <Pagination count={parseInt((processedArticle.length + 1) / articlePerPage)} page={page} onChange={handlePageChange} />
       </Stack>
     </div>
   )
