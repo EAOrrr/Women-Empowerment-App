@@ -17,6 +17,8 @@ import HomePage from './pages/HomePage'
 import PostsPage from './pages/PostsPage'
 import { Alert, Container } from '@mui/material'
 import Header from './components/Header'
+import ResponsiveAppBar from './components/ResponsiveAppBar'
+
 
 function App() {
   const dispatch = useDispatch()
@@ -30,7 +32,7 @@ function App() {
 
   return (
     <div>
-      {/* <NavigationBar /> */}
+      <ResponsiveAppBar />
       {location.pathname !== '/login' && <Header />}
       <Container>
         <div>
@@ -41,6 +43,7 @@ function App() {
             <Route path='/recruitment' element={<ProtectedRoute><h1>Jobs</h1></ProtectedRoute>} />
             <Route path='/about' element={<ProtectedRoute><h1>About</h1></ProtectedRoute>} />
             <Route path='/messages' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />
+            <Route path='/notifications' element={<ProtectedRoute><h1>Notifications</h1></ProtectedRoute>} />
             <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           </Routes>
         </div>
