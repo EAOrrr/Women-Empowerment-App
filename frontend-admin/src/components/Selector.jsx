@@ -1,30 +1,26 @@
 import * as React from 'react'
-import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select from '@mui/material/Select'
+import TextField from '@mui/material/TextField'
 
-const Selector = ({ label, value, options, handleChange, variant='outlined' }) => {
+const Selector = ({ label, value, options, handleChange, defaultValue, variant='outlined' }) => {
   return (
-    <div>
-      <FormControl variant={variant} sx={{ m: 1, minWidth: 80 }}>
-        <InputLabel id="demo-simple-select-autowidth-label">
-          {label}
-        </InputLabel>
-        <Select
-          labelId="demo-simple-select-autowidth-label"
-          id="demo-simple-select-autowidth"
-          value={value}
-          onChange={handleChange}
-          autoWidth
-          label="Age"
-        >
-          {options.map(option => (
-            <MenuItem key={option.label} value={option.value}>{option.label}</MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </div>
+
+    <TextField
+      id="outlined-select-currency"
+      select
+      label={label}
+      valud={value}
+      variant={variant}
+      onChange={handleChange}
+      defaultValue={defaultValue}
+      sx={{ width: '150px', margin: '10px' }}
+    >
+      {options.map((option) => (
+        <MenuItem key={option.value} value={option.value}>
+          {option.label}
+        </MenuItem>
+      ))}
+    </TextField>
   )
 }
 

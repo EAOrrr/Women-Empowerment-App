@@ -2,17 +2,21 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Selector from '../components/Selector'
+import SearchIcon from '@mui/icons-material/Search';
 import { initializeArticles } from '../reducers/articlesReducer'
 
 import Pagination from '@mui/material/Pagination'
-import Typography from '@mui/material/Typography'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
+import { FormControl, InputLabel, Input, InputAdornment, IconButton } from '@mui/material'
 import { useNavigate, useSearchParams } from 'react-router-dom'
+import ArticleCard from '../components/ArticleCard'
+import { useField } from '../hooks'
+import { TextField } from '@mui/material'
 // import { useArticle } from '../hooks';
 
-const articlePerPage = 3
+const articlePerPage = 7
 const orderings = [
   { label: '最新发布', value: 'created-at' },
   { label: '最多浏览', value: 'views' },
@@ -48,10 +52,12 @@ const ArticlesPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const search = useField('search', 'search')
   const [searchParams, setSearchParams] = useSearchParams()
   const ordering = searchParams.get('ordering') || ''
   const type = searchParams.get('type') || ''
   const page = parseInt(searchParams.get('page')) || 1
+  console.log(type, page, ordering)
 
   const articles = useSelector(state => state.articles.datas)
   console.log('articles', articles)
@@ -86,6 +92,11 @@ const ArticlesPage = () => {
     navigate('/articles/create')
   }
 
+  const handleSearch = (event) => {
+    event.preventDefault()
+    console.log('Search articles', search.value)
+  }
+
   const processedArticle =  articles === undefined
     ? null
     : sortArticles(filterArticles(articles, type), ordering)
@@ -95,10 +106,41 @@ const ArticlesPage = () => {
 
   return (
     <div>
-      <h1>Articles Page</h1>
+      <h1>文章管理</h1>
+
+      <FormControl sx={{ m: 1, width: '25ch' }} variant="standard" fullWidth>
+        <InputLabel htmlFor="standard-adornment-search">输入文章关键词进行搜索</InputLabel>
+        <Input
+          id="standard-adornment-search"
+          {...search}
+          endAdornment={
+            <InputAdornment position="end">
+              <IconButton
+                aria-label="搜索"
+                onClick={handleSearch}
+              >
+                <SearchIcon />
+              </IconButton>
+            </InputAdornment>
+          }
+        />
+      </FormControl>
+
       <div>
-        <Selector label="排序方式" value={ordering} options={orderings} handleChange={handleOrderingChange} />
-        <Selector label="文章类型" value={type} options={types} handleChange={handleTypeChange} />
+        <Selector
+          label="排序方式"
+          value={ordering}
+          options={orderings}
+          defaultValue={orderings[0].value}
+          handleChange={handleOrderingChange}
+        />
+        {/* <Box sx={{ width: '10px' }} /> */}
+        <Selector
+          label="文章类型"
+          value={type}
+          options={types}
+          defaultValue={types[0].value}
+          handleChange={handleTypeChange} />
       </div>
       {/* <Button variant='outlined' onClick={handleClick} startIcon={AddIcon}>创建新文章</Button> */}
       <Button variant="outlined" onClick={handleClick} startIcon={<AddIcon />}>
@@ -107,15 +149,11 @@ const ArticlesPage = () => {
 
       {pagedArticles
         ? pagedArticles.map(article => (
-          <li key={article.id}>
-            {article.title} {article.type}<br></br>
-            {article.abstract}<br></br>
-            {article.views} views {article.likes} likes
-          </li>))
+          <ArticleCard key={article.id} article={article} />))
         : <p>Loading...</p>
       }
       <Stack spacing={2}>
-        <Pagination count={parseInt((processedArticle.length + 1) / articlePerPage)} page={page} onChange={handlePageChange} />
+        <Pagination color='primary' count={parseInt((processedArticle.length - 1) / articlePerPage) + 1} page={page} onChange={handlePageChange} />
       </Stack>
     </div>
   )
