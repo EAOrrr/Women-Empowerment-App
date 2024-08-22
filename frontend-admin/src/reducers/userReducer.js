@@ -7,7 +7,9 @@
 
 import { createSlice } from '@reduxjs/toolkit'
 import loginService from '../services/login'
+import userService from '../services/user'
 import storage from '../services/storage'
+
 
 
 const userSlice = createSlice({
@@ -30,6 +32,10 @@ const userSlice = createSlice({
       }
     },
     setUserStatus(state, action) {
+      console.log('setUserStatus', {
+        ...state,
+        loading: action.payload
+      })
       return {
         ...state,
         loading: action.payload
@@ -49,7 +55,8 @@ export const login = ( credential ) => {
       console.log('login success')
     }
     catch (exception) {
-      console.log('wrong credentials')
+      dispatch(setUserStatus(false))
+      throw exception
     }
   }
 }
@@ -66,17 +73,15 @@ export const initializeUser = () => {
   return async dispatch => {
     const userWithOldToken = storage.loadUser()
     if (!userWithOldToken) {
+      console.log('no user info')
+      dispatch(setUserStatus(false))
       return
     }
     try {
       dispatch(setUserStatus(true))
-      const response = await loginService.refreshToken({
-        refreshToken: userWithOldToken.refreshToken
-      })
-      const user = { ...userWithOldToken,
-        token: response.token,
-        refreshToken: response.refreshToken
-      }
+      console.log('loading user info')
+      const user = await userService.getInfo()
+      console.log('user info loaded')
       dispatch(setUser(user))
       dispatch(setUserStatus(false))
     } catch (exception) {

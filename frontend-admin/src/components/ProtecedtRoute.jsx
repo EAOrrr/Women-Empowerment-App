@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom"
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector(state => state.user)
+  console.log('user in ProtectedRoute', user)
   if (user.loading) {
     return <div>检查登录状态</div>
   }

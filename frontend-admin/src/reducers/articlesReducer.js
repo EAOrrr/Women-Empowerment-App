@@ -5,12 +5,12 @@
  * TODO: 预计网站初建立时数据库较小，直接抓取所有文章数据，
  * 数据在前端进行处理
  * 后续会分页抓取重新设计数据结构，用稀疏数组储存分页
- * 
+ *
  * The articles reducer is responsible for handling the following actions:
  * 1. setArticles: This action is dispatched when the articles are fetched from the server
  * and stored in the redux store.
  * 2. updateArticle: This action is dispatched when an article is updated.
- * 3. deleteArticle: This action is dispatched when an article is deleted. 
+ * 3. deleteArticle: This action is dispatched when an article is deleted.
  * 4. clearArticles: This action is dispatched when all articles are removed from the redux store.
  * 5. appendArticle: This action is dispatched when a new article is created.
  */
@@ -59,5 +59,13 @@ export const initializeArticles = () => {
   }
 }
 
-export const { updateArticle, setArticles, truncateArticles, clearArticles } = articlesSlice.actions
+export const createArticle = (newArticle) => {
+  return async dispatch => {
+    const article = await articleService.create(newArticle)
+    console.log(article)
+    dispatch(appendArticle(article))
+  }
+}
+
+export const { setArticles, updateArticle, deleteArticle, clearArticles, appendArticle } = articlesSlice.actions
 export default articlesSlice.reducer

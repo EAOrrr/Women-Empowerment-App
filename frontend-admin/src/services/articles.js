@@ -1,16 +1,30 @@
 import axios from 'axios'
-import storage from '../services/storage'
 
 const baseUrl = 'http://localhost:3001/api/articles';
-const articlesPerPage = 12
-
-const getConfig = () => ({
-  headers: { Authorization: `bearer ${storage.loadUser().token}` },
-})
 
 const getAll = (query) => {
-  const request = axios.get(`${baseUrl}?${query}`, getConfig())
+  const request = axios.get(`${baseUrl}?${query}`)
   return request.then(response => response.data)
 }
 
-export default { getAll }
+const create = async newObject => {
+  const response = await axios.post(baseUrl, newObject)
+  return response.data
+}
+
+const update = async (id, newObject) => {
+  const response = await axios.put(`${baseUrl}/${id}`, newObject)
+  return response.data
+}
+
+const remove = async (id) => {
+  const response = await axios.delete(`${baseUrl}/${id}`)
+  return response.data
+}
+
+export default {
+  getAll,
+  create,
+  update,
+  remove
+}

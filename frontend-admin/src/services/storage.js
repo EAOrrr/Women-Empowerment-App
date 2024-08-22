@@ -7,31 +7,45 @@
  * clearUser: clear user information from local storage
  */
 
-const USER_KEY = 'useris23nfdokey'
 
+const TOKEN_KEY = 'token'
+const REFRESH_TOKEN_KEY = 'refreshToken'
 const saveUser = (user) => {
-  localStorage.setItem(USER_KEY, JSON.stringify(user))
+  console.log('Before saving new token:', loadUser());
+  localStorage.setItem(TOKEN_KEY, user.token)
+  localStorage.setItem(REFRESH_TOKEN_KEY, user.refreshToken)
+  console.log('After saving new token:', loadUser());
 }
 
 const loadUser = () => {
-  const user = localStorage.getItem(USER_KEY)
-  return user ? JSON.parse(user) : null
+  const token = localStorage.getItem(TOKEN_KEY)
+  const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+  return token && refreshToken ? { token, refreshToken } : null
 }
 
-const me = () => {
+const getAccessToken = () => {
   const user = loadUser()
-  return user? user.username : null
+  return user ? user.token : null
 }
+
+const getRefreshToken = () => {
+  const user = loadUser()
+  return user ? user.refreshToken : null
+}
+
 
 const clearUser = () => {
-  localStorage.removeItem(USER_KEY)
+  // localStorage.removeItem(USER_KEY)
+  localStorage.removeItem(TOKEN_KEY)
+  localStorage.removeItem(REFRESH_TOKEN_KEY)
 }
 
 export default {
   saveUser,
   loadUser,
-  me,
-  clearUser
+  clearUser,
+  getAccessToken,
+  getRefreshToken,
 }
 
 

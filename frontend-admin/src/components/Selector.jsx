@@ -1,17 +1,15 @@
-import * as React from 'react';
-import InputLabel from '@mui/material/InputLabel';
-import MenuItem from '@mui/material/MenuItem';
-import FormControl from '@mui/material/FormControl';
-import Select from '@mui/material/Select';
+import * as React from 'react'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select from '@mui/material/Select'
 
-const Selector = ({ label, value, options, handleChange}) => {
-
-
+const Selector = ({ label, value, options, handleChange, variant='outlined' }) => {
   return (
     <div>
-      <FormControl sx={{ m: 1, minWidth: 80 }}>
+      <FormControl variant={variant} sx={{ m: 1, minWidth: 80 }}>
         <InputLabel id="demo-simple-select-autowidth-label">
-        {label}
+          {label}
         </InputLabel>
         <Select
           labelId="demo-simple-select-autowidth-label"
@@ -27,7 +25,7 @@ const Selector = ({ label, value, options, handleChange}) => {
         </Select>
       </FormControl>
     </div>
-  );
+  )
 }
 
 export default Selector

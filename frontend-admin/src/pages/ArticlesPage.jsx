@@ -4,10 +4,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import Selector from '../components/Selector'
 import { initializeArticles } from '../reducers/articlesReducer'
 
-import Pagination from '@mui/material/Pagination';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import { useSearchParams } from 'react-router-dom';
+import Pagination from '@mui/material/Pagination'
+import Typography from '@mui/material/Typography'
+import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
+import AddIcon from '@mui/icons-material/Add'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 // import { useArticle } from '../hooks';
 
 const articlePerPage = 3
@@ -44,11 +46,12 @@ const filterArticles = (articles, type) => {
 
 const ArticlesPage = () => {
   const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  const [page, setPage] = useState(1)
-  const [ordering, setOrdering] = useState('')
-  const [type, setType] = useState('')
-  // const [searchParams, setSearchParams] = useSearchParams
+  const [searchParams, setSearchParams] = useSearchParams()
+  const ordering = searchParams.get('ordering') || ''
+  const type = searchParams.get('type') || ''
+  const page = parseInt(searchParams.get('page')) || 1
 
   const articles = useSelector(state => state.articles.datas)
   console.log('articles', articles)
@@ -60,14 +63,27 @@ const ArticlesPage = () => {
   }, [dispatch])
 
   const handleOrderingChange = (event) => {
-    setOrdering(event.target.value)
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('ordering', event.target.value)
+    setSearchParams(newParams)
   }
   const handleTypeChange = (event) => {
-    setType(event.target.value)
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('type', event.target.value)
+    setSearchParams(newParams)
   }
 
   const handlePageChange = (event, value) => {
-    setPage(value)
+    // setPage(value)
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('page', value)
+    setSearchParams(newParams)
+  }
+
+  const handleClick = (event) => {
+    event.preventDefault()
+    console.log('Create new article')
+    navigate('/articles/create')
   }
 
   const processedArticle =  articles === undefined
@@ -80,8 +96,14 @@ const ArticlesPage = () => {
   return (
     <div>
       <h1>Articles Page</h1>
-      <Selector label="排序方式" value={ordering} options={orderings} handleChange={handleOrderingChange} />
-      <Selector label="文章类型" value={type} options={types} handleChange={handleTypeChange} />
+      <div>
+        <Selector label="排序方式" value={ordering} options={orderings} handleChange={handleOrderingChange} />
+        <Selector label="文章类型" value={type} options={types} handleChange={handleTypeChange} />
+      </div>
+      {/* <Button variant='outlined' onClick={handleClick} startIcon={AddIcon}>创建新文章</Button> */}
+      <Button variant="outlined" onClick={handleClick} startIcon={<AddIcon />}>
+        创建新文章
+      </Button>
 
       {pagedArticles
         ? pagedArticles.map(article => (

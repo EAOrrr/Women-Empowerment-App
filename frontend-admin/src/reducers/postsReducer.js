@@ -6,6 +6,7 @@
  */
 
 import { createSlice } from '@reduxjs/toolkit'
+import postsService from '../services/posts'
 
 const postsSlice = createSlice({
   name: 'posts',
@@ -15,11 +16,22 @@ const postsSlice = createSlice({
       return action.payload
     },
     updatePosts(state, action) {
-      const { updatedPost, page } = action.payload
-      state[page] = state[page].map(post => post.id === updatedPost.id ? updatedPost : post)
+      const updatedPost = action.payload
+      return state.map(post => post.id === updatedPost.id ? updatedPost : post)
+    },
+    deletePost(state, action) {
+      const postId = action.payload
+      return state.filter(post => post.id !== postId)
     },
   }
 })
+
+export const initalizePosts = () => {
+  return async dispatch => {
+    const posts = await postsService.getAll()
+    dispatch(setPosts(posts))
+  }
+}
 
 export const { setPosts, deletePost } = postsSlice.actions
 export default postsSlice.reducer

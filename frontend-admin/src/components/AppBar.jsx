@@ -2,6 +2,14 @@ import { useDispatch } from 'react-redux'
 import { logout } from '../reducers/userReducer'
 import { Link, useNavigate } from 'react-router-dom'
 
+const pages = [
+  { label: '首页', value: '' },
+  { label: '留言', value: 'messages' },
+  { label: '文章', value: 'articles' },
+  { label: '招聘', value: 'recruitment' },
+  { label: '关于', value: 'about' },
+]
+
 const AppBar = () => {
   const padding = {
     paddingRight: 5.,
@@ -18,10 +26,9 @@ const AppBar = () => {
   }
   return (
     <div>
-      <Link to='/' style={padding}>Home</Link>
-      <Link to='/articles' style={padding}>Articles</Link>
-      <Link to='/recruitment' style={padding}>Jobs</Link>
-      <Link to='/about' style={padding}>About</Link>
+      {pages.map(page => (
+        <Link key={page.value} to={`/${page.value}`} style={padding}>{page.label}</Link>
+      ))}
       <button onClick={handleLogout}>Logout</button>
     </div>
   )
