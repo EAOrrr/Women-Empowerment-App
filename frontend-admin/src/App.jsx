@@ -9,12 +9,13 @@ import ArticlesPage from './pages/ArticlesPage'
 // import NavigationBar from './components/NavigationBar'
 import AppBar from './components/AppBar'
 import { useDispatch, useSelector } from 'react-redux'
-import ProtectedRoute from './components/ProtecedtRoute'
+import ProtectedRoute from './components/ProtecedRoute'
 import { useEffect } from 'react'
 import { initializeUser } from './reducers/userReducer'
 import ArticlesCreatePage from './pages/ArticleCreatePage'
 import HomePage from './pages/HomePage'
 import PostsPage from './pages/PostsPage'
+import ArticlePage from './pages/ArticlePage'
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path='/login' element={!user.loading && user.info ? <Navigate to='/'/> : <Login />} />
           <Route path='/articles' element={<ProtectedRoute><ArticlesPage/></ProtectedRoute>} />
           <Route path='/articles/create' element={<ProtectedRoute><ArticlesCreatePage /></ProtectedRoute>} />
+          <Route path='/articles/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
           <Route path='/recruitment' element={<ProtectedRoute><h1>Jobs</h1></ProtectedRoute>} />
           <Route path='/about' element={<ProtectedRoute><h1>About</h1></ProtectedRoute>} />
           <Route path='/messages' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />

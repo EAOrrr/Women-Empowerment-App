@@ -1,4 +1,4 @@
-import { Button, TextField, FormControlLabel, Checkbox } from '@mui/material'
+import { Button, TextField, FormControlLabel, Checkbox, IconButton, Input, FormControl, Box, OutlinedInput, Grid, Typography } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
 import { useField } from '../hooks'
 import Selector from './Selector'
@@ -17,10 +17,10 @@ const types = [
 const ArticleForm = () => {
   const dispatch = useDispatch()
 
-  const title = useField('title', 'text')
-  const content = useField('content', 'text')
-  const tag = useField('tag', 'text')
-  const author = useField('author', 'text')
+  const title = useField('标题', 'text')
+  const content = useField('内容', 'text')
+  const tag = useField('新标签', 'text')
+  const author = useField('作者', 'text')
 
   const [tags, setTags] = useState([])
   const [type, setType] = useState('none')
@@ -56,9 +56,10 @@ const ArticleForm = () => {
     }
   }
 
-  const handleDeleteTag = (event) => {
-    const tag = event.target.textContent
-    setTags(tags.filter(t => t !== tag))
+  const handleDeleteTag = (tag) => {
+    return () => {
+      setTags(tags.filter(t => t !== tag))
+    }
   }
 
   const handelIsAnnouncement = (event) => {
@@ -68,48 +69,63 @@ const ArticleForm = () => {
   console.log('type:', type)
   console.log('isAnnouncement:', isAnnouncement)
   return (
-    <form>
+    <Box component='form' sx={{}}>
       <div>
         <div>
-          文章类型
           <Selector
+            fullWidth={true}
             id='article-form-selector'
             options={types}
             label='文章类型'
             value={type}
             handleChange={handleTypeChange}
+            defaultValue={types[0].value}
           />
         </div>
         <div>
-          标题
-          <TextField {...title} id='article-form-title' required/></div>
-        <div> 
-          作者
-          <TextField {...author} id='article-form-author' />
+          <TextField {...title} id='article-form-title' required fullWidth/>
         </div>
         <div>
-          内容
+          <TextField {...author} id='article-form-author' fullWidth/>
+        </div>
+        <div>
           <TextField
             {...content}
             id='article-form-content'
             multiline
-            rows={12}
+            rows={11}
             required
+            fullWidth
           />
         </div>
         <div>
-          <TextField {...tag} id='article-form-tag' />
-          <Button variant='outlined' onClick={handleAddTag}>添加标签</Button>
+          <Grid container spacing={2} alignItems="center">
+            <Grid item xs={9}>
+              <TextField {...tag} id="article-form-tag" fullWidth />
+            </Grid>
+            <Grid item xs={3}>
+              <Button variant="outlined" onClick={handleAddTag} fullWidth size='large'>
+          添加标签
+              </Button>
+            </Grid>
+          </Grid>
         </div>
-        <div>
-          标签：{tags.map((tag, index) => (
-            <Button key={index} endIcon={<ClearIcon />} onClick={handleDeleteTag}>{tag}</Button>
-          ))}
-        </div>
+        <Typography variant='body1'>标签:</Typography>
+        {tags.map((tag, index) => (
+          <Button
+            key={index}
+            endIcon={<ClearIcon />}
+            onClick={handleDeleteTag(tag)}
+          >
+            {tag}
+          </Button>
+        ))}
+      </div>
+      <div>
         <FormControlLabel control={<Checkbox checked={isAnnouncement} onChange={handelIsAnnouncement}/>} label="设为公告" />
       </div>
-      <Button variant='contained' type='submit' onClick={handleSubmit}>创建新文章</Button>
-    </form>
+      <Button variant='contained' type='submit' onClick={handleSubmit} size='large'>创建新文章</Button>
+    </Box>
   )
 }
 

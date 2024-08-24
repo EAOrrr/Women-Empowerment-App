@@ -2,19 +2,21 @@ import { useCallback, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Selector from '../components/Selector'
-import SearchIcon from '@mui/icons-material/Search';
+import SearchIcon from '@mui/icons-material/Search'
 import { initializeArticles } from '../reducers/articlesReducer'
 
 import Pagination from '@mui/material/Pagination'
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
-import { FormControl, InputLabel, Input, InputAdornment, IconButton } from '@mui/material'
+import { FormControl, InputLabel, Input, InputAdornment, IconButton, Typography } from '@mui/material'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import ArticleCard from '../components/ArticleCard'
 import { useField } from '../hooks'
 import { TextField } from '@mui/material'
 // import { useArticle } from '../hooks';
+import ArticleList from '../components/ArticleList'
+import ArticleSearchBar from '../components/ArticleSearchBar'
 
 const articlePerPage = 7
 const orderings = [
@@ -107,24 +109,10 @@ const ArticlesPage = () => {
   return (
     <div>
       <h1>文章管理</h1>
-
-      <FormControl sx={{ m: 1, width: '25ch' }} variant="standard" fullWidth>
-        <InputLabel htmlFor="standard-adornment-search">输入文章关键词进行搜索</InputLabel>
-        <Input
-          id="standard-adornment-search"
-          {...search}
-          endAdornment={
-            <InputAdornment position="end">
-              <IconButton
-                aria-label="搜索"
-                onClick={handleSearch}
-              >
-                <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          }
-        />
-      </FormControl>
+      <Button variant="outlined" onClick={handleClick} startIcon={<AddIcon />} size='large'>
+        创建新文章
+      </Button>
+      <ArticleSearchBar />
 
       <div>
         <Selector
@@ -133,6 +121,7 @@ const ArticlesPage = () => {
           options={orderings}
           defaultValue={orderings[0].value}
           handleChange={handleOrderingChange}
+          sx={{ width: '150px', margin: '10px' }}
         />
         {/* <Box sx={{ width: '10px' }} /> */}
         <Selector
@@ -140,18 +129,11 @@ const ArticlesPage = () => {
           value={type}
           options={types}
           defaultValue={types[0].value}
-          handleChange={handleTypeChange} />
+          handleChange={handleTypeChange}
+          sx={{ width: '150px', margin: '10px' }}
+        />
       </div>
-      {/* <Button variant='outlined' onClick={handleClick} startIcon={AddIcon}>创建新文章</Button> */}
-      <Button variant="outlined" onClick={handleClick} startIcon={<AddIcon />}>
-        创建新文章
-      </Button>
-
-      {pagedArticles
-        ? pagedArticles.map(article => (
-          <ArticleCard key={article.id} article={article} />))
-        : <p>Loading...</p>
-      }
+      <ArticleList articles={pagedArticles} />
       <Stack spacing={2}>
         <Pagination color='primary' count={parseInt((processedArticle.length - 1) / articlePerPage) + 1} page={page} onChange={handlePageChange} />
       </Stack>

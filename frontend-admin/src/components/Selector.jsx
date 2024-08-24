@@ -2,7 +2,8 @@ import * as React from 'react'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 
-const Selector = ({ label, value, options, handleChange, defaultValue, variant='outlined' }) => {
+const Selector = ({ label, value, options, handleChange, defaultValue, variant='outlined', sx, fullWidth}) => {
+  // console.log('label: ', fullwidth)
   return (
 
     <TextField
@@ -13,7 +14,8 @@ const Selector = ({ label, value, options, handleChange, defaultValue, variant='
       variant={variant}
       onChange={handleChange}
       defaultValue={defaultValue}
-      sx={{ width: '150px', margin: '10px' }}
+      fullWidth={fullWidth}
+      sx={sx}
     >
       {options.map((option) => (
         <MenuItem key={option.value} value={option.value}>

@@ -4,13 +4,21 @@ import CssBaseline from '@mui/material/CssBaseline'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import Visibility from '@mui/icons-material/Visibility'
+import VisibilityOff from '@mui/icons-material/VisibilityOff'
+import { FormControl,
+  InputLabel,
+  OutlinedInput,
+  InputAdornment,
+  IconButton } from '@mui/material'
 
 import { useField } from '../hooks'
 import { useDispatch, useSelector } from 'react-redux'
 import { login } from '../reducers/userReducer'
 import { useNavigate } from 'react-router-dom'
-import { createNotification } from '../reducers/notification'
+import { createNotification } from '../reducers/notificationReducer'
 import { Alert } from '@mui/material'
+import { useState } from 'react'
 
 
 const Login = () => {
@@ -18,18 +26,30 @@ const Login = () => {
   const navigate = useNavigate()
 
   const notification = useSelector(state => state.notification)
+  const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
+  // const password = useField('密码', showPassword ? 'text' : 'password')
 
   const username = useField('用户名')
-  const password = useField('密码', 'password')
+  // const password = useField('密码', showPassword ? 'text' : 'password')
+  const handleClickShowPassword = () => setShowPassword((show) => !show)
+
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value)
+  }
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault()
+  }
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    console.log(username.value, password.value)
+    // console.log(username.value, password.value)
     console.log('submit')
     try {
       const credentials = {
         username: username.value,
-        password: password.value
+        password
       }
       await dispatch(login(credentials))
       dispatch(createNotification('登录成功', 'success'))
@@ -69,14 +89,6 @@ const Login = () => {
             alignItems: 'center',
           }}
         >
-          {/* {notification.message &&
-           <Alert
-             severity={notification.type}
-             sx={{ width: 300, position:'absolute' }}
-           >
-             {notification.message}
-           </Alert>
-          } */}
           <h2> 此处应有LOGO </h2>
           <Typography component='h1' variant='h4' fontFamily='Noto Serif SC'>
           欢迎回来
@@ -86,7 +98,29 @@ const Login = () => {
               <TextField {...username} fullWidth required margin='none'/>
             </div>
             <div>
-              <TextField {...password} fullWidth required margin='dense'/>
+              <FormControl margin='dense' variant="outlined" fullWidth>
+                <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+                <OutlinedInput
+                  id="outlined-adornment-password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                  type={showPassword ? 'text' : 'password'}
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Password"
+                />
+              </FormControl>
+              {/* <TextField {...password} fullWidth required margin='dense'/> */}
             </div>
             <div>
               <Button type='submit' variant="contained" fullWidth sx={{ mt: 2, mb: 2 }}>

@@ -8,13 +8,10 @@ const Header = () => {
   return (
     <div>
       <NavigateBar />
-      {/* <AppBar /> */}
-      <Container>
-        {notification.message
-          ? <Alert severity={notification.type}>{notification.message}</Alert>
-          : null
-        }
-      </Container>
+      {notification.message
+        ? <Alert severity={notification.type}>{notification.message}</Alert>
+        : null
+      }
 
     </div>
   )

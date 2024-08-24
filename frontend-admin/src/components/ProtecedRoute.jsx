@@ -1,7 +1,7 @@
-import { CircularProgress, Typography, Box, Container } from "@mui/material"
-import { useSelector } from "react-redux"
-import { Navigate, useLocation } from "react-router-dom"
-import Header from "./Header"
+import { CircularProgress, Typography, Box, Container } from '@mui/material'
+import { useSelector } from 'react-redux'
+import { Navigate, useLocation } from 'react-router-dom'
+import Header from './Header'
 
 const ProtectedRoute = ({ children }) => {
   const user = useSelector(state => state.user)
@@ -14,7 +14,7 @@ const ProtectedRoute = ({ children }) => {
         <CircularProgress />
         <Typography variant="h6">检查登录状态</Typography>
       </Box>
-    );
+    )
   }
   if (!user.loading && !user.info) {
     console.log('redirect to login')

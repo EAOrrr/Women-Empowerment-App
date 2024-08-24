@@ -2,7 +2,7 @@ import ArticleForm from '../components/ArticleForm'
 const ArticlesCreatePage = () => {
   return (
     <div>
-      <h1>Create Article</h1>
+      <h1>创建新文章</h1>
       <ArticleForm />
     </div>
   )
