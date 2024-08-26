@@ -13,8 +13,11 @@ import { Card,
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { deleteArticleById } from '../reducers/articlesReducer'
+// import { deleteArticleById } from '../reducers/articlesReducer'
 import { useDispatch } from 'react-redux'
+import { useDeleteArticleMutation } from '../reducers/articlesApi'
+import { create } from 'lodash'
+import { createNotification } from '../reducers/notificationReducer'
 
 const typeName = {
   law: '法律条文',
@@ -26,6 +29,7 @@ const ArticleCard = ({ article }) => {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [deleteArticle] = useDeleteArticleMutation()
   const createdDate = new Date(article.createdAt)
   const updatedDate = new Date(article.updatedAt)
 
@@ -34,7 +38,18 @@ const ArticleCard = ({ article }) => {
   }
 
   const handleConfirm = () => {
-    dispatch(deleteArticleById(article.id))
+    // dispatch(deleteArticleById(article.id))
+    deleteArticle(article.id)
+      .unwrap()
+      .then(() => {
+        // dispatch(deleteArticleById(article.id))
+        dispatch(createNotification(`删除文章${article.title}成功`, 'success'))
+        setDialogOpen(false)
+      })
+      .catch((error) => {
+        dispatch(createNotification('删除文章失败', 'error'))
+        console.error(error)
+      })
     setDialogOpen(false)
   }
 

@@ -1,12 +1,14 @@
 import { useDispatch } from 'react-redux'
 import ArticleForm from '../components/ArticleForm'
-import { createArticle } from '../reducers/articlesReducer'
+// import { createArticle } from '../reducers/articlesReducer'
 import { useNavigate } from 'react-router-dom'
 import { createNotification } from '../reducers/notificationReducer'
+import { useCreateArticleMutation } from '../reducers/articlesApi'
 
 const ArticlesCreatePage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const [createArticle] = useCreateArticleMutation()
 
   const handleSubmit = (newArticle) => {
     return (event) => {
@@ -18,10 +20,27 @@ const ArticlesCreatePage = () => {
           'error'
         ))
       } else {
-        console.log('创建新文章')
-        dispatch(createArticle(newArticle)
-        )
-        navigate('/articles')
+        createArticle(newArticle)
+          .unwrap()
+          .then((result) => {
+            dispatch(createNotification(`创建文章${result.title}成功`, 'success'))
+            navigate('/articles')
+          }).catch((error) => {
+            // console.error(error)
+            switch (error.status) {
+            case 401:
+              dispatch(createNotification('请登录', 'error'))
+              break
+            case 403:
+              dispatch(createNotification('无创建文章权限', 'error'))
+              break
+            case 500:
+              dispatch(createNotification('服务器错误', 'error'))
+              break
+            default:
+              dispatch(createNotification('创建文章失败', 'error'))
+            }
+          })
       }
     }
   }

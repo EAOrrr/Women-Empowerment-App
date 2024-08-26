@@ -1,5 +1,4 @@
 import {
-  TextField,
   Box,
   FormControl,
   InputLabel,
@@ -7,19 +6,24 @@ import {
   InputAdornment,
   Button } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useState } from 'react'
 import { useField } from '../hooks'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useState } from 'react'
 
 const ArticleSearchBar = () => {
-  const navigate = useNavigate()
-  const search = useField('搜索', 'search')
+  // const search = useField('搜索', 'search')
+  const [search, setSearch] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
 
+  console.log('search.value', search)
   const handleSearch = (event) => {
     event.preventDefault()
-    console.log('searching', search.value )
+    console.log('searching', search)
+    const newParams = new URLSearchParams(searchParams)
+    newParams.set('search', search)
+    newParams.set('page', 1)
+    setSearchParams(newParams)
   }
-
 
   return (
     <Box component="form" sx={{ m: 1, display: 'flex', alignItems: 'center' }} onSubmit={handleSearch}>
@@ -27,7 +31,16 @@ const ArticleSearchBar = () => {
         <InputLabel htmlFor="search">搜索</InputLabel>
         <Input
           id="article-search"
-          {...search}
+          type='search'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          onReset={() => {
+            setSearch('')
+            const newParams = new URLSearchParams(searchParams)
+            newParams.delete('search')
+            newParams.set('page', 1)
+            setSearchParams(newParams)
+          }}  
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon />

@@ -75,7 +75,7 @@ const Test = () => {
           sx={{ width: '150px', margin: '10px' }}
         />
       </div>
-      <ArticleList />
+      <TestList />
 
     </div>
   )

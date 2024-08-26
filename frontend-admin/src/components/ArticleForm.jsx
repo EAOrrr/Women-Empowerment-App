@@ -28,8 +28,6 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
     setType(event.target.value)
   }
 
-
-
   const handleAddTag = () => {
     if (tag.value) {
       setTags(tags.concat(tag.value))

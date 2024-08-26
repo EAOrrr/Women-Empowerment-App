@@ -10,12 +10,14 @@ import axios from 'axios'
 import storage from '../services/storage'
 
 axios.interceptors.request.use((config) => {
+  // console.log('axios.interceptors.request.use')
 
   const token = storage.getAccessToken()
-  console.log(token)
+  // console.log(token)
   if (token) {
     config.headers['Authorization'] = `Bearer ${token}`
   }
+  // console.log(config)
   return config
 }, (error) => {
   return Promise.reject(error)

@@ -1,9 +1,7 @@
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch } from 'react-redux'
 import { useParams } from 'react-router-dom'
-import articleService from '../services/articles'
-import { useEffect, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import { Box, CircularProgress, Typography } from '@mui/material'
-import CloseIcon from '@mui/icons-material/Close'
 import { createNotification } from '../reducers/notificationReducer'
 import ArticleForm from '../components/ArticleForm'
 import {
@@ -13,41 +11,57 @@ import {
   DialogContentText,
   Button
 } from '@mui/material'
-import { updateAndPutArticle } from '../reducers/articlesReducer'
+import { useGetArticleQuery, useUpdateArticleMutation } from '../reducers/articlesApi'
 
 const ArticlePage = () => {
   const dispatch = useDispatch()
   const actionRef = useRef(null)
 
   const articleId = useParams().id
-  const [article, setArticle] = useState(null)
   const [updatedArticle, setUpdatedArticle] = useState(null)
-  const [loading, setLoading] = useState(true)
   const [dialogOpen, setDialogOpen] = useState(false)
 
   const onEntered = () => actionRef?.current?.focusVisible()
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        const articleToUpdate = await articleService.getOne(articleId)
-        setArticle(articleToUpdate)
-        setLoading(false)
-      } catch (error) {
-        dispatch(createNotification('无法获取对于的文章', 'error'))
-        console.error(error)
-        setLoading(false)
-      }
-    }
-    fetchData()
-  }, [dispatch, articleId])
-  console.log(articleId)
+
+  const {
+    data: article,
+    isLoading,
+    isFetching,
+    isError,
+  } = useGetArticleQuery(articleId)
+
+  const [updateArticle] = useUpdateArticleMutation()
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    // articleService.update(updatedArticle)
-    dispatch(updateAndPutArticle(articleId, updatedArticle))
+    updateArticle({
+      id: articleId,
+      ...updatedArticle
+    }).unwrap()
+      .then((result) => {
+        dispatch(createNotification('更新文章成功', 'success'))
+      }).catch((error) => {
+
+        switch (error.status) {
+        case 401:
+          dispatch(createNotification('请登录', 'error'))
+          break
+        case 403:
+          dispatch(createNotification('无修改该数据权限', 'error'))
+          break
+        case 404:
+          dispatch(createNotification('文章不存在', 'error'))
+          break
+        case 500:
+          dispatch(createNotification('服务器错误', 'error'))
+          break
+        default:
+          dispatch(createNotification('更新文章失败', 'error'))
+          console.error(error.data)
+        }
+      })
+
     setDialogOpen(false)
   }
 
@@ -84,7 +98,7 @@ const ArticlePage = () => {
     </Dialog>
   )
 
-  if (loading) {
+  if (isLoading || isFetching) {
     return (
       <Box sx={{ display: 'flex' }}>
         <CircularProgress />
@@ -92,10 +106,11 @@ const ArticlePage = () => {
       </Box>
     )
   }
-  if (!article) {
+
+  if (isError) {
     return (
       <Box sx={{ display: 'flex' }}>
-        <Typography variant="h6"><CloseIcon />文章不存在</Typography>
+        <Typography variant="h6">获取文章失败</Typography>
       </Box>
     )
   }
