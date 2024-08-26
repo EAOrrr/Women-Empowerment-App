@@ -117,7 +117,7 @@ const ArticlePage = () => {
 
   return (
     <div>
-      <h1>Article Page</h1>
+      <h1>文章编辑</h1>
 
       <ArticleForm article={article} handleSubmit={handleOpenDialog} buttonLable='更新文章'/>
       <ConfirmDialog />

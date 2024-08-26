@@ -4,6 +4,7 @@ import userReducer from './reducers/userReducer'
 import notificationsReducer from './reducers/notificationReducer'
 import { articlesApi } from './reducers/articlesApi'
 import { setupListeners } from '@reduxjs/toolkit/query'
+import { postsApi } from './reducers/postsApi'
 
 const store = configureStore({
   reducer: {
@@ -11,9 +12,12 @@ const store = configureStore({
     // articles: articlesReducer,
     notification: notificationsReducer,
     [ articlesApi.reducerPath]: articlesApi.reducer,
+    [ postsApi.reducerPath]: postsApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(articlesApi.middleware),
+    getDefaultMiddleware()
+      .concat(articlesApi.middleware)
+      .concat(postsApi.middleware),
 })
 
 setupListeners(store.dispatch)

@@ -21,7 +21,7 @@ import { logout } from '../reducers/userReducer'
 
 const pages = [
   { label: '首页', href: '/' },
-  { label: '留言板', href: '/messages' },
+  { label: '留言板', href: '/posts' },
   { label: '文章管理', href: '/articles' },
   { label: '招聘信息', href: '/recruitment' },
   { label: '关于我们', href: '/about' },

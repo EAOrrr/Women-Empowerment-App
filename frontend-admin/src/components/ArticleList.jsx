@@ -52,13 +52,10 @@ const ArticleList = () => {
       </Box>
     )
   }
-  console.log(data)
   const { articles, count } = data
-  console.log(articles)
-  console.log(count)
+
   return (
     <div>
-      <h2>Articles List</h2>
       {articles.map(article =>
         <ArticleCard key={article.id} article={article} />
       )}

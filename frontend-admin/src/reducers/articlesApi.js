@@ -1,33 +1,7 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import axios from 'axios'
-// import { createArticle, deleteArticle } from './articlesReducer'
+import { createApi, } from '@reduxjs/toolkit/query/react'
+import { axiosBaseQuery } from '../services/axios'
 
 const baseUrl = 'http://localhost:3001/api/articles'
-
-const axiosBaseQuery =
-  ({ baseUrl } = { baseUrl: '' }) =>
-    async ({ url, method, body: data, params, headers }) => {
-      try {
-        const result = await axios({
-          url: `${baseUrl}/${url}`,
-          method,
-          data,
-          params,
-          headers,
-        })
-        return { data: result.data }
-      } catch (axiosError) {
-        console.log(axiosError)
-        const err = axiosError
-        return {
-          error: {
-            status: err.response?.status,
-            data: err.response?.data || err.message,
-          },
-        }
-      }
-    }
-
 
 export const articlesApi = createApi({
   reducerPath: 'articlesApi',
@@ -47,10 +21,10 @@ export const articlesApi = createApi({
         console.log('limit', limit)
         console.log('url', `?offset=${offset}&ordering=${ordering}&type=${type}&keyword=${keyword}&limit=${limit}&total=${total}`)
         return ({
-        url: `?offset=${offset}&ordering=${ordering}&type=${type}&keyword=${keyword}&limit=${limit}&total=${total}`,
-        method: 'GET',
-      })
-    },
+          url: `?offset=${offset}&ordering=${ordering}&type=${type}&keyword=${keyword}&limit=${limit}&total=${total}`,
+          method: 'GET',
+        })
+      },
       providesTags: ['Article'],
     }),
 

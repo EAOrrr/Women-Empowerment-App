@@ -32,10 +32,6 @@ const userSlice = createSlice({
       }
     },
     setUserStatus(state, action) {
-      console.log('setUserStatus', {
-        ...state,
-        loading: action.payload
-      })
       return {
         ...state,
         loading: action.payload
@@ -52,7 +48,6 @@ export const login = ( credential ) => {
       storage.saveUser(user)
       dispatch(setUser(user))
       dispatch(setUserStatus(false))
-      console.log('login success')
     }
     catch (exception) {
       dispatch(setUserStatus(false))
@@ -73,15 +68,12 @@ export const initializeUser = () => {
   return async dispatch => {
     const userWithOldToken = storage.loadUser()
     if (!userWithOldToken) {
-      console.log('no user info')
       dispatch(setUserStatus(false))
       return
     }
     try {
       dispatch(setUserStatus(true))
-      console.log('loading user info')
       const user = await userService.getInfo()
-      console.log('user info loaded')
       dispatch(setUser(user))
       dispatch(setUserStatus(false))
     } catch (exception) {

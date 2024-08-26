@@ -4,7 +4,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import ArticleList from '../components/ArticleList'
 import TestList from '../components/TestList'
-import ArticleSearchBar from '../components/ArticleSearchBar'
+import ArticleSearchBar from '../components/SearchBar'
 
 const orderings = [
   { label: '最新发布', value: 'created-at' },

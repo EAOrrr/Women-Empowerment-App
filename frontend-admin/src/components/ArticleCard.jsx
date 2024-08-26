@@ -11,8 +11,10 @@ import { Card,
   Divider,
   IconButton } from '@mui/material'
 import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
 // import { deleteArticleById } from '../reducers/articlesReducer'
 import { useDispatch } from 'react-redux'
 import { useDeleteArticleMutation } from '../reducers/articlesApi'
@@ -26,7 +28,6 @@ const typeName = {
 }
 
 const ArticleCard = ({ article }) => {
-  const navigate = useNavigate()
   const dispatch = useDispatch()
   const [dialogOpen, setDialogOpen] = useState(false)
   const [deleteArticle] = useDeleteArticleMutation()
@@ -51,11 +52,6 @@ const ArticleCard = ({ article }) => {
         console.error(error)
       })
     setDialogOpen(false)
-  }
-
-  const handleClickCard = () => {
-    console.log('click card', article.title)
-    navigate(`/articles/${article.id}`)
   }
 
   const handleDelete = () => {
@@ -88,8 +84,7 @@ const ArticleCard = ({ article }) => {
     <>
       <Card className="article-card" sx={{ display: 'flex', alignItems: 'center', padding: 2 }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1, cursor: 'pointer' }} fontFamily='Noto Serif SC'>
-          <CardActionArea onClick={handleClickCard}>
-            {/* <CardHeader  title={article.title} subheader={article.abstra}  /> */}
+          <CardActionArea component={Link} to={`/articles/${article.id}`}>
             <CardContent>
               <Typography variant="h5" component="h2" fontFamily='Noto Serif SC'>
                 {article.title}
@@ -113,12 +108,14 @@ const ArticleCard = ({ article }) => {
                 <Typography variant="body2" color="textSecondary" component="p" fontFamily='Noto Serif SC'>
                   创建时间: {createdDate.getFullYear().toString()}年
                   {createdDate.getMonth().toString()}月
-                  {createdDate.getDate().toString()}日 <br></br>
-                  {/* 创建时间: {createdDate.getFullYear().toString()} */}
-                  {/* 最后更新时间: {updatedDate} */}
+                  {createdDate.getDate().toString()}日 
+                  <br></br>
                   最后更新时间: {updatedDate.getFullYear().toString()}年
                   {updatedDate.getMonth().toString()}月
                   {updatedDate.getDate().toString()}日
+                </Typography>
+                <Typography variant="body2" color="textSecondary" component="p" fontFamily='Noto Serif SC'>
+                  <VisibilityIcon fontSize='small' />{article.views}       <ThumbUpIcon fontSize='small'/>{article.likes}
                 </Typography>
               </Box>
             </CardContent>

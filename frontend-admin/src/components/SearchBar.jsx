@@ -6,16 +6,13 @@ import {
   InputAdornment,
   Button } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import { useField } from '../hooks'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 import { useState } from 'react'
 
-const ArticleSearchBar = () => {
-  // const search = useField('搜索', 'search')
+const SearchBar = () => {
   const [search, setSearch] = useState('')
   const [searchParams, setSearchParams] = useSearchParams()
 
-  console.log('search.value', search)
   const handleSearch = (event) => {
     event.preventDefault()
     console.log('searching', search)
@@ -55,4 +52,4 @@ const ArticleSearchBar = () => {
   )
 }
 
-export default ArticleSearchBar
+export default SearchBar

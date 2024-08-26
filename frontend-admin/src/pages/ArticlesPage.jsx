@@ -1,10 +1,9 @@
 import Selector from '../components/Selector'
 import Button from '@mui/material/Button'
 import AddIcon from '@mui/icons-material/Add'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import ArticleList from '../components/ArticleList'
-import TestList from '../components/TestList'
-import ArticleSearchBar from '../components/ArticleSearchBar'
+import ArticleSearchBar from '../components/SearchBar'
 
 const orderings = [
   { label: '最新发布', value: 'created-at' },
@@ -21,7 +20,6 @@ const types = [
 
 
 const Test = () => {
-  const navigate = useNavigate()
 
   const [searchParams, setSearchParams] = useSearchParams()
   const ordering = searchParams.get('ordering') || ''
@@ -39,19 +37,10 @@ const Test = () => {
     newParams.set('page', 1)
     setSearchParams(newParams)
   }
-
-
-  const handleClick = (event) => {
-    event.preventDefault()
-    navigate('/articles/create')
-  }
-
-
-
   return (
     <div>
       <h1>文章管理</h1>
-      <Button variant="outlined" onClick={handleClick} startIcon={<AddIcon />} size='large'>
+      <Button variant="outlined" startIcon={<AddIcon />} size='large' component={Link} to='/articles/create'>
         创建新文章
       </Button>
       <ArticleSearchBar />
