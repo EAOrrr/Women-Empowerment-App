@@ -99,6 +99,13 @@ const checkFields = (allowedFields) => {
     const hasIllegalFields = receivedFields.some(field => !allowedFields.includes(field))
 
     if (hasIllegalFields) {
+      console.log('hasIllegalFields')
+      receivedFields.forEach(field => {
+        if (!allowedFields.includes(field)) {
+          console.log('field', field)
+        }
+      })
+      // console.log('receivedFields', receivedFields, receivedFields.map(field => !allowedFields.includes(field)))
       return res.status(403).json({ error: 'The data is modified without permission' })
     }
 
