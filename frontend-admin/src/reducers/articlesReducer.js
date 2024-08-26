@@ -18,6 +18,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 // import array from 'lodash/array'
 import articleService from '../services/articles'
+import { createNotification } from './notificationReducer'
 
 const articlesSlice = createSlice({
   name: 'articles',
@@ -56,16 +57,84 @@ export const initializeArticles = () => {
       data: response.articles,
       count: response.count
     }))
+    console.log('Fetched articles')
+    console.log(response.articles)
+    console.log(response.count)
   }
 }
 
 export const createArticle = (newArticle) => {
   return async dispatch => {
-    const article = await articleService.create(newArticle)
-    console.log(article)
-    dispatch(appendArticle(article))
+    try {
+      const article = await articleService.create(newArticle)
+      console.log(article)
+      dispatch(appendArticle(article))
+      dispatch(createNotification(`创建文章${article.title}成功`, 'success'))
+    } catch (error) {
+      console.error(error)
+      dispatch(createNotification('创建文章失败', 'error'))
+    }
   }
 }
+
+export const updateAndPutArticle = (id, updatedArticle) => {
+  return async dispatch => {
+    try {
+      // console.log('in updatedAndPut', id, updatedArticle)
+      const updated = await articleService.update(id, updatedArticle)
+      dispatch(updateArticle(updated))
+      dispatch(createNotification(`更新文章${updated.title}成功`, 'success'))
+    } catch (error) {
+      // console.error(error)
+      switch (error.response.status) {
+      case 401:
+        dispatch(createNotification('请登录', 'error'))
+        break
+      case 403:
+        dispatch(createNotification('无修改该数据权限', 'error'))
+        break
+      case 404:
+        dispatch(createNotification('文章不存在', 'error'))
+        break
+      case 500:
+        dispatch(createNotification('服务器错误', 'error'))
+        break
+      default:
+        dispatch(createNotification('更新文章失败', 'error'))
+        console.error(error.response.data)
+      }
+    }
+  }
+}
+
+export const deleteArticleById = (id) => {
+  return async dispatch => {
+    try {
+      await articleService.remove(id)
+      dispatch(deleteArticle(id))
+      dispatch(createNotification('删除文章成功', 'success'))
+    } catch (error) {
+      switch (error.response.status) {
+      case 401:
+        dispatch(createNotification('请登录', 'error'))
+        break
+      case 403:
+        dispatch(createNotification('无删除该数据权限', 'error'))
+        break
+      case 404:
+        dispatch(createNotification('文章不存在', 'error'))
+        break
+      case 500:
+        dispatch(createNotification('服务器错误', 'error'))
+        break
+      default:
+        dispatch(createNotification('删除文章失败', 'error'))
+        console.error(error.response.data)
+      }
+    }
+  }
+}
+
 
 export const { setArticles, updateArticle, deleteArticle, clearArticles, appendArticle } = articlesSlice.actions
 export default articlesSlice.reducer

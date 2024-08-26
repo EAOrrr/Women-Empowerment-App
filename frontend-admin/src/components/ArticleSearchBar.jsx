@@ -18,7 +18,6 @@ const ArticleSearchBar = () => {
   const handleSearch = (event) => {
     event.preventDefault()
     console.log('searching', search.value )
-    // navigate('/articles', { search: `?search=${search.value}` })
   }
 
 

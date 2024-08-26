@@ -3,9 +3,7 @@ import ClearIcon from '@mui/icons-material/Clear'
 import { useField } from '../hooks'
 import Selector from './Selector'
 import { useState } from 'react'
-import { useDispatch } from 'react-redux'
-import { createArticle } from '../reducers/articlesReducer'
-import { Label } from '@mui/icons-material'
+
 
 const types = [
   { label: '请选择', value: 'none' },
@@ -14,40 +12,23 @@ const types = [
   { label: '活动通知', value: 'activity' },
 ]
 
-const ArticleForm = () => {
-  const dispatch = useDispatch()
+const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
+  // console.log(handleSubmit)
 
-  const title = useField('标题', 'text')
-  const content = useField('内容', 'text')
+  const title = useField('标题', 'text', (article && article.title))
+  const content = useField('内容', 'text', (article && article.content))
   const tag = useField('新标签', 'text')
-  const author = useField('作者', 'text')
+  const author = useField('作者', 'text', (article && article.author))
 
-  const [tags, setTags] = useState([])
-  const [type, setType] = useState('none')
+  const [tags, setTags] = useState((article && article.tags) || [])
+  const [type, setType] = useState((article && article.type) || 'none')
   const [isAnnouncement, setIsAnnouncement] = useState(false)
 
   const handleTypeChange = (event) => {
     setType(event.target.value)
   }
 
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    console.log('type', type)
-    console.log('title', title.value)
-    console.log('content', content.value)
-    if (type === 'none') {
-      console.log('请选择文章类型')
-    } else {
-      console.log('创建新文章')
-      dispatch(createArticle({
-        title: title.value,
-        content: content.value,
-        type: type,
-        tags: tags
-      })
-      )
-    }
-  }
+
 
   const handleAddTag = () => {
     if (tag.value) {
@@ -66,10 +47,17 @@ const ArticleForm = () => {
     setIsAnnouncement(event.target.checked)
   }
 
-  console.log('type:', type)
-  console.log('isAnnouncement:', isAnnouncement)
   return (
-    <Box component='form' sx={{}}>
+    <Box component='form'
+      onSubmit={handleSubmit({
+        title: title.value,
+        content: content.value,
+        author: author.value,
+        type,
+        tags,
+        isAnnouncement,
+      })
+      }>
       <div>
         <div>
           <Selector
@@ -79,14 +67,22 @@ const ArticleForm = () => {
             label='文章类型'
             value={type}
             handleChange={handleTypeChange}
-            defaultValue={types[0].value}
+            defaultValue={(article && article.type ) || types[0].value}
           />
         </div>
         <div>
-          <TextField {...title} id='article-form-title' required fullWidth/>
+          <TextField
+            {...title}
+            id='article-form-title'
+            required
+            fullWidth/>
         </div>
         <div>
-          <TextField {...author} id='article-form-author' fullWidth/>
+          <TextField
+            {...author}
+            id='article-form-author'
+            fullWidth
+          />
         </div>
         <div>
           <TextField
@@ -124,7 +120,12 @@ const ArticleForm = () => {
       <div>
         <FormControlLabel control={<Checkbox checked={isAnnouncement} onChange={handelIsAnnouncement}/>} label="设为公告" />
       </div>
-      <Button variant='contained' type='submit' onClick={handleSubmit} size='large'>创建新文章</Button>
+      <Button
+        variant='contained'
+        type='submit'
+        size='large'>
+        {buttonLable}
+      </Button>
     </Box>
   )
 }

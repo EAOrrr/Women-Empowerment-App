@@ -54,20 +54,16 @@ const ArticlesPage = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
-  const search = useField('search', 'search')
   const [searchParams, setSearchParams] = useSearchParams()
   const ordering = searchParams.get('ordering') || ''
   const type = searchParams.get('type') || ''
   const page = parseInt(searchParams.get('page')) || 1
-  console.log(type, page, ordering)
 
   const articles = useSelector(state => state.articles.datas)
   console.log('articles', articles)
 
   useEffect(() => {
-    console.log('Fetching articles')
     dispatch(initializeArticles())
-    console.log('Fetched articles')
   }, [dispatch])
 
   const handleOrderingChange = (event) => {
@@ -90,14 +86,9 @@ const ArticlesPage = () => {
 
   const handleClick = (event) => {
     event.preventDefault()
-    console.log('Create new article')
     navigate('/articles/create')
   }
 
-  const handleSearch = (event) => {
-    event.preventDefault()
-    console.log('Search articles', search.value)
-  }
 
   const processedArticle =  articles === undefined
     ? null

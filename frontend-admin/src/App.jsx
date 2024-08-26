@@ -16,13 +16,13 @@ import ArticlesCreatePage from './pages/ArticleCreatePage'
 import HomePage from './pages/HomePage'
 import PostsPage from './pages/PostsPage'
 import ArticlePage from './pages/ArticlePage'
+import ArticlesSearchPage from './pages/ArticleSearchPage'
 
 
 function App() {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user)
 
-  console.log('user', user)
   useEffect(() => {
     dispatch(initializeUser())
   }, [dispatch])
@@ -35,6 +35,7 @@ function App() {
           <Route path='/articles' element={<ProtectedRoute><ArticlesPage/></ProtectedRoute>} />
           <Route path='/articles/create' element={<ProtectedRoute><ArticlesCreatePage /></ProtectedRoute>} />
           <Route path='/articles/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
+          <Route path='/articles/search' element={<ProtectedRoute><ArticlesSearchPage/></ProtectedRoute>} />
           <Route path='/recruitment' element={<ProtectedRoute><h1>Jobs</h1></ProtectedRoute>} />
           <Route path='/about' element={<ProtectedRoute><h1>About</h1></ProtectedRoute>} />
           <Route path='/messages' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />

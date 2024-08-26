@@ -3,11 +3,10 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import articleService from './services/articles'
 import { clearArticles, setArticles } from './reducers/articlesReducer'
-import { useLocation } from 'react-router-dom'
 
 
-export const useField = (label, type='text') => {
-  const [value, setValue] = useState('')
+export const useField = (label, type='text', initialValue) => {
+  const [value, setValue] = useState(initialValue || '')
   const autoComplete = label
 
   const onChange =  (event) => {
