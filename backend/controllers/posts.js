@@ -32,10 +32,6 @@ router.get('/', async (req, res) => {
         as: 'poster',
         attributes: ['username']
       },
-      // {
-      //   model: Comment,
-      //   attributes: [],
-      // }
     ],
     where,
     order,
@@ -50,7 +46,7 @@ router.get('/', async (req, res) => {
 
   if (posts.length > 0) {
     const cursor = generateCursor(posts[posts.length - 1].id, ordering)
-    res.json({ posts, cursor, count })
+    return res.json({ posts, cursor, count })
   }
   res.json({ posts, count })
   // res.json(posts)
