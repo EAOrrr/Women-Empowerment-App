@@ -13,12 +13,10 @@ import { Card,
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import DeleteIcon from '@mui/icons-material/Delete'
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import ThumbUpIcon from '@mui/icons-material/ThumbUp';
-// import { deleteArticleById } from '../reducers/articlesReducer'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 import { useDispatch } from 'react-redux'
-import { useDeleteArticleMutation } from '../reducers/articlesApi'
-import { create } from 'lodash'
+import { useDeleteArticleMutation } from '../services/articlesApi'
 import { createNotification } from '../reducers/notificationReducer'
 
 const typeName = {
@@ -105,18 +103,25 @@ const ArticleCard = ({ article }) => {
                 {article.abstract}
               </Typography>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', flexDirection: 'column' }}>
-                <Typography variant="body2" color="textSecondary" component="p" fontFamily='Noto Serif SC'>
-                  创建时间: {createdDate.getFullYear().toString()}年
-                  {createdDate.getMonth().toString()}月
-                  {createdDate.getDate().toString()}日 
+                <Typography variant="caption" color="textSecondary" component="p" fontFamily='Noto Serif SC'>
+                  创建时间: {createdDate.toLocaleDateString()}
                   <br></br>
-                  最后更新时间: {updatedDate.getFullYear().toString()}年
-                  {updatedDate.getMonth().toString()}月
-                  {updatedDate.getDate().toString()}日
+                  最后更新时间: {updatedDate.toLocaleDateString()}
                 </Typography>
-                <Typography variant="body2" color="textSecondary" component="p" fontFamily='Noto Serif SC'>
-                  <VisibilityIcon fontSize='small' />{article.views}       <ThumbUpIcon fontSize='small'/>{article.likes}
-                </Typography>
+                <Box sx={{ display: 'flex', flexDirection: 'colomn', alignItems: 'center' }}>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center ' }}>
+                    <VisibilityIcon fontSize='small' />
+                    <Typography variant="caption" color="textSecondary" component="p" fontFamily='Noto Serif SC' sx={{ alignItems: 'center' }}>
+                      {article.views}
+                    </Typography>
+                  </Box>
+                  <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                    <ThumbUpIcon fontSize='small'/>
+                    <Typography variant="caption" color="textSecondary" component="p" fontFamily='Noto Serif SC' sx={{ alignItems: 'center' }}>
+                      {article.likes}
+                    </Typography>
+                  </Box>
+                </Box>
               </Box>
             </CardContent>
           </CardActionArea>

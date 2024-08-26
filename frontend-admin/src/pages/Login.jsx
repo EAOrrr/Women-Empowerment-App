@@ -53,7 +53,8 @@ const Login = () => {
       }
       await dispatch(login(credentials))
       dispatch(createNotification('登录成功', 'success'))
-      navigate('/')
+      // navigate('/')
+      navigate('/posts')
     }
     catch (exception) {
       console.log('wrong credentials')

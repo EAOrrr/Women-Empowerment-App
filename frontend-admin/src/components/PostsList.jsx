@@ -1,4 +1,4 @@
-import { useGetPostsQuery } from '../reducers/postsApi'
+import { useGetPostsQuery } from '../services/postsApi'
 import { useSearchParams } from 'react-router-dom'
 import {
   Box,
@@ -16,6 +16,7 @@ const PostList = () => {
   const status = searchParams.get('status') || ''
   const ordering = searchParams.get('ordering') || 'created-at'
   const page= parseInt(searchParams.get('page')) || 1
+  const keyword = searchParams.get('search') || ''
   const {
     data,
     isLoading,
@@ -23,8 +24,11 @@ const PostList = () => {
     isError,
     error
   } = useGetPostsQuery({
-    status: status,
-    ordering: ordering,
+    status,
+    ordering,
+    keyword,
+    limit: PostPerPage,
+    offset: (page - 1) * PostPerPage,
   })
 
   const handlePageChange = (event, value) => {

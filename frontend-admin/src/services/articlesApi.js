@@ -1,5 +1,5 @@
 import { createApi, } from '@reduxjs/toolkit/query/react'
-import { axiosBaseQuery } from '../services/axios'
+import { axiosBaseQuery } from './axios'
 
 const baseUrl = 'http://localhost:3001/api/articles'
 

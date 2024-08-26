@@ -20,6 +20,9 @@ import ArticlePage from './pages/ArticlePage'
 import Test from './pages/Test'
 import PostCreatePage from './pages/PostCreatePage'
 import PostPage from './pages/PostPage'
+import NotificationPage from './pages/NotificationPage'
+import ConstructingPage from './pages/ConstructingPage'
+import OtherPage from './pages/OtherPage'
 
 
 function App() {
@@ -34,18 +37,20 @@ function App() {
     <div>
       <div>
         <Routes>
-          <Route path='/login' element={!user.loading && user.info ? <Navigate to='/'/> : <Login />} />
+          <Route path='/login' element={!user.loading && user.info ? <Navigate to='/posts'/> : <Login />} />
           <Route path='/articles' element={<ProtectedRoute><ArticlesPage/></ProtectedRoute>} />
           <Route path='/articles/create' element={<ProtectedRoute><ArticlesCreatePage /></ProtectedRoute>} />
           <Route path='/articles/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
-          <Route path='/recruitment' element={<ProtectedRoute><h1>Jobs</h1></ProtectedRoute>} />
-          <Route path='/about' element={<ProtectedRoute><h1>About</h1></ProtectedRoute>} />
+          <Route path='/recruitment' element={<ProtectedRoute><ConstructingPage /></ProtectedRoute>} />
+          <Route path='/about' element={<ProtectedRoute><ConstructingPage /></ProtectedRoute>} />
+          <Route path='/other' element={<ProtectedRoute><OtherPage /></ProtectedRoute>} />
           <Route path='/posts' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />
           <Route path='/posts/create' element={<ProtectedRoute><PostCreatePage /></ProtectedRoute>} />
           <Route path='/posts/:id' element={<ProtectedRoute><PostPage /></ProtectedRoute>} />
-          <Route path='/notifications' element={<ProtectedRoute><h1>Notifications</h1></ProtectedRoute>} />
+          <Route path='/notifications' element={<ProtectedRoute><NotificationPage /></ProtectedRoute>} />
           <Route path='test' element={<ProtectedRoute><Test /></ProtectedRoute>} />
-          <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+          {/* <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} /> */}
+          <Route path='/' element={<Navigate to='/posts'/ >} />
         </Routes>
       </div>
     </div>

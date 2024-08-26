@@ -12,7 +12,7 @@ export const postsApi = createApi({
       query: ({
         offset = 0,
         ordering = 'created-at',
-        status = 'in-progressed',
+        status = 'in-progress',
         keyword = '',
         limit = 12,
         total=true,
@@ -27,7 +27,15 @@ export const postsApi = createApi({
 
     getPost: builder.query({
       query: (id) => ({
-        url: `${id}?comments=true`,
+        url: `${id}?`,
+        method: 'GET',
+      }),
+      providesTags: ['Post'],
+    }),
+
+    getPostComments: builder.query({
+      query: (id) => ({
+        url: `${id}/comments`,
         method: 'GET',
       }),
       providesTags: ['Post'],
@@ -51,6 +59,15 @@ export const postsApi = createApi({
       invalidatesTags: ['Post'],
     }),
 
+    createPostComment: builder.mutation({
+      query: (comment) => ({
+        url: `/${comment.postId}/comments`,
+        method: 'POST',
+        body: comment,
+      }),
+      invalidatesTags: ['Post'],
+    }),
+
     deletePost: builder.mutation({
       query: (id) => ({
         url: `/${id}`,
@@ -67,4 +84,6 @@ export const {
   useUpdatePostMutation,
   useCreatePostMutation,
   useDeletePostMutation,
+  useGetPostCommentsQuery,
+  useCreatePostCommentMutation,
 } = postsApi

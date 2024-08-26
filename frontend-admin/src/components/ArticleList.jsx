@@ -1,7 +1,8 @@
 import { useSearchParams } from 'react-router-dom'
-import { useGetArticlesQuery } from '../reducers/articlesApi'
+import { useGetArticlesQuery } from '../services/articlesApi'
 import ArticleCard from './ArticleCard'
 import { Stack, Pagination, Box, CircularProgress, Typography } from '@mui/material'
+import Loading from './Loading'
 
 const articlePerPage = 7
 
@@ -45,12 +46,7 @@ const ArticleList = () => {
   }
 
   if (isLoading || isFetching) {
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress />
-        <Typography variant="h6">加载文章中</Typography>
-      </Box>
-    )
+    return <Loading message='文章加载中' />
   }
   const { articles, count } = data
 

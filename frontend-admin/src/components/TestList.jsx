@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useGetArticlesQuery } from '../reducers/articlesApi'
+import { useGetArticlesQuery } from '../services/articlesApi'
 import ArticleCard from './ArticleCard'
 import { Stack, Pagination } from '@mui/material'
 

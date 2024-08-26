@@ -11,7 +11,8 @@ import {
   DialogContentText,
   Button
 } from '@mui/material'
-import { useGetArticleQuery, useUpdateArticleMutation } from '../reducers/articlesApi'
+import { useGetArticleQuery, useUpdateArticleMutation } from '../services/articlesApi'
+import Loading from '../components/Loading'
 
 const ArticlePage = () => {
   const dispatch = useDispatch()
@@ -99,12 +100,7 @@ const ArticlePage = () => {
   )
 
   if (isLoading || isFetching) {
-    return (
-      <Box sx={{ display: 'flex' }}>
-        <CircularProgress />
-        <Typography variant="h6">获取文章中</Typography>
-      </Box>
-    )
+    return <Loading message={`加载文章${articleId}中`} />
   }
 
   if (isError) {

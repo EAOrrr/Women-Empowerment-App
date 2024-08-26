@@ -3,7 +3,7 @@ import ArticleForm from '../components/ArticleForm'
 // import { createArticle } from '../reducers/articlesReducer'
 import { useNavigate } from 'react-router-dom'
 import { createNotification } from '../reducers/notificationReducer'
-import { useCreateArticleMutation } from '../reducers/articlesApi'
+import { useCreateArticleMutation } from '../services/articlesApi'
 
 const ArticlesCreatePage = () => {
   const dispatch = useDispatch()

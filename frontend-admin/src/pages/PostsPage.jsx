@@ -1,13 +1,11 @@
-import { useState } from "react";
-import SearchBar from "../components/SearchBar";
-import Selector from "../components/Selector";
-import { useGetPostsQuery } from '../reducers/postsApi'
-import { useSearchParams } from "react-router-dom";
-import PostsList from "../components/PostsList";
+import SearchBar from '../components/SearchBar'
+import Selector from '../components/Selector'
+import { useSearchParams } from 'react-router-dom'
+import PostsList from '../components/PostsList'
 
 const statuses = [
   { label: '全部', value: '' },
-  { label: '进行中', value: 'in-progressed' },
+  { label: '进行中', value: 'in-progress' },
   { label: '已结束', value: 'done' },
 ]
 
@@ -44,20 +42,20 @@ const PostsPage = () => {
       <h1>留言板</h1>
       <SearchBar />
       <div>
-        <Selector 
+        <Selector
           label="状态"
-          value={status} 
-          options={statuses} 
-          defaultValue={statuses[0].value} 
-          handleChange={handleStatusChange} 
+          value={status}
+          options={statuses}
+          defaultValue={statuses[0].value}
+          handleChange={handleStatusChange}
           sx={{ width: '150px', margin: '10px' }}
         />
-        <Selector 
-          label="排序方式" 
-          value={ordering} 
-          options={orderings} 
-          defaultValue={orderings[0].value} 
-          handleChange={handleOrderingChange} 
+        <Selector
+          label="排序方式"
+          value={ordering}
+          options={orderings}
+          defaultValue={orderings[0].value}
+          handleChange={handleOrderingChange}
           sx={{ width: '150px', margin: '10px' }}
         />
       </div>
@@ -65,7 +63,7 @@ const PostsPage = () => {
 
       <PostsList />
     </div>
-  );
+  )
 }
 
-export default PostsPage;
+export default PostsPage

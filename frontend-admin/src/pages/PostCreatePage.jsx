@@ -1,6 +1,6 @@
 import { Box, Button, TextField } from '@mui/material'
 import { useField } from '../hooks'
-import { useCreatePostMutation } from '../reducers/postsApi'
+import { useCreatePostMutation } from '../services/postsApi'
 import { useDispatch } from 'react-redux'
 import { createNotification } from '../reducers/notificationReducer'
 import { useNavigate } from 'react-router-dom'

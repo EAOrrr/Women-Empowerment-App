@@ -15,11 +15,12 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '../reducers/userReducer'
 
 const pages = [
-  { label: '首页', href: '/' },
+  // { label: '首页', href: '/' },
   { label: '留言板', href: '/posts' },
   { label: '文章管理', href: '/articles' },
   { label: '招聘信息', href: '/recruitment' },
-  { label: '关于我们', href: '/about' },
+  // { label: '关于我们', href: '/about' },
+  { label: '其他功能', href: '/other' }
 ]
 
 
