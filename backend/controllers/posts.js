@@ -239,7 +239,9 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
         jumpTo: `/posts/${post.id}/comments/${comment.id}`,
         type: 'comment_reply'
       })
+      // post状态设为in progress
     ))
+    await post.update({ status: 'in progress' })
   } else {
     // 管理员回复信息，给发帖者发送信息
     await Notification.create({

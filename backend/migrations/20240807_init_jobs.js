@@ -9,15 +9,19 @@ module.exports = {
         allowNull: false,
         defaultValue: UUIDV4(),
       },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       intro: {
         type: DataTypes.TEXT,
         allowNull: false,
       },
-      lowerBound: {
+      lower_bound: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      upperBound: {
+      upper_bound: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
@@ -29,6 +33,14 @@ module.exports = {
         type: DataTypes.DATE,
         allowNull: false,
       },
+      recruitment_id: {
+        type: DataTypes.UUID,
+        reference: {
+          model: 'recruitments',
+          key: 'id',
+        },
+        allowNull: false,
+      }
     })
   },
 

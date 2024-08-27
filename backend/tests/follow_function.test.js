@@ -1,7 +1,7 @@
 const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const helper = require('./test_helpers')
-const { User, Follow, Article, Post } = require('../models')
+const { User, Follow, Article, Post, Recruitment } = require('../models')
 const app = require('../app')
 const supertest = require('supertest')
 const { connectToDatabase, sequelize } = require('../utils/db')
@@ -13,6 +13,7 @@ beforeEach(async () => {
   await User.destroy({ where: {} })
   await Follow.destroy({ where: {} })
   await Post.destroy({ where: {} })
+  await Recruitment.destroy({ where: {} })
 
 })
 
@@ -183,6 +184,16 @@ describe.only(' Users Get Follows', () => {
     const postsInDb = await helper.postsInDb()
     assert(postsInDb.length === helper.initialPosts.length)
     const article = articlesInDb[0]
+    await Recruitment.bulkCreate(
+      helper.initialRecruitments
+    )
+    const recruitmentsInDb = await Recruitment.findAll()
+    assert(recruitmentsInDb.length === helper.initialRecruitments.length)
+    const recruitment = recruitmentsInDb[0]
+    await api
+      .post(`/api/recruitments/${recruitment.id}/follow`)
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(201)
     await api
       .post(`/api/articles/${article.id}/follow`)
       .set('Authorization', `Bearer ${userToken}`)
@@ -203,9 +214,10 @@ describe.only(' Users Get Follows', () => {
       .set('Authorization', `Bearer ${userToken}`)
       .expect(200)
 
-    const {articles, posts} = response.body
+    const { articles, posts, recruitments } = response.body
     assert.strictEqual(articles.length, 1)
     assert.strictEqual(posts.length, 1)
+    assert.strictEqual(recruitments.length, 1)
     console.log(response.body)
   })
 
@@ -222,6 +234,16 @@ describe.only(' Users Get Follows', () => {
   test.only('get followed posts', async () => {
     const response = await api
       .get('/api/users/me/follows/posts')
+      .set('Authorization', `Bearer ${userToken}`)
+      .expect(200)
+
+    assert.strictEqual(response.body.length, 1)
+    console.log(response.body)
+  })
+
+  test.only('get followed recruitments', async () => {
+    const response = await api
+      .get('/api/users/me/follows/recruitments')
       .set('Authorization', `Bearer ${userToken}`)
       .expect(200)
 
@@ -300,6 +322,151 @@ describe('Follow Posts', () => {
     assert(followsAtEnd.length === followsAtStart.length)
   })
 })
+
+describe('Follow Recruitments', () => {
+  let userId
+  let userToken
+  beforeEach(async () => {
+    const user = {
+      username: 'test',
+      password: 'password',
+    }
+    const createResponse = await helper.createUser(api, user)
+    userId = createResponse.userId
+    userToken = await helper.getToken(api, user)
+    await Recruitment.bulkCreate(
+      helper.initialRecruitments
+    )
+    const recruitmentsInDb = await Recruitment.findAll()
+    assert(recruitmentsInDb.length === helper.initialRecruitments.length)
+  })
+  describe('test follow function', () => {
+    test('should follow a recruitment', async () => {
+      const followsAtStart = await Follow.findAll()
+
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      const response = await api
+        .post(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(201)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length + 1)
+      const follow = followsAtEnd[0]
+      assert(follow.followerId === userId)
+      assert(follow.followableId === recruitment.id)
+      assert(follow.followableType === 'recruitment')
+    })
+
+    test('should not follow a recruitment without token', async () => {
+      const followsAtStart = await Follow.findAll()
+
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      const response = await api
+        .post(`/api/recruitments/${recruitment.id}/follow`)
+        .expect(401)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length)
+    })
+
+    test('should not follow a recruitment twice', async () => {
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      await api
+        .post(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(201)
+      const followsAtStart = await Follow.findAll()
+      const response = await api
+        .post(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(409)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length)
+    })
+
+    test('should not follow a recruitment that does not exist', async () => {
+      const followsAtStart = await Follow.findAll()
+      const nonExistingId = await helper.nonExistingId()
+
+      const response = await api
+        .post(`/api/recruitments/${nonExistingId}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(404)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length)
+    })
+  })
+  
+  describe('test unfollow function', () => {
+    beforeEach(async () => {
+      const followsAtStart = await Follow.findAll()
+      
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      await api
+        .post(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(201)
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length + 1)
+    })
+
+    test('should unfollow a recruitment', async () => {
+      const followsAtStart = await Follow.findAll()
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      const response = await api
+        .delete(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(204)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length - 1)
+    })
+/*
+    test('should not unfollow a recruitment without token', async () => {
+      const followsAtStart = await Follow.findAll()
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      const response = await api
+        .delete(`/api/recruitments/${recruitment.id}/follow`)
+        .expect(401)
+
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length)
+    })
+
+    test('should not unfollow a recruitment twice', async () => {
+      const followsAtStart = await Follow.findAll()
+      const recruitmentsInDb = await Recruitment.findAll()
+      const recruitment = recruitmentsInDb[0]
+      await api
+        .delete(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(204)
+      const followsAtEnd = await Follow.findAll()
+      assert(followsAtEnd.length === followsAtStart.length - 1)
+      const response = await api
+        .delete(`/api/recruitments/${recruitment.id}/follow`)
+        .set('Authorization', `Bearer ${userToken}`)
+        .expect(404)
+      const followsAtEnd2 = await Follow.findAll()
+      assert.strictEqual(followsAtEnd2.length, followsAtEnd.length)
+    })
+    */
+  })
+
+
+})
+
+
+
 
 after(async () => {
   await Article.destroy({ where: {} })

@@ -90,8 +90,8 @@
 * [修改特定id的招聘启事](./apidocs/recruitments/recuitmentId/put.md): `PUT /api/recruitments/:id/`
 * [删除特定id的招聘启事](./apidocs/recruitments/recuitmentId/delete.md): `DELETE /api/recruitments/:id/`
 * [增加特定id的招聘启事的工种](./apidocs/recruitments/recuitmentId/job/post.md): `POST /api/recruitments/:id/jobs`
-* [修改特定recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/put.md): `PUT /api/recruitments/:recruitmentId/jobs/jobId`
-* [删除recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/delete.md): `DELETE /api/recruitments/:recruitmentId/jobs/jobId`
+* [修改特定recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/put.md): `PUT /api/recruitments/:recruitmentId/jobs/:jobId`
+* [删除recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/delete.md): `DELETE /api/recruitments/:recruitmentId/jobs/:jobId`
 * [在特定id招聘启事下发布评论](./apidocs/recruitments/recuitmentId/comment/post.md): `POST /api/recruitments/:recuitmentId/comments/`
 * [修改特定recuitmentId下的特定commentId评论](./apidocs/recruitments/recuitmentId/comment/put.md): `PUT /api/recruitments/:recuitmentId/commments/:commentId/`
 <!-- * [删除recuitmentId下的特定commentId评论](): `DELETE /api/recruitments/:recuitmentId/commments/:commentId/` -->

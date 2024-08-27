@@ -1,4 +1,4 @@
-const { Article, User, Post, Comment, Notification, Image, Draft, Follow } = require('../models')
+const { Article, User, Post, Comment, Notification, Image, Draft, Follow, Recruitment, Job } = require('../models')
 
 const initialArticles = [
   {
@@ -92,6 +92,84 @@ const initialPosts = [
     'content': 'content of third post',
   }
 ]
+
+const initialRecruitments = [
+  {
+    'intro': 'first recruitment',
+    'title': 'first recruitment',
+    'name': 'first recruitment',
+    'province': 'first recruitment',
+    'city': 'first recruitment',
+    'street': 'first recruitment',
+    'address': 'first recruitment',
+    'phone': 'first recruitment',
+    'district': 'first recruitment',
+  },
+  {
+    'intro': 'second recruitment',
+    'title': 'second recruitment',
+    'name': 'second recruitment',
+    'province': 'second recruitment',
+    'city': 'second recruitment',
+    'street': 'second recruitment',
+    'address': 'second recruitment',
+    'phone': 'second recruitment',
+    'district': 'second recruitment',
+  },
+  {
+    'intro': 'third recruitment',
+    'title': 'third recruitment',
+    'name': 'third recruitment',
+    'province': 'third recruitment',
+    'city': 'third recruitment',
+    'street': 'third recruitment',
+    'address': 'third recruitment',
+    'phone': 'third recruitment',
+    'district': 'third recruitment',
+  },
+  {
+    'intro': 'fourth recruitment',
+    'title': 'fourth recruitment',
+    'name': 'fourth recruitment',
+    'province': 'fourth recruitment',
+    'city': 'fourth recruitment',
+    'street': 'fourth recruitment',
+    'address': 'fourth recruitment',
+    'phone': 'fourth recruitment',
+    'district': 'fourth recruitment',
+  }
+]
+
+const initialJobs = [
+  {
+    'name': 'first job',
+    'intro': 'first job',
+    'lowerBound': 1,
+    'upperBound': 2,
+  },
+  {
+    'name': 'second job',
+    'intro': 'second job',
+    'lowerBound': 3,
+    'upperBound': 4,
+  },
+  {
+    'name': 'third job',
+    'intro': 'third job',
+    'lowerBound': 5,
+    'upperBound': 6,
+  }
+]
+
+const recruitmentsInDb = async () => {
+  const recruitments = await Recruitment.findAll()
+  return recruitments.map(r => r.toJSON())
+}
+
+const jobsInDb = async () => {
+  const jobs = await Job.findAll()
+  return jobs.map(j => j.toJSON())
+}
 
 const articlesInDb = async () => {
   const articles = await Article.findAll()
@@ -189,6 +267,8 @@ module.exports = {
   initialArticles,
   initialPosts,
   initialNotifications,
+  initialRecruitments,
+  initialJobs,
   newComments,
   articlesInDb,
   usersInDb,
@@ -198,6 +278,8 @@ module.exports = {
   notificationsInDb,
   imagesInDb,
   draftsInDb,
+  recruitmentsInDb,
+  jobsInDb,
   nonExistingId,
   createUser,
   getToken,

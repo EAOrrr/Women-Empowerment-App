@@ -5,9 +5,11 @@ class User extends Model{
   async getFollowable(options) {
     const articles = await this.getFollowableArticles(options)
     const posts = await this.getFollowablePosts(options)
+    const recruitments = await this.getFollowableRecruitments(options)
     return {
       articles,
       posts,
+      recruitments,
     }
   }
 }

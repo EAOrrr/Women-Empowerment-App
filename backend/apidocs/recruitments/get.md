@@ -32,7 +32,6 @@
       "district": "企业所在区/县",
       "street": "企业所在街道",
       "address": "企业具体地址",
-      "status": "in progress", // 帖子状态，分为"in progress"（进行中）和"done"（已完成）
       "likes": 23, // 关注数
       "views": 123, // 浏览数
       

@@ -13,6 +13,10 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       intro: {
         type: DataTypes.TEXT,
         allowNull: false,
@@ -40,6 +44,14 @@ module.exports = {
       phone: {
         type: DataTypes.STRING,
         allowNull: false,
+      },
+      likes: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      views: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
       },
       created_at: {
         type: DataTypes.DATE,

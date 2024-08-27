@@ -127,6 +127,10 @@ router.get('/me/follows/:type', userExtractor, authorize(['admin', 'user']), asy
     const posts = await user.getFollowablePosts()
     return res.json(posts)
   }
+  if (type === 'recruitments') {
+    const recruitments = await user.getFollowableRecruitments()
+    return res.json(recruitments)
+  }
   return res.status(400).json({ error: 'Invalid type' })
 })
 

@@ -10,6 +10,7 @@ const loginRouter = require('./controllers/login')
 const postsRouter = require('./controllers/posts')
 const notificationRouter = require('./controllers/notifications')
 const uploadRouter = require('./controllers/upload')
+const RecruitmentRouter = require('./controllers/recruitments')
 
 
 app.use(cors())
@@ -22,6 +23,7 @@ app.use('/api/login', loginRouter)
 app.use('/api/posts', postsRouter)
 app.use('/api/notifications', notificationRouter)
 app.use('/api/upload', uploadRouter)
+app.use('/api/recruitments', RecruitmentRouter)
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

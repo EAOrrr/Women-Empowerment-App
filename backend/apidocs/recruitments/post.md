@@ -8,7 +8,7 @@
 
 **Auth required** : YES
 
-**Permissions required** : None
+**Permissions required** : 仅管理员
 
 **Data constraints** : 
 ```json
@@ -23,14 +23,6 @@
   "street": "企业所在街道",
   "address": "企业具体地址", 
   "phone": "企业联系电话", // 必填
-  "jobs": [ // 职业列表，每个职业格式同第一个
-    {
-      "job": "职业名称",  // 必填
-      "intro": "职业介绍", // 必填
-      "lowerBound": 123, // 必填，整型，工资下限
-      "upperBound": 345, // 必填，整型，工资上限
-    }
-  ]
 }
 ```
 

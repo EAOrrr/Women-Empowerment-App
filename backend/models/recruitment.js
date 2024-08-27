@@ -46,6 +46,14 @@ Recruitment.init({
     type: DataTypes.STRING,
     allowNull: false,
   },
+  likes: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  },
+  views: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0,
+  }
 }, {
   sequelize,
   underscored: true,

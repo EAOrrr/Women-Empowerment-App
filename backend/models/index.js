@@ -9,6 +9,10 @@ const Post = require('./post')
 const Recruitment = require('./recruitment')
 const User = require('./user')
 
+// 与数据结构相关的关联
+Recruitment.hasMany(Job, )
+Job.belongsTo(Recruitment, { foreignKey: 'recruitmentId' })
+
 // 与用户发表行为有关的关联
 User.hasMany(Post, )
 Post.belongsTo(User, { as: 'poster', foreignKey: 'userId' })
@@ -32,12 +36,13 @@ Comment.belongsTo(Post, {
   foreignKey: 'commentableId'
 })
 
-/*
+
 Article.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
+  onDelete: 'cascade',
   scope: {
-    commentable: 'article'
+    commentableType: 'article'
   }
 })
 
@@ -49,15 +54,17 @@ Comment.belongsTo(Article, {
 Recruitment.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
+  onDelete: 'cascade',
   scope: {
-    commentable: 'recruitment'
+    commentableType: 'recruitment'
   }
 })
+
 Comment.belongsTo(Recruitment, {
   foreignKey: 'commentableId',
   constraints: false,
 })
-*/
+
 
 Comment.addHook('afterFind', findResult => {
   if (!Array.isArray(findResult)) findResult = [findResult]
@@ -65,9 +72,19 @@ Comment.addHook('afterFind', findResult => {
     if (instance.commentableType === 'post' && instance.post !== undefined) {
       instance.commentable = instance.post
     }
+    if (instance.commentableType === 'article' && instance.article !== undefined) {
+      instance.commentable = instance.article
+    }
+    if (instance.commentableType === 'recruitment' && instance.recruitment !== undefined) {
+      instance.commentable = instance.recruitment
+    }
     // To prevent mistakes:
     delete instance.post
     delete instance.dataValues.post
+    delete instance.article
+    delete instance.dataValues.article
+    delete instance.recruitment
+    delete instance.dataValues.recruitment
   }
 })
 
@@ -126,6 +143,29 @@ Post.belongsToMany(User, {
   foreignKey: 'followableId',
 })
 
+User.belongsToMany(Recruitment, {
+  through: {
+    model: Follow,
+    unique: false,
+    scope: {
+      followableType: 'recruitment'
+    }
+  },
+  constraints: false,
+  as: 'followableRecruitments',
+  foreignKey: 'followerId',
+})
+
+Recruitment.belongsToMany(User, {
+  through: {
+    model: Follow,
+    unique: false
+  },
+  as: 'follower',
+  constraints: false,
+  foreignKey: 'followableId',
+})
+
 
 // 与用户行为有关的关联
 User.hasOne(Draft, {
@@ -133,6 +173,7 @@ User.hasOne(Draft, {
 })
 
 Draft.belongsTo(User, { as: 'author', foreignKey: 'userId' })
+
 
 
 module.exports = {

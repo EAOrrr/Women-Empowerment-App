@@ -350,8 +350,8 @@ describe.only('test comment function', () => {
       .expect('Content-Type', /application\/json/)
     postToComment = response.body
   })
-  describe('addition of a comment', () => {
-    test.only('a comment can be added to a post by the post owner', async () => {
+  describe.only('addition of a comment', () => {
+    test('a comment can be added to a post by the post owner', async () => {
       const notificationsAtStart = await helper.notificationsInDb()
       const commentsAtStart = await helper.commentsInDb()
       const newComment = {
@@ -401,7 +401,7 @@ describe.only('test comment function', () => {
     })
 
 
-    test('a comment can be added to a post by admin', async () => {
+    test.only('a comment can be added to a post by admin', async () => {
       const commentsAtStart = await helper.commentsInDb()
       const adminUser = {
         username: 'admin',
@@ -463,7 +463,7 @@ describe.only('test comment function', () => {
     })
       
   })
-  
+
   describe('update a comment', () => {
     let commentToUpdate
     beforeEach(async() => {
@@ -529,7 +529,7 @@ describe.only('test comment function', () => {
 
   })
 
-  describe.only('get api return correct amount of comment', () => {
+  describe('get api return correct amount of comment', () => {
     let anotherPostId
     beforeEach(async () => {
       Comment.destroy({ where: {} })
@@ -643,6 +643,7 @@ describe.only('test comment function', () => {
       assert(comments.every(c => c.commenter.username !== undefined))
     })
   })
+
 })
 
 after(async () => {

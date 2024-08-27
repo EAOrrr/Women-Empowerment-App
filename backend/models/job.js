@@ -10,6 +10,10 @@ Job.init({
     allowNull: false,
     defaultValue: UUIDV4(),
   },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   intro: {
     type: DataTypes.TEXT,
     allowNull: false,
