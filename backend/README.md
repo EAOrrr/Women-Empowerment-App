@@ -1,11 +1,13 @@
 # RESTAPIDocs
 
-> 当前进度： 文章功能、用户功能、留言模块和消息模块的基本功能可以正常使用（用户功能微信登录板块未测试）。
-> 8.27 新增收藏板块
+> 8.27后端进度： 文章模块、用户模块、留言模块、招聘启事、消息模块的基本功能可以正常使用（用户功能微信登录板块未测试）。
+> 8.27主要更新：
+> 1. 增加文章类型：津贴领取指引`guide`和工作报告`report`
+> 2. 增加帖子状态：`answered`回答但未结束
+> 3. 收藏功能
+> 4. 招聘启事后端完成 
 
-> TODO：
-> 1. 招聘启示各项，招聘启事各职业，招聘启事的评论
-> 3. 活动类型文章的评分与评论
+> TODO： 活动类型文章的评分与评论（路由控制器部分）
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
@@ -55,8 +57,8 @@
 * [显示特定id的文章](./apidocs/articles/id/get.md) : `GET /api/articles/:id`
 * [修改特定id的文章](./apidocs/articles/id/put.md): `PUT /api/articles/:id/`
 * [删除特定id的文章](./apidocs/articles/id/delete.md): `DELETE /api/articles/:id/`
-* [收藏特定id的文章](): `POST /api/articles/:id/follow`
-* [取消收藏特定id的文章](): `DELETE /api/articles/:id/follow`
+* [收藏特定id的文章](./apidocs/articles/id/follow/post.md): `POST /api/articles/:id/follow`
+* [取消收藏特定id的文章](./apidocs/articles/id/follow/delete.md): `DELETE /api/articles/:id/follow`
 > 以下端点与管理员发布文章有关
 * [上传图片](./apidocs/upload/images/post.md): `POST /api/upload/images`
 * [删除特定上传的图片](./apidocs/imageUrl/delete.md): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
@@ -77,11 +79,10 @@
 * [显示特定id的留言](./apidocs/posts/postId/comment/get.md) `GET /api/posts/:id/comments/`
 * [在特定id留言下发布评论](./apidocs/posts/postId/comment/post.md): `POST /api/posts/:postId/comments/`
 * [修改特定postId下的特定commentId评论](./apidocs/posts/postId/comment/put.md): `PUT /api/posts/:postId/commments/:commentId/`
-* [收藏特定id的留言](): `POST /api/posts/:id/follow`
-* [取消收藏特定id的留言](): `DELETE /api/posts/:id/follow`
+* [收藏特定id的留言](./apidocs/posts/postId/follow/post.md): `POST /api/posts/:id/follow`
+* [取消收藏特定id的留言](./apidocs/posts/postId/follow/delete.md): `DELETE /api/posts/:id/follow`
 
 ### 与招聘帖子`Recuitment`有关
-> `Recruitment`相关内容未实现，施工中...
 
 以下每个端点都会处理与显示与用户有关的信息，发送请求时要求提供用户的令牌`token`（`get`方法除外）
 * [显示所有招聘启事](./apidocs/recruitments/get.md) : `GET /api/recruitments/`
@@ -94,7 +95,9 @@
 * [删除recruitmentId的招聘启事的特定jobId工种](./apidocs/recruitments/recuitmentId/job/delete.md): `DELETE /api/recruitments/:recruitmentId/jobs/:jobId`
 * [在特定id招聘启事下发布评论](./apidocs/recruitments/recuitmentId/comment/post.md): `POST /api/recruitments/:recuitmentId/comments/`
 * [修改特定recuitmentId下的特定commentId评论](./apidocs/recruitments/recuitmentId/comment/put.md): `PUT /api/recruitments/:recuitmentId/commments/:commentId/`
-<!-- * [删除recuitmentId下的特定commentId评论](): `DELETE /api/recruitments/:recuitmentId/commments/:commentId/` -->
+* [删除recuitmentId下的特定commentId评论](): `DELETE /api/recruitments/:recuitmentId/commments/:commentId/`
+* [收藏特定id的招聘启示](./apidocs/recruitments/recuitmentId/follow/post.md): `POST /api/recruitments/:id/follow`
+* [取消收藏id的招聘启示](./apidocs/recruitments/recuitmentId/follow/delete.md): `DELETE /api/recruitments/:id/follow`
 
 ### 与消息`notification`相关
 以下每个端点会处理与显示与用户相关的信息，发送请求时要求用户提供令牌`token`
