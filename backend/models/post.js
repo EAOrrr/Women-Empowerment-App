@@ -21,7 +21,8 @@ Model.init({
   status: { // 状态
     type: DataTypes.ENUM(
       'in progress',  // 进行中
-      'done' // 已完成
+      'done', // 已完成
+      'answered', // 已回答（但未完成）
     ),
     allowNull: false,
     defaultValue: 'in progress',

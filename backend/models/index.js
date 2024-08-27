@@ -17,11 +17,6 @@ Post.belongsTo(User, { as: 'poster', foreignKey: 'userId' })
 User.hasMany(Comment,)
 Comment.belongsTo(User, { as: 'commenter', foreignKey: 'userId' })
 
-/*
-User.hasMany(Notification, {foreignKey: 'userId'})
-Notification.belongsTo(User, {foreignKey: 'notificationId'})
-
-*/
 // 与评论有关的关联
 Post.hasMany(Comment, {
   foreignKey: 'commentableId',
@@ -45,6 +40,7 @@ Article.hasMany(Comment, {
     commentable: 'article'
   }
 })
+
 Comment.belongsTo(Article, {
   constraints: false,
   foreignKey: 'commentableId'
@@ -81,19 +77,55 @@ User.hasMany(Notification, {
 })
 Notification.belongsTo(User, { as: 'notifiedUser', foreignKey: 'userId' })
 
-/*
+
 
 // 与用户关注有关的关联
 User.belongsToMany(Article, {
-  through: Follow,
-  as: 'likes'
+  through: {
+    model: Follow,
+    unique: false,
+    scope: {
+      followableType: 'article'
+    }
+  },
+  constraints: false,
+  as: 'followableArticles',
+  foreignKey: 'followerId',
 })
 
 Article.belongsToMany(User, {
-  through: 'Follow',
-  as: 'likers'
+  through: {
+    model: Follow,
+    unique: false
+  },
+  as: 'follower',
+  constraints: false,
+  foreignKey: 'followableId',
 })
-*/
+
+User.belongsToMany(Post, {
+  through: {
+    model: Follow,
+    unique: false,
+    scope: {
+      followableType: 'post'
+    }
+  },
+  constraints: false,
+  as: 'followablePosts',
+  foreignKey: 'followerId',
+})
+
+Post.belongsToMany(User, {
+  through: {
+    model: Follow,
+    unique: false
+  },
+  as: 'follower',
+  constraints: false,
+  foreignKey: 'followableId',
+})
+
 
 // 与用户行为有关的关联
 User.hasOne(Draft, {

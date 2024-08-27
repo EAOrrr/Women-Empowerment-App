@@ -35,9 +35,12 @@ function buildOrderClause(ordering, defaultOrdering, validOrderingFields) {
   // const validOrderingFields = ['createdAt', 'likes', 'views']
   if (!ordering) return [[defaultOrdering, 'DESC'], ['id', 'ASC']]
   const orderingCamel = hyphensToCamel(ordering)
-  if (validOrderingFields.includes(ordering)) {
+  console.log('ordering', `'${orderingCamel}'`, validOrderingFields, typeof orderingCamel)
+  if (validOrderingFields.includes(orderingCamel)) {
+    console.log('validOrderingFields')
     return [[orderingCamel, 'DESC'], ['id', 'ASC']]
   } else {
+    console.log('invalid ordering field')
     const error = new Error('Invalid ordering field')
     error.statusCode = 400
     throw error

@@ -30,6 +30,8 @@ module.exports = {
           'activity',
           'policy',
           'law',
+          'guide',
+          'report'
         ),
         allowNull: false,
       },
@@ -63,7 +65,14 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
-
+      score: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      },
+      number_of_score: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0,
+      }
     })
   },
 

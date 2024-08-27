@@ -18,7 +18,7 @@
 
 
 ```json
-  {
+  [{
     "id": "信息id",
     "message": "消息内容",
     "read": false, // 已读？
@@ -26,7 +26,7 @@
     "type": "post_created", // 目前支持三种消息类型：post_created, comment_reply, global
     "createdAt": "2024-08-12T07:37:03.771Z",
     "updatedAt": "2024-08-12T07:37:03.771Z",
-  },
+  }],
 ```
 
 ## Note

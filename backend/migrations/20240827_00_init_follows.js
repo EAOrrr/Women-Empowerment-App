@@ -9,17 +9,17 @@ module.exports = {
         allowNull: false,
         defaultValue: UUIDV4(),
       },
-      followedId: {
+      followable_id: {
         type: DataTypes.UUID,
         unique: 'followed_follower',
         allowNull: false,
       },
-      followedType: {
+      followable_type: {
         type: DataTypes.STRING,
         unique: 'followed_follower',
         allowNull: false,
       },
-      followerId: {
+      follower_id: {
         type: DataTypes.UUID,
         unique: 'followed_follower',
         allowNull: false,

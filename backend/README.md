@@ -1,12 +1,11 @@
 # RESTAPIDocs
 
 > 当前进度： 文章功能、用户功能、留言模块和消息模块的基本功能可以正常使用（用户功能微信登录板块未测试）。
+> 8.27 新增收藏板块
 
 > TODO：
 > 1. 招聘启示各项，招聘启事各职业，招聘启事的评论
-> 2. 收藏（Follow）功能，
 > 3. 活动类型文章的评分与评论
-> 4. 津贴领取和工作报告
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
@@ -41,6 +40,8 @@
 * [更改用户信息](./apidocs/user/me/put.md) : `PUT /api/users/me`
 * [显示对应用户信息](./apidocs/user/me/get.md) : `GET /api/users/me`
 * [通过微信注册新用户](./apidocs/user/post/post-wechat.md): `POST /api/users/wechat`
+* [获取用户所有收藏](): `GET /api/users/me/follows`
+* [获取用户对应类别的收藏](): `GET /api/users/me/follows/:type`
 > 此端口仅供调试使用
 > * [通过密码注册新用户](./apidocs/user/post/post-pwd.md): `POST /api/users/pwd`
 
@@ -54,6 +55,8 @@
 * [显示特定id的文章](./apidocs/articles/id/get.md) : `GET /api/articles/:id`
 * [修改特定id的文章](./apidocs/articles/id/put.md): `PUT /api/articles/:id/`
 * [删除特定id的文章](./apidocs/articles/id/delete.md): `DELETE /api/articles/:id/`
+* [收藏特定id的文章](): `POST /api/articles/:id/follow`
+* [取消收藏特定id的文章](): `DELETE /api/articles/:id/follow`
 > 以下端点与管理员发布文章有关
 * [上传图片](./apidocs/upload/images/post.md): `POST /api/upload/images`
 * [删除特定上传的图片](./apidocs/imageUrl/delete.md): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）
@@ -74,7 +77,8 @@
 * [显示特定id的留言](./apidocs/posts/postId/comment/get.md) `GET /api/posts/:id/comments/`
 * [在特定id留言下发布评论](./apidocs/posts/postId/comment/post.md): `POST /api/posts/:postId/comments/`
 * [修改特定postId下的特定commentId评论](./apidocs/posts/postId/comment/put.md): `PUT /api/posts/:postId/commments/:commentId/`
-<!-- * [删除postId下的特定commentId评论](): `DELETE /api/posts/:postId/commments/:commentId/` -->
+* [收藏特定id的留言](): `POST /api/posts/:id/follow`
+* [取消收藏特定id的留言](): `DELETE /api/posts/:id/follow`
 
 ### 与招聘帖子`Recuitment`有关
 > `Recruitment`相关内容未实现，施工中...

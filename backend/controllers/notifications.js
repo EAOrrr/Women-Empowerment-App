@@ -37,7 +37,7 @@ router.post('/',
 router.put('/:id',
   userExtractor,
   authorize(['admin', 'user']),
-  checkFields(['read']),
+  checkFields(['read', 'id']),
   async (req, res) => {
     const notification = await Notification.findByPk(req.params.id)
     if (!notification) {

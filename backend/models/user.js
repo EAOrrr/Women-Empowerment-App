@@ -1,7 +1,16 @@
 const { Model, DataTypes, UUIDV4 } = require('sequelize')
 const { sequelize } = require('../utils/db')
 
-class User extends Model{}
+class User extends Model{
+  async getFollowable(options) {
+    const articles = await this.getFollowableArticles(options)
+    const posts = await this.getFollowablePosts(options)
+    return {
+      articles,
+      posts,
+    }
+  }
+}
 
 User.init({
   id: {

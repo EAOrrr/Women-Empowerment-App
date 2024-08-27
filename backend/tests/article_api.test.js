@@ -404,7 +404,7 @@ describe('Updating an article', () => {
 
 })
 
-describe.only('Get article with query', () => {
+describe('Get article with query', () => {
   test('get articles with query limit', async () => {
     const response = await api
       .get('/api/articles?limit=3')
@@ -483,7 +483,7 @@ describe.only('Get article with query', () => {
     assert(articles.every(article => article.type === 'policy'))
   })
 
-  test.only('get articles with query keyword', async () => {
+  test('get articles with query keyword', async () => {
     const response = await api
       .get('/api/articles?keyword=first')
       .expect(200)

@@ -1,4 +1,4 @@
-const { User, Post, Comment, Notification } = require('../models')
+const { User, Post, Comment, Notification, Follow } = require('../models')
 const { Sequelize, Op } = require('sequelize')
 
 const router = require('express').Router()
@@ -144,7 +144,7 @@ router.get('/:id/comments', async (req, res) => {
     attributes: {
       exclude: ['commentableId', 'commentableType', 'userId']
     },
-    order: [['createdAt', 'DESC']],
+    order: [['createdAt', 'ASC']],
     include: {
       model: User,
       as: 'commenter',
@@ -233,7 +233,8 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
     })
     await Promise.all(admins.map(admin =>
       Notification.create({
-        message: `用户 ${req.user.username} 回应了留言 ${post.title}，请查看`,
+        message: `用户 ${req.user.username} 在 ${post.title} 留言下发表了新的回复\
+        ${comment.content.substring(0, 50)}，请查看`,
         userId: admin.id,
         jumpTo: `/posts/${post.id}/comments/${comment.id}`,
         type: 'comment_reply'
@@ -247,6 +248,8 @@ router.post('/:id/comments', userExtractor, authorize(['user', 'admin']), async 
       jumpTo: `/posts/${post.id}/comments/${comment.id}`,
       type: 'comment_reply'
     })
+    // 将该帖子状态 status 设置为 answered
+    await post.update({ status: 'answered' })
   }
   res.status(201).json(commentToReturn)
 })
@@ -285,6 +288,39 @@ router.put('/:id/comments/:commentId', checkFields(['likes']), async (req, res) 
   }
   console.log(commentToReturn)
   res.json(commentToReturn)
+})
+
+router.post('/:id/follow', userExtractor, authorize(['user', 'admin']), async (req, res) => {
+  const post = await Post.findByPk(req.params.id)
+  if (!post) {
+    return res.status(404).end()
+  }
+  // await post.addFollower(req.user)
+  const follow = await Follow.findOne({
+    where: {
+      followableId: post.id,
+      followableType: 'post',
+      followerId: req.user.id
+    }
+  })
+  if (follow) {
+    return res.status(409).json({ error: 'Already followed' })
+  }
+  await Follow.create({
+    followableId: post.id,
+    followableType: 'post',
+    followerId: req.user.id
+  })
+  res.status(201).end()
+})
+
+router.delete('/:id/follow', userExtractor, authorize(['user', 'admin']), async (req, res) => {
+  const post = await Post.findByPk(req.params.id)
+  if (!post) {
+    return res.status(404).end()
+  }
+  await post.removeFollower(req.user)
+  res.status(204).end()
 })
 
 module.exports = router

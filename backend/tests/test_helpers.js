@@ -1,4 +1,4 @@
-const { Article, User, Post, Comment, Notification, Image, Draft } = require('../models')
+const { Article, User, Post, Comment, Notification, Image, Draft, Follow } = require('../models')
 
 const initialArticles = [
   {
@@ -128,6 +128,11 @@ const draftsInDb = async () => {
   return drafts.map(d => d.toJSON())
 }
 
+const followsInDb = async () => {
+  const follows = await Follow.findAll()
+  return follows.map(f => f.toJSON())
+}
+
 const nonExistingId = async () => {
   const article = await Article.create({
     title: 'willremovethissoon',
@@ -189,6 +194,7 @@ module.exports = {
   usersInDb,
   postsInDb,
   commentsInDb,
+  followsInDb,
   notificationsInDb,
   imagesInDb,
   draftsInDb,

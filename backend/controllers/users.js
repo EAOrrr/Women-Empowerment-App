@@ -6,6 +6,7 @@ const router = require('express').Router()
 const User = require('../models/user')
 const { WECHAT_APPID, WECHAT_SECRET } = require('../utils/config')
 const { userExtractor, authorize } = require('../utils/middleware')
+const { Follow, Article } = require('../models')
 
 router.post('/pwd', async (req, res) => {
   const { username, password, role } = req.body
@@ -106,6 +107,30 @@ router.put('/me', userExtractor, authorize(['admin', 'user']), async (req, res) 
   await user.update(updatedUser)
   res.json(user)
 })
+
+router.get('/me/follows', userExtractor, authorize(['admin', 'user']), async (req, res) => {
+  const user = req.user
+  const articles = await user.getFollowable()
+
+  res.json(articles)
+
+})
+
+router.get('/me/follows/:type', userExtractor, authorize(['admin', 'user']), async (req, res) => {
+  const user = req.user
+  const { type } = req.params
+  if (type === 'articles') {
+    const articles = await user.getFollowableArticles()
+    return res.json(articles)
+  }
+  if (type === 'posts') {
+    const posts = await user.getFollowablePosts()
+    return res.json(posts)
+  }
+  return res.status(400).json({ error: 'Invalid type' })
+})
+
+
 
 module.exports = router
 

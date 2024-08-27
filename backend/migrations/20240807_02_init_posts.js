@@ -20,6 +20,7 @@ module.exports = {
       status: {
         type: DataTypes.ENUM(
           'in progress',
+          'answered',
           'done',
         ),
         defaultValue: 'in progress',
