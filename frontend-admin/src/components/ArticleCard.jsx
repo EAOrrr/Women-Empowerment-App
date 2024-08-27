@@ -23,6 +23,8 @@ const typeName = {
   law: '法律条文',
   policy: '政策文件',
   activity: '活动通知',
+  guide: '津贴领取',
+  report: '工作报告',
 }
 
 const ArticleCard = ({ article }) => {

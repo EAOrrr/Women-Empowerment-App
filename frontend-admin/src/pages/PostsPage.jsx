@@ -7,6 +7,7 @@ const statuses = [
   { label: '全部', value: '' },
   { label: '进行中', value: 'in-progress' },
   { label: '已结束', value: 'done' },
+  { label: '已回答', value: 'answered' },
 ]
 
 const orderings = [
@@ -42,20 +43,21 @@ const PostsPage = () => {
       <h1>留言板</h1>
       <SearchBar />
       <div>
-        <Selector
-          label="状态"
-          value={status}
-          options={statuses}
-          defaultValue={statuses[0].value}
-          handleChange={handleStatusChange}
-          sx={{ width: '150px', margin: '10px' }}
-        />
+       
         <Selector
           label="排序方式"
           value={ordering}
           options={orderings}
           defaultValue={orderings[0].value}
           handleChange={handleOrderingChange}
+          sx={{ width: '150px', margin: '10px' }}
+        />
+        <Selector
+          label="状态"
+          value={status}
+          options={statuses}
+          defaultValue={statuses[0].value}
+          handleChange={handleStatusChange}
           sx={{ width: '150px', margin: '10px' }}
         />
       </div>

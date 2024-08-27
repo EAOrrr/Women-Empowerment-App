@@ -10,6 +10,8 @@ const types = [
   { label: '法律条文', value: 'law' },
   { label: '政策文件', value: 'policy' },
   { label: '活动通知', value: 'activity' },
+  { label: '工作报告', value: 'report' },
+  { label: '津贴领取', value: 'guide' },
 ]
 
 const ArticleForm = ({ handleSubmit, article, buttonLable }) => {

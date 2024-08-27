@@ -4,6 +4,7 @@ import AddIcon from '@mui/icons-material/Add'
 import { Link, useSearchParams } from 'react-router-dom'
 import ArticleList from '../components/ArticleList'
 import ArticleSearchBar from '../components/SearchBar'
+import { Box, Fab, IconButton } from '@mui/material'
 
 const orderings = [
   { label: '最新发布', value: 'created-at' },
@@ -19,7 +20,7 @@ const types = [
 ]
 
 
-const Test = () => {
+const ArticlesPage = () => {
 
   const [searchParams, setSearchParams] = useSearchParams()
   const ordering = searchParams.get('ordering') || ''
@@ -38,11 +39,11 @@ const Test = () => {
     setSearchParams(newParams)
   }
   return (
-    <div>
+    <Box>
       <h1>文章管理</h1>
-      <Button variant="outlined" startIcon={<AddIcon />} size='large' component={Link} to='/articles/create'>
+      {/* <Button variant="outlined" startIcon={<AddIcon />} size='large' component={Link} to='/articles/create'>
         创建新文章
-      </Button>
+      </Button> */}
       <ArticleSearchBar />
 
       <div>
@@ -66,9 +67,19 @@ const Test = () => {
       </div>
       <ArticleList />
 
-    </div>
+      <Fab color="primary" aria-label="add"
+        sx={{
+          position: 'fixed',
+          bottom: 24,
+          right: 24,
+        }}>
+        <IconButton component={Link} to='/articles/create' color='inherit'>
+          <AddIcon />
+        </IconButton>
+      </Fab>
+    </Box>
   )
 }
 
 
-export default Test
+export default ArticlesPage

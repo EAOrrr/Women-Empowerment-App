@@ -23,6 +23,10 @@ import PostPage from './pages/PostPage'
 import NotificationPage from './pages/NotificationPage'
 import ConstructingPage from './pages/ConstructingPage'
 import OtherPage from './pages/OtherPage'
+import ArticleEditPage from './pages/ArticleEditPage'
+import RecruitmentsPage from './pages/RecruitmentsPage'
+import RecruitmentCreatePage from './pages/RecruitmentCreatePage'
+import RecruitmentPage from './pages/RecruitmentPage'
 
 
 function App() {
@@ -40,17 +44,20 @@ function App() {
           <Route path='/login' element={!user.loading && user.info ? <Navigate to='/posts'/> : <Login />} />
           <Route path='/articles' element={<ProtectedRoute><ArticlesPage/></ProtectedRoute>} />
           <Route path='/articles/create' element={<ProtectedRoute><ArticlesCreatePage /></ProtectedRoute>} />
-          <Route path='/articles/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
-          <Route path='/recruitment' element={<ProtectedRoute><ConstructingPage /></ProtectedRoute>} />
+          <Route path='/articles/:id' element={<ProtectedRoute><ArticleEditPage /></ProtectedRoute>} />
+          <Route path='/recruitment' element={<ProtectedRoute><RecruitmentsPage /></ProtectedRoute>} />
+          <Route path='/recruitment/create' element={<ProtectedRoute><RecruitmentCreatePage /></ProtectedRoute>} />
+          <Route path='/recruitment/:id' element={<ProtectedRoute><RecruitmentPage /></ProtectedRoute>} />
           <Route path='/about' element={<ProtectedRoute><ConstructingPage /></ProtectedRoute>} />
           <Route path='/other' element={<ProtectedRoute><OtherPage /></ProtectedRoute>} />
           <Route path='/posts' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />
           <Route path='/posts/create' element={<ProtectedRoute><PostCreatePage /></ProtectedRoute>} />
           <Route path='/posts/:id' element={<ProtectedRoute><PostPage /></ProtectedRoute>} />
           <Route path='/notifications' element={<ProtectedRoute><NotificationPage /></ProtectedRoute>} />
-          <Route path='test' element={<ProtectedRoute><Test /></ProtectedRoute>} />
+          <Route path='test/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
           {/* <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} /> */}
-          <Route path='/' element={<Navigate to='/posts'/ >} />
+          <Route path='/' element={<Navigate to='/posts' />} />
+          <Route path='*' element={<ConstructingPage />}/>
         </Routes>
       </div>
     </div>

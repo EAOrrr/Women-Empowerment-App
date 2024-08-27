@@ -41,9 +41,6 @@ axios.interceptors.response.use((response) => {
     return axios.post('http://localhost:3001/api/login/refresh',
       { refreshToken: user.refreshToken },
     ).then(res => {
-      console.log(res)
-      console.log('oldToken', localStorage.getItem('token'))
-      console.log('new token from refresh', res.data.token)
 
       if (res.status === 200) {
         storage.saveUser(res.data)
@@ -74,6 +71,7 @@ export const axiosBaseQuery =
         return { data: result.data }
       } catch (axiosError) {
         console.log(axiosError)
+        console.log(axiosError.response.data)
         const err = axiosError
         return {
           error: {

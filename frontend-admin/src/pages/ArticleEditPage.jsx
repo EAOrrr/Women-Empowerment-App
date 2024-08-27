@@ -1,11 +1,9 @@
 import { useDispatch } from 'react-redux'
-import { useParams, Link } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import { useRef, useState } from 'react'
-import { Box, CircularProgress, Typography, Fab, IconButton } from '@mui/material'
-import AddIcon from '@mui/icons-material/Add'
+import { Box, CircularProgress, Typography } from '@mui/material'
 import { createNotification } from '../reducers/notificationReducer'
 import ArticleForm from '../components/ArticleForm'
-import EditIcon from '@mui/icons-material/Edit';
 import {
   Dialog,
   DialogActions,
@@ -16,15 +14,7 @@ import {
 import { useGetArticleQuery, useUpdateArticleMutation } from '../services/articlesApi'
 import Loading from '../components/Loading'
 
-const typeName = {
-  law: '法律条文',
-  policy: '政策文件',
-  activity: '活动通知',
-  guide: '津贴领取',
-  report: '工作报告',
-}
-
-const ArticlePage = () => {
+const ArticleEditPage = () => {
   const dispatch = useDispatch()
   const actionRef = useRef(null)
 
@@ -122,31 +112,13 @@ const ArticlePage = () => {
   }
 
   return (
-    <Box fontFamily='Noto Serif SC'>
-      <h1>{article.title}</h1>
-      <Typography variant="body2" fontFamily='Noto Serif SC'>{typeName[article.type]}</Typography>
-      {article.author && <div><Typography variant="body2" fontFamily='Noto Serif SC'>{article.author}</Typography></div>}
-      <Typography variant="body2" fontFamily='Noto Serif SC'>{(new Date(article.createdAt)).toLocaleDateString()}</Typography>
-      <Typography variant="body1" fontFamily='Noto Serif SC'>
-        {article.content.split('\n').map((line, index) => (
-          <span key={index}>
-            {line}
-            <br />
-          </span>
-        ))}
-      </Typography>
-      <Fab color="primary" aria-label="add"
-        sx={{
-          position: 'fixed',
-          bottom: 24,
-          right: 24,
-        }}>
-        <IconButton component={Link} to={`/articles/${article.id}/edit`} color='inherit'>
-          <EditIcon />
-        </IconButton>
-      </Fab>
-    </Box>
+    <div>
+      <h1>文章编辑</h1>
+
+      <ArticleForm article={article} handleSubmit={handleOpenDialog} buttonLable='更新文章'/>
+      <ConfirmDialog />
+    </div>
   )
 }
 
-export default ArticlePage
+export default ArticleEditPage
