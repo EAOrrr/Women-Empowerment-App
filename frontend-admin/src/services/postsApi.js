@@ -1,7 +1,7 @@
 import { createApi } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from '../services/axios'
 
-const baseUrl = 'http://localhost:3001/api/posts'
+const baseUrl = '/api/posts'
 
 export const postsApi = createApi({
   reducerPath: 'postsApi',

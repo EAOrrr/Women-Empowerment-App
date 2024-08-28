@@ -13,7 +13,6 @@ const ArticleList = () => {
   const page = parseInt(searchParams.get('page')) || 1
   const keyword = searchParams.get('search') || ''
   let offset = (page - 1) * articlePerPage
-  console.log('offset', offset)
   const {
     data,
     isFetching,

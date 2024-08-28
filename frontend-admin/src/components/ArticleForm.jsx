@@ -24,7 +24,7 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
 
   const [tags, setTags] = useState((article && article.tags) || [])
   const [type, setType] = useState((article && article.type) || 'none')
-  const [isAnnouncement, setIsAnnouncement] = useState(false)
+  const [isAnnouncement, setIsAnnouncement] = useState((article && article.isAnnouncement) ||false)
 
   const handleTypeChange = (event) => {
     setType(event.target.value)
@@ -47,17 +47,21 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
     setIsAnnouncement(event.target.checked)
   }
 
+  const onSubmit = (event) => {
+    event.preventDefault()
+    handleSubmit({
+      title: title.value,
+      content: content.value,
+      author: author.value,
+      type,
+      tags,
+      isAnnouncement,
+    })
+  }
+
   return (
     <Box component='form'
-      onSubmit={handleSubmit({
-        title: title.value,
-        content: content.value,
-        author: author.value,
-        type,
-        tags,
-        isAnnouncement,
-      })
-      }>
+      onSubmit={onSubmit}>
       <div>
         <div>
           <Selector

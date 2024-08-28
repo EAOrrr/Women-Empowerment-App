@@ -11,10 +11,8 @@
 const TOKEN_KEY = 'token'
 const REFRESH_TOKEN_KEY = 'refreshToken'
 const saveUser = (user) => {
-  console.log('Before saving new token:', loadUser());
   localStorage.setItem(TOKEN_KEY, user.token)
   localStorage.setItem(REFRESH_TOKEN_KEY, user.refreshToken)
-  console.log('After saving new token:', loadUser());
 }
 
 const loadUser = () => {

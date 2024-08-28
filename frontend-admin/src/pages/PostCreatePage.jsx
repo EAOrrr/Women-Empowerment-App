@@ -13,7 +13,6 @@ const PostCreatePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault()
-    console.log(title.value, content.value)
     createPost({
       title: title.value,
       content: content.value

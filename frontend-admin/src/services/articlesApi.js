@@ -1,7 +1,7 @@
 import { createApi, } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from './axios'
 
-const baseUrl = 'http://localhost:3001/api/articles'
+const baseUrl = '/api/articles'
 
 export const articlesApi = createApi({
   reducerPath: 'articlesApi',
@@ -18,8 +18,6 @@ export const articlesApi = createApi({
         limit = 12,
         total = false,
       }) => {
-        console.log('limit', limit)
-        console.log('url', `?offset=${offset}&ordering=${ordering}&type=${type}&keyword=${keyword}&limit=${limit}&total=${total}`)
         return ({
           url: `?offset=${offset}&ordering=${ordering}&type=${type}&keyword=${keyword}&limit=${limit}&total=${total}`,
           method: 'GET',

@@ -71,11 +71,8 @@ const ArticleEditPage = () => {
   }
 
   const handleOpenDialog = (updatedArticle) => {
-    return (event) => {
-      event.preventDefault()
-      setDialogOpen(true)
-      setUpdatedArticle(updatedArticle)
-    }
+    setDialogOpen(true)
+    setUpdatedArticle(updatedArticle)
   }
 
   const ConfirmDialog = () => (

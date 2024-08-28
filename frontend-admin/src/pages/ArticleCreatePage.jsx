@@ -11,37 +11,34 @@ const ArticlesCreatePage = () => {
   const [createArticle] = useCreateArticleMutation()
 
   const handleSubmit = (newArticle) => {
-    return (event) => {
-      event.preventDefault()
-      if (newArticle === 'none') {
-        console.log('请选择文章类型')
-        dispatch(createNotification(
-          '请输入文章类型',
-          'error'
-        ))
-      } else {
-        createArticle(newArticle)
-          .unwrap()
-          .then((result) => {
-            dispatch(createNotification(`创建文章${result.title}成功`, 'success'))
-            navigate('/articles')
-          }).catch((error) => {
-            // console.error(error)
-            switch (error.status) {
-            case 401:
-              dispatch(createNotification('请登录', 'error'))
-              break
-            case 403:
-              dispatch(createNotification('无创建文章权限', 'error'))
-              break
-            case 500:
-              dispatch(createNotification('服务器错误', 'error'))
-              break
-            default:
-              dispatch(createNotification('创建文章失败', 'error'))
-            }
-          })
-      }
+
+    if (newArticle === 'none') {
+      dispatch(createNotification(
+        '请输入文章类型',
+        'error'
+      ))
+    } else {
+      createArticle(newArticle)
+        .unwrap()
+        .then((result) => {
+          dispatch(createNotification(`创建文章${result.title}成功`, 'success'))
+          navigate('/articles')
+        }).catch((error) => {
+          // console.error(error)
+          switch (error.status) {
+          case 401:
+            dispatch(createNotification('请登录', 'error'))
+            break
+          case 403:
+            dispatch(createNotification('无创建文章权限', 'error'))
+            break
+          case 500:
+            dispatch(createNotification('服务器错误', 'error'))
+            break
+          default:
+            dispatch(createNotification('创建文章失败', 'error'))
+          }
+        })
     }
   }
   return (

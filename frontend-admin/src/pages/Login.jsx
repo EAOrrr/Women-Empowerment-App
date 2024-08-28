@@ -45,7 +45,6 @@ const Login = () => {
   const handleLogin = async (event) => {
     event.preventDefault()
     // console.log(username.value, password.value)
-    console.log('submit')
     try {
       const credentials = {
         username: username.value,
@@ -57,7 +56,6 @@ const Login = () => {
       navigate('/posts')
     }
     catch (exception) {
-      console.log('wrong credentials')
       dispatch(createNotification('用户名或密码错误', 'error'))
     }
   }

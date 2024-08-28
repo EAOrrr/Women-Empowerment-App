@@ -51,15 +51,11 @@ const articlesSlice = createSlice({
 
 export const initializeArticles = () => {
   return async dispatch => {
-    console.log('Fetching articles')
     const response = await articleService.getAll('total=true')
     dispatch(setArticles({
       data: response.articles,
       count: response.count
     }))
-    console.log('Fetched articles')
-    console.log(response.articles)
-    console.log(response.count)
   }
 }
 
@@ -67,7 +63,6 @@ export const createArticle = (newArticle) => {
   return async dispatch => {
     try {
       const article = await articleService.create(newArticle)
-      console.log(article)
       dispatch(appendArticle(article))
       dispatch(createNotification(`创建文章${article.title}成功`, 'success'))
     } catch (error) {

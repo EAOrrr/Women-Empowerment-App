@@ -13,11 +13,9 @@ const EditRecruitmentTab = ({ recruitment }) => {
       })
       .unwrap()
       .then(() => {
-        console.log('update success')
         dispatch(createNotification('更新招聘信息成功', 'success'))
       })
       .catch((error) => {
-        console.log('update failed')
         switch (error.status) {
         case 401:
           dispatch(createNotification('请登录', 'error'))

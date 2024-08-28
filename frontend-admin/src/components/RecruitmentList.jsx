@@ -26,8 +26,10 @@ const RecruitmentList = () => {
     }
   }
 
-  console.log(data)
   const recruitments = data
+  if (recruitments.length === 0) {
+    return <div>暂无招聘信息</div>
+  }
 
   return (
     <div>

@@ -14,7 +14,6 @@ const RecruitmentJobAddTab = ({ recruitmentId }) => {
   })
       .unwrap()
       .then(() => {
-        console.log('job success')
         dispatch(createNotification('职位添加成功', 'success'))
       })
       .catch((error) => {

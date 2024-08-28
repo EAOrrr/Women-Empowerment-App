@@ -17,12 +17,9 @@ const NotificationCreate = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
-    console.log('submit')
-    console.log(message.value)
     createGlobalNotification({ message: message.value })
       .unwrap()
       .then(() => {
-        console.log('success')
         dispatch(createNotification(`发送消息成功`, 'success'))
         message.onReset()
       })

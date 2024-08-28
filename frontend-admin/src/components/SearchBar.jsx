@@ -15,7 +15,6 @@ const SearchBar = () => {
 
   const handleSearch = (event) => {
     event.preventDefault()
-    console.log('searching', search)
     const newParams = new URLSearchParams(searchParams)
     newParams.set('search', search)
     newParams.set('page', 1)

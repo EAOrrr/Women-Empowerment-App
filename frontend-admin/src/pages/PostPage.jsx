@@ -22,15 +22,10 @@ const PostPage = () => {
   } = useGetPostQuery(postId)
 
   const commentId = location.state?.commentId
-  console.log('commentId', commentId, location.state)
-
-  console.log('location', location)
 
   const [createComment, ] = useCreatePostCommentMutation()
 
   const handleSubmit = (value) => {
-    console.log(value)
-    console.log('submit')
     createComment({ postId, content: value })
       .unwrap()
       .then(() => {
@@ -45,7 +40,6 @@ const PostPage = () => {
   useEffect(() => {
     if (commentId) {
       const element = document.getElementById(`comment-${commentId}`);
-      console.log('element', element)
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
       }
@@ -64,7 +58,6 @@ const PostPage = () => {
       </Box>
     )
   }
-  console.log('post', post)
   const username = post.poster.username
 
   return (

@@ -66,10 +66,6 @@ const NotificationList = () => {
   }
 
   const processedNotifications = filterType(filterRead(notifications, read), type)
-  console.log(processedNotifications)
-
-
-  console.log(notifications)
   return (
     <div>
       <div>

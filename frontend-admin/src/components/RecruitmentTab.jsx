@@ -12,7 +12,7 @@ const JobsTab = ({ recruitment }) => {
       {jobs.length > 0
         ? (<div>
           {jobs.map(j =>
-            (<JobCard job={j} key={j.id} />)
+            (<JobCard job={j} key={j.id} recruitmentId={recruitment.id}/>)
           )}
         </div>)
         : (<Container>暂无岗位</Container>)}

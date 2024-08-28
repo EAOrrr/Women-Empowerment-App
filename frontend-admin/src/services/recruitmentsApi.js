@@ -1,7 +1,7 @@
 import { createApi, } from '@reduxjs/toolkit/query/react'
 import { axiosBaseQuery } from './axios'
 
-const baseUrl = 'http://localhost:3001/api/recruitments'
+const baseUrl = '/api/recruitments'
 
 export const recruitmentsApi = createApi({
   reducerPath: 'recruitmentsApi',
@@ -70,7 +70,7 @@ export const recruitmentsApi = createApi({
 
     deleteRecruitmentJob: builder.mutation({
       query: ({ id, jobId }) => ({
-        url: `/${id}/jobs/${id}`,
+        url: `/${id}/jobs/${jobId}`,
         method: 'DELETE',
       }),
       invalidatesTags: ['Recruitment'],

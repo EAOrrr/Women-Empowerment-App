@@ -57,7 +57,6 @@ const PostList = () => {
     }
   }
 
-  console.log(data)
   const { posts, count } = data
 
   return (

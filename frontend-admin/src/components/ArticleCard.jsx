@@ -55,7 +55,6 @@ const ArticleCard = ({ article }) => {
   }
 
   const handleDelete = () => {
-    console.log('delete article', article.id)
     setDialogOpen(true)
   }
 

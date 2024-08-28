@@ -19,14 +19,12 @@ const CommentsTab = ({ recruitmentId }) => {
   const [createComment, ] = useCreateRecruitmentCommentMutation()
   const handleSubmit = (content) => {
     const comment = { content }
-    console.log(comment)
     createComment({
       id: recruitmentId,
       comment
   })
       .unwrap()
       .then(() => {
-        console.log('comment success')
         dispatch(createNotification('评论成功', 'success'))
       })
       .catch((error) => {

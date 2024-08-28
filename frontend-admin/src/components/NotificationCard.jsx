@@ -53,11 +53,8 @@ const NotificationCard = ({ notification }) => {
         console.error(error)
       })
   }
-  console.log(notification.jumpTo)
 
   const handleRead = (event) => {
-    console.log('checked', event.target.checked)
-    console.log(notification.id)
     updateNotification({
       id: notification.id,
       read: event.target.checked

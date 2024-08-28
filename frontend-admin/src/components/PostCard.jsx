@@ -13,8 +13,22 @@ import ThumbUpIcon from '@mui/icons-material/ThumbUp'
 
 import { Link } from 'react-router-dom'
 
+const statuses = {
+  'in progress': {
+    color: 'success.light',
+    text: '进行中'
+  },
+  'done': {
+    color: 'error.light',
+    text: '已完成'
+  },
+  'answered': {
+    color: 'warning.light',
+    text: '已回答'
+  },
+}
+
 const PostCard = ({ post }) => {
-  console.log(post)
   const createdDate = new Date(post.createdAt)
   const updatedDate = new Date(post.updatedAt)
   return (
@@ -34,9 +48,29 @@ const PostCard = ({ post }) => {
                 {post.content}
               </Typography>
             </Box>
+            {/* <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}> */}
+            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <Typography 
+                variant="body2" 
+                sx={{ 
+                  mb: 1, // Add margin bottom to create space below status
+                  py: 0.5, 
+                  px: 1, 
+                  border: '1px solid', 
+                  borderColor: (statuses[post.status]).color, 
+                  borderRadius: 0, 
+                  // backgroundColor: 'secondary.light',
+                  color: (statuses[post.status]).color,
+                  textAlign: 'center',
+                  fontFamily: 'Noto Serif SC',
+                }}
+              >
+                {statuses[post.status].text}
+              </Typography>
             <Typography variant='body1' fontFamily='Noto Serif SC'>
             总回复数：{post.numberOfComments}
             </Typography>
+            </Box>
           </Box>
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', flexDirection: 'column' }}>
             <Typography variant='body2' fontFamily='Noto Serif SC'>

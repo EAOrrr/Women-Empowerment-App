@@ -31,7 +31,6 @@ const RecruitmentPage = () => {
   if (isError) {
     return <div>Error</div>
   }
-  console.log(recruitment)
   return (
     <div>
       <h1>{recruitment.name}</h1>
