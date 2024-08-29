@@ -58,6 +58,7 @@ The `/api/articles/` endpoint supports the following query parameters:
 | cursor    | string | 用于分页的游标，base64编码的字符串，在上次请求中返回 |
 | offset  | number| 用于分页的偏移量，从 `offset+1`篇文章后返回，默认为0 |
 | total | boolean | 如果`total`为真，则返回查询文章的总数`count`，否则`count`为`undefined`
+| is-announcement（未实装） | string | 可能值为`true`，`false`，`all`，若为`true`则只返回公告文章，若为`false`则只返回非公告文章，若为`all`则返回全部
 
 
 Example usage:

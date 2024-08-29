@@ -26,18 +26,11 @@ module.exports = {
         defaultValue: null
       },
       type: {
-        type: DataTypes.ENUM(
-          'activity',
-          'policy',
-          'law',
-          'guide',
-          'report'
-        ),
+        type: DataTypes.STRING,
         allowNull: false,
-      },
-      cover: {
-        type: DataTypes.BLOB,
-        defaultValue: null
+        validate: {
+          isIn: [['activity', 'policy', 'law', 'guide', 'report']],
+        },
       },
       tags: {
         type: DataTypes.ARRAY(DataTypes.STRING),

@@ -27,19 +27,13 @@ Article.init({
     defaultValue: null
   },
   type: {
-    type: DataTypes.ENUM(
-      'activity',
-      'policy',
-      'law',
-      'guide',
-      'report'
-    ),
-    allowNull: false
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      isIn: [['activity', 'policy', 'law', 'guide', 'report']],
+    },
   },
-  cover: {
-    type: DataTypes.BLOB,
-    defaultValue: null
-  },
+
   views: { // 浏览数
     type: DataTypes.INTEGER,
     allowNull: false,

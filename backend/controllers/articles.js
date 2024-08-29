@@ -117,7 +117,7 @@ router.put('/:id',
     if (!article) {
       return res.status(404).end()
     }
-    const { views, likes, title, content, type, follow, isAnnouncement } = req.body
+    const { views, likes, title, content, type, isAnnouncement } = req.body
     if (!req.user || req.user.role !== 'admin') {
       if (title || content || type || isAnnouncement) {
         return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
@@ -126,7 +126,7 @@ router.put('/:id',
       if (title) article.title = title
       if (content) article.content = content
       if (type) article.type = type
-      if (isAnnouncement) article.isAnnouncement = isAnnouncement
+      if (isAnnouncement !== undefined) article.isAnnouncement = isAnnouncement
     }
     if (views) article.views = views
     if (likes) article.likes = likes

@@ -3,11 +3,35 @@ const { Umzug, SequelizeStorage } = require('umzug')
 const { DATABASE_URL } = require('./config')
 
 const sequelize = new Sequelize(DATABASE_URL,
-  // {
-  //   dialect: 'postgres',
+  {
+    dialect: 'postgres',
+    dialectOptions: {
+      entrypt: true,
+      ssl: {
+        require: true,
+        rejectUnauthorized: false
+      }
+    },
   //   logging: false,
-  // }
+  }
 )
+
+// const sequelize = new Sequelize('a-million-plan', 'AzureUser', 'A-Million-Plan', {
+//   host: 'a-million-plan.postgres.database.azure.com',
+//   dialect: 'postgres',
+//   ssl: {
+//     require: true,
+//   }
+// })
+
+// const sequelize = new Sequelize('dbForDev', 'AzureUser', 'Azure@User', {
+//   host: 'a-million-plan.database.windows.net',
+//   dialect: 'mssql',
+//   // dialect: 'postgres',
+//   dialectOptions: {
+//     encrypt: true
+//   }
+// });
 
 const migrationConf = {
   migrations: {
@@ -36,7 +60,9 @@ const runMigrations = async () => {
 }
 
 const connectToDatabase = async () => {
+
   try {
+    console.log('try to connect')
     await sequelize.authenticate()
     await runMigrations()
     console.log('database connected')

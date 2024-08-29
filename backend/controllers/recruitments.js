@@ -85,6 +85,7 @@ router.delete('/:id', userExtractor, authorize(['admin']), async (req, res) => {
 
 // POST /api/recruitments/:id/comments
 router.post('/:id/comments', userExtractor, authorize(['admin', 'user']), async (req, res) => {
+  console.log(req.body)
   const recruitment = await Recruitment.findByPk(req.params.id)
   if (!recruitment) {
     return res.status(404).end()

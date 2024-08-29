@@ -57,6 +57,7 @@ The `/api/articles/` endpoint supports the following query parameters:
 
 ## Notes 
 ### Query
+（暂未实现）
 
 The `/api/recruitments/` endpoint supports the following query parameters:
 
