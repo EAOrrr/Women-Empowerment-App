@@ -12,26 +12,11 @@ const sequelize = new Sequelize(DATABASE_URL,
         rejectUnauthorized: false
       }
     },
-  //   logging: false,
   }
 )
 
-// const sequelize = new Sequelize('a-million-plan', 'AzureUser', 'A-Million-Plan', {
-//   host: 'a-million-plan.postgres.database.azure.com',
-//   dialect: 'postgres',
-//   ssl: {
-//     require: true,
-//   }
-// })
+// const sequelize = new Sequelize(DATABASE_URL, )
 
-// const sequelize = new Sequelize('dbForDev', 'AzureUser', 'Azure@User', {
-//   host: 'a-million-plan.database.windows.net',
-//   dialect: 'mssql',
-//   // dialect: 'postgres',
-//   dialectOptions: {
-//     encrypt: true
-//   }
-// });
 
 const migrationConf = {
   migrations: {

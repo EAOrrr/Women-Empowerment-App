@@ -1,25 +1,76 @@
-const { Sequelize } = require('sequelize')
-const { Recruitment, Job, Follow } = require('../models')
+const { Sequelize, Op } = require('sequelize')
+const { Recruitment, Job, Follow, Article } = require('../models')
 const router = require('express').Router()
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
+const { buildOrderClause, generateCursor, buildPaginationCondition } = require('../utils/helper')
 
 // TODO: recruitments controller 路由控制器
 // GET /api/recruitments
 router.get('/', async (req, res) => {
+  const { keyword, limit, offset, ordering, cursor } = req.query
+  const keywords = keyword
+    ? [...new Set(nodejieba.cut(keyword, true))]
+    : null
+
+  if (offset && cursor) {
+    return res.status(400).json({ error: 'Cannot use both cursor and offset' })
+  }
+
+  const where = buildWhereClause({ keywords, cursor })
+  const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'updatedAt', 'likes', 'views'])
   const recruitments = await Recruitment.findAll({
     attributes: {
       include: [
         [Sequelize.literal('(SELECT COUNT(*) from comments as c WHERE c.commentable_id = recruitment.id AND c.commentable_type = \'recruitment\')'), 'numberOfComments']
       ]
     },
+    order,
+    limit: (limit && parseInt(limit)),
+    offset: (!cursor && offset) || 0,
     include: [{
       model: Job,
       attributes: ['name']
     }]
   })
 
-  res.json(recruitments)
+  const count = await Article.count({ where })
+
+  if (recruitments.length > 0 && !offset) {
+    const cursor = generateCursor(recruitments[recruitments.length - 1], ordering)
+    res.json({ recruitments, cursor, count })
+  } else {
+    res.json({ recruitments, count })
+  }
+
+  // res.json(recruitments)
 })
+
+function buildWhereClause({ keywords, cursor}) {
+  const where = {}
+  if (keywords) {
+    const keywordConditions = keywords.map(k => ({
+      [Op.or]: [
+        { title: { [Op.iLike]: `%${k}%` } },
+        { intro: { [Op.iLike]: `%${k}%` } },
+        { province: { [Op.iLike]: `%${k}%` } },
+        { city: { [Op.iLike]: `%${k}%` } },
+        { district: { [Op.iLike]: `%${k}%` } },
+        { street: { [Op.iLike]: `%${k}%` } },
+        { address: { [Op.iLike]: `%${k}%` } },
+        { name: { [Op.iLike]: `%${k}%` } },
+        { phone: { [Op.iLike]: `%${k}%` } },
+      ]
+    }))
+    where[Op.and] = keywordConditions
+  }
+
+  if (cursor) {
+    const cursorCondition = buildPaginationCondition(cursor)
+    if (cursorCondition) {
+      where[Op.and] = where[Op.and] ? [...where[Op.and], cursorCondition] : [cursorCondition]
+    }
+  }
+}
 
 // POST /api/recruitments
 router.post('/', userExtractor, authorize('admin'), async (req, res) => {
