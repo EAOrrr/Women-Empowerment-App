@@ -6,7 +6,6 @@ const router = require('express').Router()
 const User = require('../models/user')
 const { WECHAT_APPID, WECHAT_SECRET } = require('../utils/config')
 const { userExtractor, authorize } = require('../utils/middleware')
-const { Follow, Article } = require('../models')
 
 router.post('/pwd', async (req, res) => {
   const { username, password, role } = req.body

@@ -3,7 +3,7 @@ const { Article, Follow } = require('../models')
 
 const nodejieba = require('nodejieba')
 const router = require('express').Router()
-const { userExtractor, authorize } = require('../utils/middleware')
+const { userExtractor, authorize, checkFields } = require('../utils/middleware')
 const { buildOrderClause, buildPaginationCondition, generateCursor } = require('../utils/helper')
 
 // TODO: 根据相关度排序
@@ -27,7 +27,9 @@ router.get('/', async (req, res) => {
   }
 
   const articles = await Article.findAll({
-    attributes: { exclude: ['content'] },
+    attributes: {
+      exclude: ['content']
+    },
     where,
     order,
     limit: (limit && parseInt(limit)),
@@ -61,12 +63,6 @@ function buildWhereClause({ type, keywords, tags, cursor }) {
       ]
     }))
 
-    // where[Op.and] = [{
-    //   [Op.or]: [
-    //     { title: { [Op.iLike]: `%${keyword}%` } },
-    //     { content: { [Op.iLike]: `%${keyword}%` } },
-    //   ]
-    // }]
     where[Op.and] = [{ [Op.or]: keywordConditions }]
   }
 
@@ -103,15 +99,23 @@ router.get('/:id', async(req, res) => {
     attributes: { exclude: ['abstract'] }
   })
   if (article) {
-    res.json(article)
+    if (article.type === 'activity') {
+      return res.json(article)
+    }
+    return res.json({
+      ...article.toJSON(),
+      score: undefined,
+      numberOfScore: undefined
+    })
   } else {
-    res.status(404).end()
+    return res.status(404).end()
   }
 })
 
 // PUT /api/articles/:id
 router.put('/:id',
   userExtractor,
+  checkFields(['id', 'title', 'content', 'type', 'isAnnouncement', 'views', 'likes']),
   async(req, res) => {
     const article = await Article.findByPk(req.params.id)
     if (!article) {
@@ -197,5 +201,76 @@ router.delete('/:id/follow', userExtractor, async(req, res) => {
   await follow.destroy()
   res.status(204).end()
 })
+
+
+router.post('/:id/activity/comments', userExtractor, authorize(['admin', 'user']), async(req, res) => {
+  const article = await Article.findByPk(req.params.id)
+  if (!article) {
+    return res.status(404).end()
+  }
+  if (article.type !== 'activity') {
+    return res.status(400).json({ error: 'Only activity can be ranked and commented' })
+  }
+  const { content, score } = req.body
+  if (!content) {
+    return res.status(400).json({ error: 'Content is required' })
+  }
+  if (!score || score < 1 || score > 5) {
+    return res.status(400).json({ error: 'Score must be between 1 and 5' })
+  }
+  article.score += score
+  article.numberOfScore += 1
+  const comment = await article.createComment({ content, userId: req.user.id })
+  await article.save()
+  res.status(201).json(comment).end()
+})
+
+router.get('/:id/activity/comments', async(req, res) => {
+  const article = await Article.findByPk(req.params.id)
+  if (!article) {
+    return res.status(404).end()
+  }
+  if (article.type !== 'activity') {
+    return res.status(400).json({ error: 'Only activity can be commented' })
+  }
+  const comments = await article.getComments({
+    order: [['createdAt', 'DESC']],
+  })
+  res.json(comments)
+})
+
+router.delete('/:id/activity/comments/:commentId', userExtractor, authorize(['admin', 'user']), async(req, res) => {
+  const article = await Article.findByPk(req.params.id)
+  if (!article) {
+    return res.status(404).end()
+  }
+  if (article.type !== 'activity') {
+    return res.status(400).json({ error: 'Only activity can be commented' })
+  }
+  const comment = await article.getComments({ where: { id: req.params.commentId } })
+  if (!comment) {
+    return res.status(404).end()
+  }
+  if (req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'The data is modified without permission' })
+  }
+  await comment[0].destroy()
+  res.status(204).end()
+})
+
+router.put('/:id/activity/comments/:commentId', userExtractor, authorize(['admin', 'user']), checkFields(['id', 'likes']), async(req, res) => {
+  const article = await Article.findByPk(req.params.id)
+  const comments = await article.getComments({ where: { id: req.params.commentId } }) 
+  const comment = comments[0]
+  if (!article || !comment) {
+    return res.status(404).end()
+  }
+  if (comment.commentableId !== article.id || article.type !== 'activity') {
+    return res.status(400).json({ error: 'Invalid comment' })
+  }
+  await comment.update(req.body)
+  res.json(comment)
+})
+
 
 module.exports = router

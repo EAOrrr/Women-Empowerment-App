@@ -8,9 +8,7 @@
 
 **Auth required** : YES
 
-**Permissions required** : 
-1. 管理员
-2. 发帖者
+**Permissions required** : NO
 
 **Data constraints** : 
 ```json
@@ -30,10 +28,9 @@
   "id": "评论id",
   "content": "评论内容",
   "likes": 0, // 初始化为0
-  "commenter": {
-    "userId": "123456",
-    "username": "human",
-  },
+  "userId": "123456",
+  "commentableType": "article",
+  "commentableId": "61c95099-031e-4f60-adcf-08deea328620",
   "createdAt": "2024-07-30T04:31:55.614Z", 
   "updatedAt": "2024-07-30T04:31:55.614Z",
 }

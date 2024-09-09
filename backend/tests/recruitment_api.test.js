@@ -1,11 +1,11 @@
 const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('assert')
 const helper = require('./test_helpers')
-const app = require('../app')
+const app = require('../src/app')
 const supertest = require('supertest')
 const api = supertest(app)
-const { Recruitment, Job, User } = require('../models')
-const { connectToDatabase, sequelize } = require('../utils/db')
+const { Recruitment, Job, User } = require('../src/models')
+const { connectToDatabase, sequelize } = require('../src/utils/db')
 
 beforeEach(async () => {
   await connectToDatabase()

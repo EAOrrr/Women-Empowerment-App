@@ -1,13 +1,9 @@
 # RESTAPIDocs
 
-> 8.27后端进度： 文章模块、用户模块、留言模块、招聘启事、消息模块的基本功能可以正常使用（用户功能微信登录板块未测试）。
-> 8.27主要更新：
-> 1. 增加文章类型：津贴领取指引`guide`和工作报告`report`
-> 2. 增加帖子状态：`answered`回答但未结束
-> 3. 收藏功能
-> 4. 招聘启事后端完成 
-
-> TODO： 活动类型文章的评分与评论（路由控制器部分）
+> 9.9后端进度： 文章模块、用户模块、留言模块、招聘启事、消息模块的基本功能可以正常使用（用户功能微信登录板块未测试）。
+> 9.9 主要更新：
+> 1. recruitment 分页设置
+> 2. 活动文章的评分与评论
 
 本地运行,在文件夹下建立.env文件中设置PORT变量，DATABASE_URL变量和SECRET变量
 
@@ -59,6 +55,9 @@
 * [删除特定id的文章](./apidocs/articles/id/delete.md): `DELETE /api/articles/:id/`
 * [收藏特定id的文章](./apidocs/articles/id/follow/post.md): `POST /api/articles/:id/follow`
 * [取消收藏特定id的文章](./apidocs/articles/id/follow/delete.md): `DELETE /api/articles/:id/follow`
+* [评论与评分特定id的活动文章](./apidocs/articles/id/activity/comments/post.md) `POST /api/articles/:id/activity/comment`
+* [获取特定id的活动文章的评论](./apidocs/articles/id/activity/comments/get.md) `GET /api/articles/:id/activity/comment`
+* [修改特定id的活动文章的特定的commentId的评论](./apidocs/articles/id/activity/comments/commentId/put.md) `PUT /api/articles/:id/activity/comment/:commentId`
 > 以下端点与管理员发布文章有关
 * [上传图片](./apidocs/upload/images/post.md): `POST /api/upload/images`
 * [删除特定上传的图片](./apidocs/imageUrl/delete.md): `DELETE /imageUrl`（其中`imageUrl`为在POST中返回的链接）

@@ -1,8 +1,8 @@
-# 修改特定recruitmentId下的特定commentId评论
+# 修改特定id文章的特定commentId评论
 
-修改特定recrtuitmentId下的特定commentId评论
+修改特定id文章的特定commentId评论
 
-**URL** : `/api/recruitments/:recruitmentId/comments/:commentId`
+**URL** : `/api/articles/:id/comments/:commentId`
 
 **Method** : `PUT`
 
@@ -31,10 +31,9 @@
   "id": "评论id",
   "content": "评论内容",
   "likes": 23,
-  "commenter": {
-    "userId": "123456",
-    "username": "human",
-  },
+  "userId": "用户ID",
+  "commentableType": "article",
+  "commentableId": "文章ID",
   "createdAt": "2024-07-30T04:31:55.614Z", 
   "updatedAt": "2024-07-30T04:31:55.614Z",
 }

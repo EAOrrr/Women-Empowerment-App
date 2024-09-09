@@ -1,4 +1,4 @@
-const { Article, User, Post, Comment, Notification, Image, Draft, Follow, Recruitment, Job } = require('../models')
+const { Article, User, Post, Comment, Notification, Image, Draft, Follow, Recruitment, Job } = require('../src/models')
 
 const initialArticles = [
   {

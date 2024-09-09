@@ -3,6 +3,7 @@ const { Recruitment, Job, Follow, Article } = require('../models')
 const router = require('express').Router()
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
 const { buildOrderClause, generateCursor, buildPaginationCondition } = require('../utils/helper')
+const nodejieba = require('nodejieba')
 
 // TODO: recruitments controller 路由控制器
 // GET /api/recruitments
@@ -30,10 +31,11 @@ router.get('/', async (req, res) => {
     include: [{
       model: Job,
       attributes: ['name']
-    }]
+    }],
+    where
   })
 
-  const count = await Article.count({ where })
+  const count = await Recruitment.count({ where })
 
   if (recruitments.length > 0 && !offset) {
     const cursor = generateCursor(recruitments[recruitments.length - 1], ordering)
@@ -48,6 +50,7 @@ router.get('/', async (req, res) => {
 function buildWhereClause({ keywords, cursor}) {
   const where = {}
   if (keywords) {
+    console.log(keywords)
     const keywordConditions = keywords.map(k => ({
       [Op.or]: [
         { title: { [Op.iLike]: `%${k}%` } },
@@ -70,6 +73,8 @@ function buildWhereClause({ keywords, cursor}) {
       where[Op.and] = where[Op.and] ? [...where[Op.and], cursorCondition] : [cursorCondition]
     }
   }
+
+  return where
 }
 
 // POST /api/recruitments
