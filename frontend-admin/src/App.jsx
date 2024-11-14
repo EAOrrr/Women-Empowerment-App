@@ -1,32 +1,29 @@
 import {
-  BrowserRouter as Router,
   Routes, Route,
   Navigate,
-  useLocation,
 } from 'react-router-dom'
-import Login from './pages/Login'
-import ArticlesPage from './pages/ArticlesPage'
-// import NavigationBar from './components/NavigationBar'
-import AppBar from './components/AppBar'
-import { useDispatch, useSelector } from 'react-redux'
-import ProtectedRoute from './components/ProtecedRoute'
 import { useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
 import { initializeUser } from './reducers/userReducer'
-import ArticlesCreatePage from './pages/ArticleCreatePage'
-import HomePage from './pages/HomePage'
-import PostsPage from './pages/PostsPage'
-import ArticlePage from './pages/ArticlePage'
-// import ArticlesSearchPage from './pages/ArticleSearchPage'
-import Test from './pages/Test'
-import PostCreatePage from './pages/PostCreatePage'
-import PostPage from './pages/PostPage'
+
+import ProtectedRoute from './components/ProtecedRoute'
+
+import Login from './pages/Login'
+import ArticlePage from './pages/Articles/ArticlePage'
+import ArticlesPage from './pages/Articles/ArticlesPage'
+import ArticlesCreatePage from './pages/Articles/ArticleCreatePage'
+import ArticleEditPage from './pages/Articles/ArticleEditPage'
+import PostsPage from './pages/Posts/PostsPage'
+import PostCreatePage from './pages/Posts/PostCreatePage'
+import PostPage from './pages/Posts/PostPage'
+import RecruitmentsPage from './pages/Recruitment/RecruitmentsPage'
+import RecruitmentCreatePage from './pages/Recruitment/RecriutmentCreatetPage'
+import RecruitmentPage from './pages/Recruitment/RecruitmentPage'
 import NotificationPage from './pages/NotificationPage'
 import ConstructingPage from './pages/ConstructingPage'
 import OtherPage from './pages/OtherPage'
-import ArticleEditPage from './pages/ArticleEditPage'
-import RecruitmentsPage from './pages/RecruitmentsPage'
-import RecruitmentCreatePage from './pages/RecruitmentCreatePage'
-import RecruitmentPage from './pages/RecruitmentPage'
+import Test from './pages/Test'
 
 
 function App() {
@@ -36,6 +33,8 @@ function App() {
   useEffect(() => {
     dispatch(initializeUser())
   }, [dispatch])
+
+  
 
   return (
     <div>
@@ -54,9 +53,11 @@ function App() {
           <Route path='/posts/create' element={<ProtectedRoute><PostCreatePage /></ProtectedRoute>} />
           <Route path='/posts/:id' element={<ProtectedRoute><PostPage /></ProtectedRoute>} />
           <Route path='/notifications' element={<ProtectedRoute><NotificationPage /></ProtectedRoute>} />
-          <Route path='test/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
+          <Route path='/test/:id' element={<ProtectedRoute><ArticlePage /></ProtectedRoute>} />
+          <Route path='/test' element={<ProtectedRoute><Test /></ProtectedRoute>} />
           {/* <Route path='/' element={<ProtectedRoute><HomePage /></ProtectedRoute>} /> */}
           <Route path='/' element={<Navigate to='/posts' />} />
+          <Route path='/test' element={<Test />} />
           <Route path='*' element={<ConstructingPage />}/>
         </Routes>
       </div>

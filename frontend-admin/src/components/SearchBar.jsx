@@ -36,7 +36,7 @@ const SearchBar = () => {
             newParams.delete('search')
             newParams.set('page', 1)
             setSearchParams(newParams)
-          }}  
+          }}
           startAdornment={
             <InputAdornment position="start">
               <SearchIcon />

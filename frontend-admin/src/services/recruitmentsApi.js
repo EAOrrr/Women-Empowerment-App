@@ -9,8 +9,14 @@ export const recruitmentsApi = createApi({
   tagTypes: ['Recruitment'],
   endpoints: (builder) => ({
     getRecruitments: builder.query({
-      query: () => ({
-        url: '',
+      query: ({
+        offset = 0,
+        ordering = 'created-at',
+        keyword='',
+        limit = 12,
+        total = true,
+      }) => ({
+        url: `?offset=${offset}&ordering=${ordering}&keyword=${keyword}&limit=${limit}&total=${total}`,
         method: 'GET',
       }),
       providesTags: ['Recruitment'],

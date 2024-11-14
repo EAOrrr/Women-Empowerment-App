@@ -36,6 +36,33 @@ const userSlice = createSlice({
         ...state,
         loading: action.payload
       }
+    },
+    readMessage(state, action) {
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          notificationCount: state.info.notificationCount - 1
+        }
+      }
+    },
+    unReadMessage(state, action) {
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          notificationCount: state.info.notificationCount + 1
+        }
+      }
+    },
+    clearMessage(state, action) {
+      return {
+        ...state,
+        info: {
+          ...state.info,
+          notificationCount: 0
+        }
+      }
     }
   }
 })
@@ -83,5 +110,6 @@ export const initializeUser = () => {
   }
 }
 
-export const { setUser, clearUser, setUserStatus } = userSlice.actions
+
+export const { setUser, clearUser, setUserStatus, readMessage, unReadMessage, clearMessage } = userSlice.actions
 export default userSlice.reducer
