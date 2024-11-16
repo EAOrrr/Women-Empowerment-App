@@ -9,7 +9,7 @@ const { buildOrderClause, buildPaginationCondition, generateCursor } = require('
 // TODO: 根据相关度排序
 // GET /api/articles
 router.get('/', async (req, res) => {
-  const { type, keyword, limit, ordering, tags, cursor, offset, total } = req.query
+  const { type, keyword, limit, ordering, tags, cursor, offset, total, isDraft } = req.query
   const keywords = keyword
     ? [...new Set(nodejieba.cut(keyword, true))]
     : null
@@ -20,6 +20,9 @@ router.get('/', async (req, res) => {
   console.log(offset, cursor, limit)
 
   const where = buildWhereClause({ type, keywords, tags, cursor, ordering, offset })
+  if (isDraft) {
+    where.isDraft = isDraft
+  }
   const order = buildOrderClause(ordering, 'createdAt', ['createdAt', 'likes', 'views'])
 
   if (!order) {
@@ -49,10 +52,11 @@ router.get('/', async (req, res) => {
   }
 })
 
-function buildWhereClause({ type, keywords, tags, cursor }) {
+function buildWhereClause({ type, keywords, tags, cursor, isDraft }) {
   const where = {}
 
   if (type) where.type = type
+  if (isDraft) where.isDraft = isDraft
   if (keywords) {
     // const keywords = nodejieba.cut(keyword, true)
     console.log(keywords)
@@ -87,16 +91,13 @@ function buildWhereClause({ type, keywords, tags, cursor }) {
 
 // POST /api/articles
 router.post('/', userExtractor, authorize(['admin']), async(req, res) => {
-
-  const abstract = req.body.content && req.body.content.substring(0, 50)
-  const article = await Article.create({ ...req.body, abstract })
+  const article = await Article.create({ ...req.body})
   res.status(201).json(article)
 })
 
 // GET /api/articles/:id
 router.get('/:id', async(req, res) => {
   const article = await Article.findByPk(req.params.id, {
-    attributes: { exclude: ['abstract'] }
   })
   if (article) {
     if (article.type === 'activity') {
@@ -115,13 +116,13 @@ router.get('/:id', async(req, res) => {
 // PUT /api/articles/:id
 router.put('/:id',
   userExtractor,
-  checkFields(['id', 'title', 'content', 'type', 'isAnnouncement', 'views', 'likes']),
+  checkFields(['id', 'title', 'content', 'type', 'isAnnouncement', 'views', 'likes', 'abstract', 'tags', 'isDraft']),
   async(req, res) => {
     const article = await Article.findByPk(req.params.id)
     if (!article) {
       return res.status(404).end()
     }
-    const { views, likes, title, content, type, isAnnouncement } = req.body
+    const { views, likes, title, content, type, isAnnouncement, tags, abstract, isDraft } = req.body
     if (!req.user || req.user.role !== 'admin') {
       if (title || content || type || isAnnouncement) {
         return res.status(403).json({ error: 'title, content or type can only be changed by admin' })
@@ -131,6 +132,9 @@ router.put('/:id',
       if (content) article.content = content
       if (type) article.type = type
       if (isAnnouncement !== undefined) article.isAnnouncement = isAnnouncement
+      if (isDraft) article.isDraft = isDraft
+      if (abstract) article.abstract = abstract
+      if (tags) article.tags = tags
     }
     if (views) article.views = views
     if (likes) article.likes = likes

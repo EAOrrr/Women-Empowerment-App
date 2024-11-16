@@ -65,7 +65,11 @@ module.exports = {
       number_of_score: {
         type: DataTypes.INTEGER,
         defaultValue: 0,
-      }
+      },
+      is_draft: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+      },
     })
   },
 

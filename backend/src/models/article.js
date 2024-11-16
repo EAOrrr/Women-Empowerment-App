@@ -60,6 +60,10 @@ Article.init({
     type: DataTypes.INTEGER,
     defaultValue: 0,
   },
+  isDraft: {
+    type: DataTypes.BOOLEAN,
+    defaultValue: false
+  },
 }, {
   sequelize,
   underscored: true,

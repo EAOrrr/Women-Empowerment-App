@@ -2,13 +2,13 @@
 
 获取特定id图片
 
-**URL** : `/imageUrl/{id}`
+**URL** : `/images/:id`
 
 **Method** : `GET`
 
 **Auth required** : YES
 
-**Permissions required** : 仅管理员
+**Permissions required** : 无
 
 **Data constraints** : `{}`
 

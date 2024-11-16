@@ -38,6 +38,7 @@ const ArticleEditPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    delete updatedArticle.author
     updateArticle({
       id: articleId,
       ...updatedArticle

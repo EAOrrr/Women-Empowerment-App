@@ -1,5 +1,8 @@
 
 const { Op } = require('sequelize')
+const jwt = require('jsonwebtoken')
+const { ACCESS_TOKEN_SECRET } = require('./config')
+const { User } = require('../models')
 
 // Base64 编码函数
 function encodeCursor(data) {
@@ -70,6 +73,30 @@ function hyphensToSpaces(str) {
   return str.replace(/-/g, ' ');
 }
 
+async function decodeToken(token) {
+  if (!token) {
+    return null
+  }
+  const decodedToken =  jwt.verify(token, ACCESS_TOKEN_SECRET)
+  if (!decodedToken.id) {
+    return {
+      status: 401,
+      error: 'token invalid'
+    }
+  }
+  const user = await User.findByPk(decodedToken.id)
+  if (!user) {
+    return {
+      status: 401,
+      error: 'user not found'
+    }
+  }
+  return {
+    status: 200,
+    user: user
+  }
+}
+
 module.exports = {
   encodeCursor,
   decodeCursor,
@@ -79,5 +106,6 @@ module.exports = {
   generateCursor,
   generateExpiration,
   hyphensToCamel,
-  hyphensToSpaces
+  hyphensToSpaces,
+  decodeToken,
 }

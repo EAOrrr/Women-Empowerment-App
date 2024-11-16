@@ -1,8 +1,10 @@
+import { useRef, useState } from 'react'
 import { Button, TextField, FormControlLabel, Checkbox, IconButton, Input, FormControl, Box, OutlinedInput, Grid, Typography } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
+
 import { useField } from '../../../hooks'
 import Selector from '../../../components/Selector'
-import { useState } from 'react'
+import Editor from './Editor'
 
 
 const types = [
@@ -16,12 +18,13 @@ const types = [
 
 const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
   // console.log(handleSubmit)
+  const editorRef = useRef(null)
 
   const title = useField('标题', 'text', (article && article.title))
-  const content = useField('内容', 'text', (article && article.content))
+  // const content = useField('内容', 'text', (article && article.content))
+  const abstract = useField('摘要', 'text', (article && article.abstract))
   const tag = useField('新标签', 'text')
   const author = useField('作者', 'text', (article && article.author))
-
   const [tags, setTags] = useState((article && article.tags) || [])
   const [type, setType] = useState((article && article.type) || 'none')
   const [isAnnouncement, setIsAnnouncement] = useState((article && article.isAnnouncement) ||false)
@@ -47,16 +50,25 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
     setIsAnnouncement(event.target.checked)
   }
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault()
-    handleSubmit({
-      title: title.value,
-      content: content.value,
-      author: author.value,
-      type,
-      tags,
-      isAnnouncement,
-    })
+    console.log('onSubmit')
+    if (editorRef.current) {
+      console.log('onSubmit开始')
+      const content = editorRef.current.getContent()
+      await editorRef.current.cleanUpTempImages()
+      console.log('onSubmit结束')
+
+      handleSubmit({
+        title: title.value,
+        abstract: abstract.value,
+        content,
+        author: author.value,
+        type,
+        tags,
+        isAnnouncement,
+      })
+    }
   }
 
   return (
@@ -90,13 +102,22 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
         </div>
         <div>
           <TextField
+            {...abstract}
+            id='article-form-abstract'
+            fullWidth
+            inputProps={{ maxLength: 50 }}
+          />
+        </div>
+        <div>
+          {/* <TextField
             {...content}
             id='article-form-content'
             multiline
             rows={11}
             required
             fullWidth
-          />
+          /> */}
+          <Editor content={article?.content || ''} ref={editorRef} />
         </div>
         <div>
           <Grid container spacing={2} alignItems="center">

@@ -9,7 +9,7 @@ const usersRouter = require('./controllers/users')
 const loginRouter = require('./controllers/login')
 const postsRouter = require('./controllers/posts')
 const notificationRouter = require('./controllers/notifications')
-const uploadRouter = require('./controllers/upload')
+const imagesRouter = require('./controllers/images')
 const RecruitmentRouter = require('./controllers/recruitments')
 
 
@@ -23,7 +23,7 @@ app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
 app.use('/api/posts', postsRouter)
 app.use('/api/notifications', notificationRouter)
-app.use('/api/upload', uploadRouter)
+app.use('/api/images', imagesRouter)
 app.use('/api/recruitments', RecruitmentRouter)
 
 app.use(middleware.unknownEndpoint)

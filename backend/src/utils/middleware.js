@@ -56,6 +56,7 @@ const getTokenFrom = request => {
 }
 
 const userExtractor = async (req, res, next) => {
+  console.log('userExtractor')
   const token = getTokenFrom(req)
 
   if (!token) {

@@ -1,5 +1,6 @@
 const Sequelize = require('sequelize')
 const { Umzug, SequelizeStorage } = require('umzug')
+const path = require('path')
 const { DATABASE_URL } = require('./config')
 
 // const sequelize = new Sequelize(DATABASE_URL,
@@ -20,7 +21,8 @@ const sequelize = new Sequelize(DATABASE_URL, )
 
 const migrationConf = {
   migrations: {
-    glob: 'migrations/*.js',
+    // glob: 'migrations/*.js',
+    glob: path.join(__dirname, '../migrations/*.js'),
   },
   storage: new SequelizeStorage({ sequelize, tableName: 'migrations' }),
   context: sequelize.getQueryInterface(),
@@ -36,7 +38,6 @@ const rollbackMigration = async () => {
 
 const runMigrations = async () => {
   const migrator = new Umzug(migrationConf)
-  // await migrator.down()
   const migrations = await migrator.up()
 
   console.log('Migrations up to date', {

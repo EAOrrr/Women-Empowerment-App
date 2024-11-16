@@ -1,8 +1,7 @@
-# 上传编辑中的文档草稿
+# 上传图片
+上传图片
 
-上传编辑中的文档草稿
-
-**URL** : `/api/upload/draft`
+**URL** : `/api/images/`
 
 **Method** : `POST`
 
@@ -11,12 +10,8 @@
 **Permissions required** : 仅管理员可用
 
 **Data constraints** : 
-`content` 都不可为空
-```json
-{
-  "content": "TIPTAP 导出生成的 JSON"
-}
-```
+- **Format**: 必须是 JPEG, PNG 或 GIF 格式
+- **Size**: 文件大小不得超过 5MB
 
 ## Success Responses
 
@@ -26,8 +21,9 @@
 
 ```json
 {
-  "id": "草稿id",
-  "content": "草稿内容 ",
+  "message": "Image uploaded successfully",
+  "imageId": "图片id",
+  "imageUrl": "图片链接",
   "createdAt": "2024-07-30T04:31:55.614Z", 
   "updatedAt": "2024-07-30T04:31:55.614Z",
 }

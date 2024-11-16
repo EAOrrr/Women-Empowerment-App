@@ -1,8 +1,7 @@
-# 删除编辑中的文本草稿
+# 批量删除图片
 
-删除编辑中的文档草稿
-
-**URL** : `/api/upload/draft`
+批量删除图片
+**URL** : `/images/deletebatch`
 
 **Method** : `DELETE`
 
@@ -10,7 +9,12 @@
 
 **Permissions required** : 仅管理员
 
-**Data constraints** : `{}`
+**Data constraints** : 
+```json
+{
+  imageIds: ["id1", "id"]
+}
+```
 
 ## Success Responses
 
@@ -21,9 +25,9 @@
 
 ## Error Responses
 
-**Condition** : 用户权限不足
+**Condition** : 用户权限不足或未登录
 
-**Code** : `403 Forbidden`
+**Code** : `401 unauthorized`
 
 **Content** : 
 ```json
@@ -31,3 +35,5 @@
   "error": "The data is modified without permission"
 }
 ```
+
+

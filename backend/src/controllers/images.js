@@ -1,9 +1,12 @@
-const { Image, Draft } = require('../models')
+const { Image } = require('../models')
 
 const router = require('express').Router()
 const { userExtractor, authorize } = require('../utils/middleware')
 const multer = require('multer')
+
 const path = require('path')
+const express = require('express')
+const { decodeToken } = require('../utils/helper')
 
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -25,11 +28,12 @@ function checkFileType(req, file, cb) {
   }
 }
 
-router.post('/images',
+router.post('/',
   userExtractor,
   authorize(['admin']),
   upload.single('image'),
   async(req, res) => {
+    console.log('uploading image')
     const file = req.file
     if (!file) {
       return res.status(400).json({ error: 'No file uploaded or invalid file type' })
@@ -42,11 +46,11 @@ router.post('/images',
     res.status(201).json({
       message: 'Image uploaded successfully',
       imageId: image.id,
-      imageUrl: `/api/upload/images/${image.id}` })
+      imageUrl: `/api/images/${image.id}` })
     // res.status(201).end()
   })
 
-router.get('/images/:id', async(req, res) => {
+router.get('/:id', async(req, res) => {
   const image = await Image.findByPk(req.params.id)
   if (!image) {
     return res.status(404).end()
@@ -55,7 +59,7 @@ router.get('/images/:id', async(req, res) => {
   res.send(image.data)
 })
 
-router.delete('/images/:id', userExtractor, authorize(['admin']), async(req, res) => {
+router.delete('/:id', userExtractor, authorize(['admin']), async(req, res) => {
   const image = await Image.findByPk(req.params.id)
   if (!image) {
     return res.status(404).end()
@@ -64,62 +68,34 @@ router.delete('/images/:id', userExtractor, authorize(['admin']), async(req, res
   res.status(204).end()
 })
 
-router.get('/draft',
-  userExtractor,
-  authorize(['admin']),
-  async(req, res) => {
-    const draft = await Draft.findOne({
-      where: {
-        userId: req.user.id
-      }
-    })
-    if (!draft) {
-      return res.status(404).end()
-    }
-    // res.json(draft)
-    res.json({
-      ...draft.toJSON(),
-      userId: undefined
-    })
-  })
 
-router.post('/draft',
-  userExtractor,
-  authorize(['admin']),
-  async(req, res) => {
-    let draft = await Draft.findOne({
-      where: {
-        userId: req.user.id
-      }
-    })
-    if (draft) {
-      draft.content = req.body.content
-      await draft.save()
-      return res.json({
-        ...draft.toJSON(),
-        userId: undefined
-      })
-    } else {
-      draft = await Draft.create({
-        content: req.body.content,
-        userId: req.user.id
-      })
-      return res.status(201).json({
-        ...draft.toJSON(),
-        userId: undefined
-      })
+router.post('/deletebatch', userExtractor, authorize(['admin']), async(req, res) => {
+  const { imageIds } = req.body
+  await Image.destroy({
+    where: {
+      id: imageIds
     }
   })
+  res.status(204).end()
+})
 
-router.delete('/draft',
-  userExtractor,
-  authorize(['admin']),
-  async(req, res) => {
-    await Draft.destroy({
-      where: {
-        userId: req.user.id
-      }
-    })
-    res.status(204).end()
+router.post('/beacondelete', express.text(), async(req, res) => {
+  const { imageIds, token } = JSON.parse(req.body)
+  const decodeResult = decodeToken(token)
+  if (decodeResult.status !== 200) {
+    return res.status(401).json({ error: decodeResult.error })
+  }
+  if (decodeResult.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Permission denied' })
+  }
+  console.log('deleting images')
+  console.log(req.body)
+  await Image.destroy({
+    where: {
+      id: imageIds
+    }
   })
+})
+
+
 module.exports = router

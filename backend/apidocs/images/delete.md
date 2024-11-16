@@ -2,7 +2,7 @@
 
 删除特定id图片
 
-**URL** : `/imageUrl`
+**URL** : `/images/:id`
 
 **Method** : `DELETE`
 
