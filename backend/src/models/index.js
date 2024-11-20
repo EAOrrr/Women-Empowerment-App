@@ -1,6 +1,5 @@
 const Article = require('./article')
 const Comment = require('./comment')
-const Draft = require('./draft')
 const Follow = require('./follow')
 const Image = require('./image')
 const Job = require('./job')
@@ -88,6 +87,54 @@ Comment.addHook('afterFind', findResult => {
   }
 })
 
+// 与图片有关的关联
+Article.hasMany(Image, {
+  foreignKey: 'referenceId',
+  constraints: false,
+  scope: {
+    referenceType: 'article'
+  }
+})
+Image.belongsTo(Article, {
+  foreignKey: 'referenceId',
+  constraints: false,
+})
+
+Recruitment.hasMany(Image, {
+  foreignKey: 'referenceId',
+  constraints: false,
+  scope: {
+    referenceType: 'recruitment'
+  }
+})
+
+Image.belongsTo(Recruitment, {
+  foreignKey: 'referenceId',
+  constraints: false,
+})
+
+Image.addHook('afterFind', findResult => {
+  if (!findResult) {
+    // 如果没有查询到数据，直接返回
+    console.log('No results found, skipping afterFind hook.');
+    return;
+  }
+  if (!Array.isArray(findResult)) findResult = [findResult]
+  for (const instance of findResult) {
+    if (instance.referenceType === 'article' && instance.article !== undefined) {
+      instance.reference = instance.article
+    }
+    if (instance.referenceType === 'recruitment' && instance.recruitment !== undefined) {
+      instance.reference = instance.recruitment
+    }
+    // To prevent mistakes:
+    delete instance.article
+    delete instance.dataValues.article
+    delete instance.recruitment
+    delete instance.dataValues.recruitment
+  }
+})
+
 // 与通知有关的关联
 User.hasMany(Notification, {
   onDelete: 'cascade',
@@ -167,19 +214,9 @@ Recruitment.belongsToMany(User, {
 })
 
 
-// 与用户行为有关的关联
-User.hasOne(Draft, {
-  onDelete: 'cascade',
-})
-
-Draft.belongsTo(User, { as: 'author', foreignKey: 'userId' })
-
-
-
 module.exports = {
   Article,
   Comment,
-  Draft,
   Follow,
   Image,
   Job,

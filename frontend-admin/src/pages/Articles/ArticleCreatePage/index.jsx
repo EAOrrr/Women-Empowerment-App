@@ -11,7 +11,7 @@ const ArticlesCreatePage = () => {
 
   const handleSubmit = (newArticle) => {
 
-    if (newArticle === 'none') {
+    if (newArticle.type === 'none') {
       dispatch(createNotification(
         '请输入文章类型',
         'error'

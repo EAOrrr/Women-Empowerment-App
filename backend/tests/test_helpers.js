@@ -1,4 +1,4 @@
-const { Article, User, Post, Comment, Notification, Image, Draft, Follow, Recruitment, Job } = require('../src/models')
+const { Article, User, Post, Comment, Notification, Image,  Follow, Recruitment, Job } = require('../src/models')
 
 const initialArticles = [
   {
@@ -201,10 +201,7 @@ const imagesInDb = async () => {
   return images.map(i => i.toJSON())
 }
 
-const draftsInDb = async () => {
-  const drafts = await Draft.findAll()
-  return drafts.map(d => d.toJSON())
-}
+
 
 const followsInDb = async () => {
   const follows = await Follow.findAll()
@@ -277,7 +274,6 @@ module.exports = {
   followsInDb,
   notificationsInDb,
   imagesInDb,
-  draftsInDb,
   recruitmentsInDb,
   jobsInDb,
   nonExistingId,

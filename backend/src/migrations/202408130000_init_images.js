@@ -19,6 +19,14 @@ module.exports = {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      reference_type: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      reference_id: {
+        type: DataTypes.UUID,
+        allowNull: true,
+      },
       created_at: {
         type: DataTypes.DATE,
         allowNull: false,

@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react'
-import { Button, TextField, FormControlLabel, Checkbox, IconButton, Input, FormControl, Box, OutlinedInput, Grid, Typography } from '@mui/material'
+import { Button, TextField, FormControlLabel, Checkbox, Box,  Grid, Typography } from '@mui/material'
 import ClearIcon from '@mui/icons-material/Clear'
 
 import { useField } from '../../../hooks'
 import Selector from '../../../components/Selector'
-import Editor from './Editor'
+import Editor from '../../../components/Editor'
 
 
 const types = [
@@ -56,10 +56,10 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
     if (editorRef.current) {
       console.log('onSubmit开始')
       const content = editorRef.current.getContent()
-      await editorRef.current.cleanUpTempImages()
+      const images = editorRef.current.getImages()
       console.log('onSubmit结束')
 
-      handleSubmit({
+      await handleSubmit({
         title: title.value,
         abstract: abstract.value,
         content,
@@ -67,7 +67,9 @@ const ArticleForm = ({ handleSubmit, article, buttonLable }) => {
         type,
         tags,
         isAnnouncement,
+        images,
       })
+      await editorRef.current.cleanUpTempImages()
     }
   }
 

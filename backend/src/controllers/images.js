@@ -55,6 +55,7 @@ router.get('/:id', async(req, res) => {
   if (!image) {
     return res.status(404).end()
   }
+  // console.log(image.mimeType)
   res.set('Content-Type', image.mimeType)
   res.send(image.data)
 })
@@ -81,8 +82,11 @@ router.post('/deletebatch', userExtractor, authorize(['admin']), async(req, res)
 
 router.post('/beacondelete', express.text(), async(req, res) => {
   const { imageIds, token } = JSON.parse(req.body)
-  const decodeResult = decodeToken(token)
+  console.log(req.body)
+  const decodeResult = await decodeToken(token)
   if (decodeResult.status !== 200) {
+    console.log('error')
+    console.log(decodeResult)
     return res.status(401).json({ error: decodeResult.error })
   }
   if (decodeResult.user.role !== 'admin') {
@@ -91,6 +95,18 @@ router.post('/beacondelete', express.text(), async(req, res) => {
   console.log('deleting images')
   console.log(req.body)
   await Image.destroy({
+    where: {
+      id: imageIds
+    }
+  })
+})
+
+router.post('/image-references', userExtractor, authorize(['admin']), async(req, _res) => {
+  const { imageIds, referenceType, referenceId } = req.body
+  await Image.update({
+    referenceType,
+    referenceId
+  }, {
     where: {
       id: imageIds
     }

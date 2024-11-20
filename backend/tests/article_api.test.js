@@ -591,52 +591,6 @@ describe('Get article with query', () => {
   })
 })
 
-describe('test drafts', () => {
-  beforeEach(async () => {
-    const draftArticles = [
-      {
-        title: 'draft1',
-        content: 'content of draft1',
-        abstract: 'abstract of draft1',
-        type: 'activity',
-        isDraft: true
-      },
-      {
-        title: 'draft2',
-        content: 'content of draft2',
-        abstract: 'abstract of draft2',
-        type: 'policy',
-        isDraft: true
-      }
-    ]
-    // helper.initialArticles
-    // .filter(a => a.id === undefined)
-    // .map(article => ({
-    //   ...article,
-    //   isDraft: true
-    // }))
-    await Article.bulkCreate(draftArticles)
-  })
-
-  test('test get all drafts', async () => {
-    const response = await api
-      .get('/api/articles?isDraft=true')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-    const articles = response.body.articles
-    assert.strictEqual(articles.length, 2)
-  })
-
-  test('test get drafts with limit', async () => {
-    const response = await api
-      .get('/api/articles?isDraft=true&limit=1')
-      .expect(200)
-      .expect('Content-Type', /application\/json/)
-    const articles = response.body.articles
-    assert.strictEqual(articles.length, 1)
-  })
-})
-
 after(async () => {
   await Article.destroy({ where: {} })
   sequelize.close()

@@ -91,7 +91,11 @@ function buildWhereClause({ type, keywords, tags, cursor, isDraft }) {
 
 // POST /api/articles
 router.post('/', userExtractor, authorize(['admin']), async(req, res) => {
+  const images = req.body.images
   const article = await Article.create({ ...req.body})
+  if (images) {
+    await article.setImages(images)
+  }
   res.status(201).json(article)
 })
 

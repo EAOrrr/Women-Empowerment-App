@@ -1,3 +1,13 @@
+import React, { useCallback, useEffect } from 'react'
+import type {
+  unstable_Blocker as Blocker,
+  unstable_BlockerFunction as BlockerFunction,
+} from "react-router-dom";
+import {
+  useBlocker
+} from 'react-router-dom'
+
+
 import type { EditorOptions } from "@tiptap/core";
 
 import { insertImages, RichTextEditorProvider, RichTextField } from 'mui-tiptap'
@@ -5,19 +15,53 @@ import {
   LinkBubbleMenu,
   TableBubbleMenu,
 } from 'mui-tiptap'
-import React, { useCallback } from 'react'
 
 import { Button } from '@mui/material'
-import axios from 'axios'
 import { useEditor } from '@tiptap/react'
 
-import imagesService from '../../../../services/images'
+import imagesService from '../../services/images'
 
 import EditorMenuControls from './EditorMenuControls'
 import useExtensions from "./useExtensions";
+import storage from "../../services/storage";
+
+
+function extractImageIdsUsingDOM(content) {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(content, "text/html");
+  const images = doc.querySelectorAll("img[src*='/api/images/']");
+  return Array.from(images).map((img) => {
+    const src = img.getAttribute('src');
+    return src?.split('/api/images/')[1]; // 提取 `id`
+  });
+}
 
 const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX.Element => {
-  let tempImageIds = new Set();
+  const [tempImageIds, setTempImageIds] = React.useState<string[]>([]);
+  const [initialImageIds, setInitialImageIds] = React.useState<string[]>([]);
+  const [confirming, setConfirming] = React.useState<boolean>(false);
+
+  const blocker = useBlocker(() => tempImageIds.length > 0);
+
+  useEffect(() => {
+      if (blocker.state === 'blocked' && !confirming) {
+        const leaveConfirm = window.confirm('您有未保存的更改，确定要离开吗？');
+        if (leaveConfirm) {
+          setConfirming(true);  // 设置正在确认状态
+          imagesService.deleteBatch({ imageIds: tempImageIds })
+            .then(() => {
+              blocker.proceed();  // 确认后继续跳转
+              setConfirming(false);  // 重置确认状态
+            })
+            .catch((error) => {
+              console.error("删除图片失败", error);
+              setConfirming(false);  // 如果删除失败，也要重置确认状态
+            });
+        } else {
+          blocker.reset();  // 用户取消跳转，重置blocker状态
+        }
+      }
+  }, [blocker.state, confirming, tempImageIds, blocker]);
 
   const extensions = useExtensions({
     placeholder: "输入文章内容……",
@@ -43,19 +87,13 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
           const formData = new FormData();
           formData.append('image', file);
           try {
-            // 使用 axios 上传图片
-            // const response = await axios.post('/api/images/', formData, {
-            //   headers: {
-            //     'Content-Type': 'multipart/form-data',
-            //   },
-            // });
             const data = await imagesService.create(formData);
 
             // 上传成功后返回图片信息
             return {
               src: data.imageUrl,
               alt: file.name,
-              imageId: data.imageId, // 假设图片ID由后端返回
+              id: data.imageId, // 假设图片ID由后端返回
             };
           } catch (error) {
             console.error('上传图片失败:', error);
@@ -69,15 +107,15 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
 
       // 插入图片到编辑器
       insertImages({
-        images: validImages as Array<{ src: string; alt: string; isCover: boolean; imageId: string }>,
+        images: validImages as Array<{ src: string; alt: string; isCover: boolean; id: string }>,
         // editor: rteRef.current.editor,
         editor: editor,
         position: insertPosition,
       });
       // imagesArray.push(...validImages.map(image => image.imageId));
-      validImages.forEach(image => tempImageIds.add(image.imageId));
-      sessionStorage.setItem('tempImageIds', JSON.stringify([...tempImageIds]));
-      console.log(sessionStorage.getItem('tempImageIds'));
+      const validImageIds = validImages.map(image => image.id)
+      setTempImageIds([...tempImageIds, ...validImageIds]);
+      sessionStorage.setItem('tempImageIds', JSON.stringify(tempImageIds));
     },
     [],
   );
@@ -143,52 +181,80 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
       editorProps: {
         handleDrop: handleDrop,
         handlePaste: handlePaste,
-      }
+      },
     });
 
-    // 处理页面关闭
-    // 页面加载时恢复未提交的图片 ID
-    window.addEventListener('load', () => {
-      const storedImageIds = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
-      tempImageIds = new Set(storedImageIds);
-    });
 
     window.addEventListener('beforeunload', (event) => {
+      const tempImageIdsFromSession = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
       // 如果有未提交的图片，则显示提醒
-      if (tempImageIds.size > 0) {
+      if (tempImageIdsFromSession.length > 0) {
+        console.log('beforeunload', );
         event.preventDefault();
         event.returnValue = '您有未保存的更改，确定要离开吗？';
       }
     });
 
     window.addEventListener('unload', () => {
-      const storedImageIds = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
-      const token = sessionStorage.getItem('token');
-      console.log(storedImageIds);
+      const token = storage.getAccessToken();
+      console.log(tempImageIds);
       const payload = JSON.stringify({
-        imageIds: storedImageIds,
+        imageIds: tempImageIds,
         token: token
       });
-      if (storedImageIds.length > 0) {
+      console.log(payload)
+      const tempImageIdsFromSession = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
+      if (tempImageIdsFromSession.length > 0) {
         // 使用 `sendBeacon` 发送删除请求
         navigator.sendBeacon('/api/images/beacondelete', payload);
 
-        // 清除 sessionStorage 中的图片 ID
-        sessionStorage.removeItem('tempImageIds');
       }
     });
 
+    window.addEventListener('popstate', () => {
+      console.log('pagehide');
+      const storedImageIds = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
+      const token = storage.getAccessToken();
+      // console.log(storedImageIds, token);
+      
+      if (storedImageIds.length > 0) {
+        console.log('Cleaning up unsaved images on pagehide');
+        const payload = JSON.stringify({
+          imageIds: tempImageIds,
+          token: token,
+        });
+
+        navigator.sendBeacon('/api/images/beacondelete', payload);
+
+      }
+    }, false);
+
+    useEffect(() => {
+      const initialImages = extractImageIdsUsingDOM(content);
+      setInitialImageIds(initialImages.filter((id): id is string => id !== undefined));
+      console.log('initialImages:', initialImages);
+    }, [content]);
+
+
+    // const initialImages = editor?.getJSON()?.content?.filter((node) => node?.type === 'image') || [];
+
     React.useImperativeHandle(ref, () => ({
       getContent: () => editor?.getHTML() || '',
+      getImages: () => editor?.getJSON()?.content?.filter((node) => node?.type === 'image').map(image => image?.attrs?.id) || [],
       cleanUpTempImages: async () => {
         // tempImageIds.clear();
-        const images = editor?.getJSON()?.content?.filter((node) => node?.type === 'image') || [];
-        const imagesToDelete = images.filter((image) => image?.attrs && tempImageIds.has(image.attrs.imageId));
-        await imagesService.deleteBatch({imageIds: imagesToDelete.map((image) => image?.attrs?.imageId)});
+        const imageIds = editor?.getJSON()?.content?.filter((node) => node?.type === 'image').map(image => image?.attrs?.id) || [];
+        // const imagesToDelete = images.filter((image) => image?.attrs && tempImageIds.has(image.attrs.imageId));
+        console.log('imageIds', imageIds)
+        const imagesToDeleteIds = tempImageIds.concat(initialImageIds).filter((imageId) => !imageIds.some((id) => id === imageId));
+        console.log('imagesToDeleteIds', imagesToDeleteIds);
+        await imagesService.deleteBatch({imageIds: imagesToDeleteIds});
+        setTempImageIds([]);
         sessionStorage.removeItem('tempImageIds');
       }
       })
     )
+    console.log('tempImageIds:', tempImageIds);
 
     return (
       <div>

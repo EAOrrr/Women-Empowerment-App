@@ -1,6 +1,6 @@
 import { useDispatch } from 'react-redux'
 
-import { Card, CardContent } from '@mui/material'
+import { Box, Card, CardContent, Typography } from '@mui/material'
 import { useCreateRecruitmentCommentMutation, useGetRecruitmentCommentsQuery } from '../../../services/recruitmentsApi'
 
 import { createNotification } from '../../../reducers/notificationReducer'
@@ -11,7 +11,7 @@ const CommentCard = ({ comment }) => {
     <Card>
       <CardContent>
         <div> {comment.content} </div>
-        <div> {(new Date(comment.createdAt)).toLocaleDateString()} </div>
+        <Typography align='right' variant='body2' color='textSecondary'> {(new Date(comment.createdAt)).toLocaleDateString()} </Typography>
       </CardContent>
     </Card>
   )
@@ -25,7 +25,7 @@ const CommentsTab = ({ recruitmentId }) => {
     createComment({
       id: recruitmentId,
       comment
-  })
+    })
       .unwrap()
       .then(() => {
         dispatch(createNotification('评论成功', 'success'))
@@ -63,9 +63,11 @@ const CommentsTab = ({ recruitmentId }) => {
   }
   const Comment = () => comments.length > 0
     ? (<div>
-      {comments.map(c =>
-        (<CommentCard comment={c} key={c.id} />)
-      )}
+      {comments.map((comment, index) => (
+        <Box key={index} mb={1}>
+          <CommentCard comment={comment} />
+        </Box>
+      ))}
     </div>)
     : (<div>暂无评论</div>)
   return (

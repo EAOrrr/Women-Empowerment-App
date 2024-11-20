@@ -4,14 +4,13 @@ const helper = require('./test_helpers')
 const app = require('../app')
 const supertest = require('supertest')
 const api = supertest(app)
-const { Image, User, Draft } = require('../models')
+const { Image, User } = require('../models')
 const { connectToDatabase, sequelize } = require('../utils/db')
 
 beforeEach(async () => {
   await connectToDatabase()
   await Image.destroy({ where: {} })
   await User.destroy({ where: {} })
-  await Draft.destroy({ where: {} })
 })
 
 describe.only('UPLOAD API', () => {
@@ -89,100 +88,7 @@ describe.only('UPLOAD API', () => {
     })
   })
 
-  describe('UPLOAD DRAFT API', () => {
-    const draft = {
-      'type': 'doc',
-      'content': [
-        {
-          'type': 'paragraph',
-          'content': [
-            {
-              'type': 'text',
-              'text': 'Helloworld'
-            }
-          ]
-        }
-      ]
-    }
-    test('upload draft with valid token', async () => {
-      const draftsAtStart = await helper.draftsInDb()
 
-      const res = await api
-        .post('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ content: draft })
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-      // assert.strictEqual(res.body, draft)
-      // console.log(res.body)
-      assert.deepStrictEqual(res.body.content, draft)
-      assert(res.body.id)
-      assert(res.body.createdAt)
-      assert(res.body.updatedAt)
-      assert(!res.body.userId)
-      const draftsAtEnd = await helper.draftsInDb()
-      assert.strictEqual(draftsAtEnd.length, draftsAtStart.length + 1)
-      assert(draftsAtEnd.find(d => d.userId === adminUserId))
-    })
-
-    test('a user cannot upload more than one draft', async () => {
-      const newDraft = {
-        'type': 'anotherDoc',
-        'content': draft.content
-      }
-      const draftsAtStart = await helper.draftsInDb()
-      await api
-        .post('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ content: draft })
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-      await api
-        .post('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ content: newDraft })
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-      const draftsAtEnd = await helper.draftsInDb()
-      assert.strictEqual(draftsAtEnd.length, draftsAtStart.length + 1)
-      const adminDraft = draftsAtEnd.find(d => d.userId === adminUserId)
-      console.log(draftsAtEnd, adminUserId)
-      assert.deepStrictEqual(adminDraft.content, newDraft)
-
-    })
-
-    test('get draft with valid token', async () => {
-      await api
-        .post('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ content: draft })
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-      const response = await api.get('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
-      // console.log(response.body)
-      // console.log(response.body)
-      assert.deepStrictEqual(response.body.content, draft)
-    })
-
-    test('delete draft with valid token', async () => {
-      await api
-        .post('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .send({ content: draft })
-        .expect(201)
-        .expect('Content-Type', /application\/json/)
-      const draftsAtStart = await helper.draftsInDb()
-      await api
-        .delete('/api/upload/draft')
-        .set('Authorization', `Bearer ${adminToken}`)
-        .expect(204)
-      const draftsAtEnd = await helper.draftsInDb()
-      assert.strictEqual(draftsAtEnd.length, draftsAtStart.length - 1)
-    })
-  })
 })
 
 after(async () => {

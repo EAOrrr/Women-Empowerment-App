@@ -13,8 +13,14 @@ const remove = async (id) => {
 }
 
 const deleteBatch = async (data) => {
-  const response = await axios.post(`${baseUrl}/deletebatch`,  data)
+  const response = await axios.post(`${baseUrl}/deletebatch`, data)
   return response.data
 }
 
-export default { create, remove, deleteBatch }
+const createImagesRelation = async (data) => {
+  const response = await axios.post(`${baseUrl}/image-references`, data)
+  return response.data
+}
+
+// 导出所有函数
+export default { create, remove, deleteBatch, createImagesRelation }

@@ -27,6 +27,7 @@ import { Text } from "@tiptap/extension-text";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { TextStyle } from "@tiptap/extension-text-style";
 import { Underline } from "@tiptap/extension-underline";
+// import { Image } from "@tiptap/extension-image"
 
 import {
   LinkBubbleMenuHandler,
@@ -51,6 +52,23 @@ const CustomSuperscript = Superscript.extend({
 const CustomLinkExtension = Link.extend({
   inclusive: false,
 });
+
+const CustomImage = ResizableImage.extend({
+  addAttributes() {
+    return {
+      ...this.parent?.(),
+      id: {
+        default: null,
+        parseHTML: (element) => {
+          return element.getAttribute("id");
+        },
+        renderHTML: (attributes) => {
+          return attributes.id ? { id: attributes.id } : {};
+        }
+      }
+    }
+  },
+})
 
 export default function useExtensions({
   placeholder,
@@ -110,7 +128,8 @@ export default function useExtensions({
       TextStyle,
       HorizontalRule,
 
-      ResizableImage,
+      // ResizableImage,
+      CustomImage,
       // When images are dragged, we want to show the "drop cursor" for where they'll
       // land
       Dropcursor,

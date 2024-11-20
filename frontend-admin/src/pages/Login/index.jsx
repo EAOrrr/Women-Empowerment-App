@@ -26,6 +26,11 @@ const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const user = useSelector(state => state.user)
+  if (user.info && !user.loading) {
+    navigate('/posts')
+  }
+
   const notification = useSelector(state => state.notification)
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)

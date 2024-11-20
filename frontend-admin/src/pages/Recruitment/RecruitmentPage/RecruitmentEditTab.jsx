@@ -10,7 +10,7 @@ const EditRecruitmentTab = ({ recruitment }) => {
   const [updateRecruitment, ] = useUpdateRecruitmentMutation()
   const handleSubmit = (newRecruitment) => {
     updateRecruitment(
-      {...newRecruitment,
+      { ...newRecruitment,
         id: recruitment.id
       })
       .unwrap()

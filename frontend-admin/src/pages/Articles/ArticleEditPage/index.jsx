@@ -13,6 +13,7 @@ import {
 
 import { createNotification } from '../../../reducers/notificationReducer'
 import { useGetArticleQuery, useUpdateArticleMutation } from '../../../services/articlesApi'
+import imagesService from '../../../services/images'
 import Loading from '../../../components/Loading'
 import ArticleForm from '../utils/ArticleForm'
 
@@ -38,7 +39,10 @@ const ArticleEditPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault()
+    const images = updatedArticle.images
+    delete updatedArticle.images
     delete updatedArticle.author
+    console.log(updatedArticle)
     updateArticle({
       id: articleId,
       ...updatedArticle
@@ -65,6 +69,14 @@ const ArticleEditPage = () => {
           console.error(error.data)
         }
       })
+
+    imagesService.createImagesRelation({
+      imageIds: images,
+      referenceId: articleId,
+      referenceType: 'article'
+    }).catch((error) => {
+      console.error(error)
+    })
 
     setDialogOpen(false)
   }

@@ -2,8 +2,15 @@ const { sequelize } = require('../utils/db')
 const { DataTypes, Model, UUIDV4 } = require('sequelize')
 
 // Image model: 储存Article的图片
-
-class Image extends Model {}
+// Helper function
+const uppercaseFirst = str => `${str[0].toUpperCase()}${str.substr(1)}`
+class Image extends Model {
+  getReference(options) {
+    if (!this.referenceType) return Promise.resolve(null);
+    const mixinMethodName = `get${uppercaseFirst(this.commentableType)}`;
+    return this[mixinMethodName](options);
+  }
+}
 
 Image.init({
   id: {
@@ -21,6 +28,14 @@ Image.init({
   mimeType: {
     type: DataTypes.STRING,
     allowNull: false,
+  },
+  referenceType: {
+    type: DataTypes.STRING,
+    allowNull: true,
+  },
+  referenceId: {
+    type: DataTypes.UUID,
+    allowNull: true,
   },
 }, {
   sequelize,
