@@ -1,5 +1,6 @@
 import { Box, Button, Grid, TextField } from '@mui/material'
 import { useField } from '../../../hooks'
+import { useState } from 'react'
 const RecruitmentForm = ({ handleSubmit , recruitment }) => {
   const title = useField('标题', 'text', recruitment && recruitment.title)
   const name = useField('企业名称', 'text', recruitment && recruitment.name)
@@ -10,6 +11,7 @@ const RecruitmentForm = ({ handleSubmit , recruitment }) => {
   const address = useField('企业地址', 'text', recruitment && recruitment.address)
   const street = useField('街道', 'text', recruitment && recruitment.street)
   const phone = useField('联系电话', 'text', recruitment && recruitment.phone)
+  const pictures = useState([])
 
   const onSubmit = (event) => {
     event.preventDefault()

@@ -21,7 +21,6 @@ const ArticlesCreatePage = () => {
         .unwrap()
         .then((result) => {
           dispatch(createNotification(`创建文章${result.title}成功`, 'success'))
-          navigate('/articles')
         }).catch((error) => {
           // console.error(error)
           switch (error.status) {
@@ -40,10 +39,15 @@ const ArticlesCreatePage = () => {
         })
     }
   }
+
+  const afterSubmit = () => {
+    navigate('/articles')
+  }
+
   return (
     <div>
       <h1>创建新文章</h1>
-      <ArticleForm handleSubmit={handleSubmit} buttonLable={'创建新文章'}/>
+      <ArticleForm handleSubmit={handleSubmit} buttonLable={'创建新文章'} afterSubmit={afterSubmit}/>
     </div>
   )
 }

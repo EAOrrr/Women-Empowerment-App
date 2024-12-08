@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect } from 'react'
-import type {
-  unstable_Blocker as Blocker,
-  unstable_BlockerFunction as BlockerFunction,
-} from "react-router-dom";
+import { Editor as TiptapEditor } from '@tiptap/react'
+import { Transaction } from '@tiptap/pm/state';
+
 import {
   useBlocker
 } from 'react-router-dom'
@@ -16,7 +15,6 @@ import {
   TableBubbleMenu,
 } from 'mui-tiptap'
 
-import { Button } from '@mui/material'
 import { useEditor } from '@tiptap/react'
 
 import imagesService from '../../services/images'
@@ -36,32 +34,13 @@ function extractImageIdsUsingDOM(content) {
   });
 }
 
-const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX.Element => {
+// type OnContentChange = (editor: TiptapEditor, transaction: Transaction) => void;
+type OnContentChange = (props: { editor: TiptapEditor; transaction: Transaction }) => void;
+
+const Editor = React.forwardRef(({ content, onContentChange }:
+   {content: string, onContentChange: OnContentChange }, ref): React.JSX.Element => {
   const [tempImageIds, setTempImageIds] = React.useState<string[]>([]);
   const [initialImageIds, setInitialImageIds] = React.useState<string[]>([]);
-  const [confirming, setConfirming] = React.useState<boolean>(false);
-
-  const blocker = useBlocker(() => tempImageIds.length > 0);
-
-  useEffect(() => {
-      if (blocker.state === 'blocked' && !confirming) {
-        const leaveConfirm = window.confirm('您有未保存的更改，确定要离开吗？');
-        if (leaveConfirm) {
-          setConfirming(true);  // 设置正在确认状态
-          imagesService.deleteBatch({ imageIds: tempImageIds })
-            .then(() => {
-              blocker.proceed();  // 确认后继续跳转
-              setConfirming(false);  // 重置确认状态
-            })
-            .catch((error) => {
-              console.error("删除图片失败", error);
-              setConfirming(false);  // 如果删除失败，也要重置确认状态
-            });
-        } else {
-          blocker.reset();  // 用户取消跳转，重置blocker状态
-        }
-      }
-  }, [blocker.state, confirming, tempImageIds, blocker]);
 
   const extensions = useExtensions({
     placeholder: "输入文章内容……",
@@ -77,6 +56,7 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
 
   const handleNewImageFiles = useCallback(
     async (files: File[], insertPosition?: number, isCover: boolean = false): Promise<void> => {
+      console.log(files)
       if (!editor) {
         return;
       }
@@ -181,53 +161,12 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
       editorProps: {
         handleDrop: handleDrop,
         handlePaste: handlePaste,
+        
       },
-    });
-
-
-    window.addEventListener('beforeunload', (event) => {
-      const tempImageIdsFromSession = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
-      // 如果有未提交的图片，则显示提醒
-      if (tempImageIdsFromSession.length > 0) {
-        console.log('beforeunload', );
-        event.preventDefault();
-        event.returnValue = '您有未保存的更改，确定要离开吗？';
-      }
-    });
-
-    window.addEventListener('unload', () => {
-      const token = storage.getAccessToken();
-      console.log(tempImageIds);
-      const payload = JSON.stringify({
-        imageIds: tempImageIds,
-        token: token
-      });
-      console.log(payload)
-      const tempImageIdsFromSession = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
-      if (tempImageIdsFromSession.length > 0) {
-        // 使用 `sendBeacon` 发送删除请求
-        navigator.sendBeacon('/api/images/beacondelete', payload);
-
-      }
-    });
-
-    window.addEventListener('popstate', () => {
-      console.log('pagehide');
-      const storedImageIds = JSON.parse(sessionStorage.getItem('tempImageIds') || '[]');
-      const token = storage.getAccessToken();
-      // console.log(storedImageIds, token);
       
-      if (storedImageIds.length > 0) {
-        console.log('Cleaning up unsaved images on pagehide');
-        const payload = JSON.stringify({
-          imageIds: tempImageIds,
-          token: token,
-        });
+      onUpdate: onContentChange,
+    });
 
-        navigator.sendBeacon('/api/images/beacondelete', payload);
-
-      }
-    }, false);
 
     useEffect(() => {
       const initialImages = extractImageIdsUsingDOM(content);
@@ -236,7 +175,6 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
     }, [content]);
 
 
-    // const initialImages = editor?.getJSON()?.content?.filter((node) => node?.type === 'image') || [];
 
     React.useImperativeHandle(ref, () => ({
       getContent: () => editor?.getHTML() || '',
@@ -245,16 +183,14 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
         // tempImageIds.clear();
         const imageIds = editor?.getJSON()?.content?.filter((node) => node?.type === 'image').map(image => image?.attrs?.id) || [];
         // const imagesToDelete = images.filter((image) => image?.attrs && tempImageIds.has(image.attrs.imageId));
-        console.log('imageIds', imageIds)
         const imagesToDeleteIds = tempImageIds.concat(initialImageIds).filter((imageId) => !imageIds.some((id) => id === imageId));
-        console.log('imagesToDeleteIds', imagesToDeleteIds);
         await imagesService.deleteBatch({imageIds: imagesToDeleteIds});
         setTempImageIds([]);
         sessionStorage.removeItem('tempImageIds');
-      }
-      })
+      },
+      getTempImageIds: () => tempImageIds,
+    })
     )
-    console.log('tempImageIds:', tempImageIds);
 
     return (
       <div>
@@ -265,9 +201,6 @@ const Editor = React.forwardRef(({ content}: {content: string }, ref): React.JSX
           <LinkBubbleMenu />
           <TableBubbleMenu />
         </RichTextEditorProvider>
-        <Button onClick={() => console.log(editor?.getHTML())}>
-          Log HTML
-        </Button>
       </div>
     )
     

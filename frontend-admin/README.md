@@ -8,15 +8,11 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 
-## TODO:
-- 紧急的
-1. 招聘启事前端
+11.20更新：
+1. 富文本编辑器
 
-- 不紧急的
-2. 前端美化
-1. 主页
-
-### 8.27计划：
-1.完成文章类型增添与单表继承
-1. 完成后端招聘
-1. 后端收藏功能
+TODO：
+1. 为招聘启示页面加入富文本编辑器
+2. 为招聘启示加上企业图片上传（需要更改后端api）
+3. 为文章加上上传文章封面
+4. 活动报名查看（需要增加后端api和数据库模型）
