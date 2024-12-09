@@ -127,7 +127,7 @@ const ArticleEditPage = () => {
     <div>
       <h1>文章编辑</h1>
 
-      <ArticleForm article={article} handleSubmit={handleOpenDialog} buttonLable='更新文章'/>
+      <ArticleForm article={article} handleSubmit={handleOpenDialog} buttonLable='更新文章' allowEditCover={false}/>
       <ConfirmDialog />
     </div>
   )

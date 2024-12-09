@@ -41,7 +41,7 @@ router.post('/',
     // console.log(file)
     const image = await Image.create({
       data: file.buffer,
-      mimeType: file.mimetype
+      mimeType: file.mimetype,
     })
     res.status(201).json({
       message: 'Image uploaded successfully',

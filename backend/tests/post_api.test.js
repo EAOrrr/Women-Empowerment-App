@@ -1,11 +1,11 @@
 const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('assert')
 const helper = require('./test_helpers')
-const app = require('../app')
+const app = require('../src/app')
 const supertest = require('supertest')
 const api = supertest(app)
-const { Post, User, Comment, Notification } = require('../models')
-const { connectToDatabase, sequelize } = require('../utils/db')
+const { Post, User, Comment, Notification } = require('../src/models')
+const { connectToDatabase, sequelize } = require('../src/utils/db')
 
 beforeEach(async () => {
   await connectToDatabase()
@@ -311,7 +311,7 @@ describe('update of post', () => {
 })
 
 describe.only('test comment function', () => {
-  
+
   let creatorToken
   let postToComment
   beforeEach(async () => {
@@ -350,7 +350,7 @@ describe.only('test comment function', () => {
       .expect('Content-Type', /application\/json/)
     postToComment = response.body
   })
-  describe.only('addition of a comment', () => {
+  describe('addition of a comment', () => {
     test('a comment can be added to a post by the post owner', async () => {
       const notificationsAtStart = await helper.notificationsInDb()
       const commentsAtStart = await helper.commentsInDb()
@@ -401,7 +401,7 @@ describe.only('test comment function', () => {
     })
 
 
-    test.only('a comment can be added to a post by admin', async () => {
+    test('a comment can be added to a post by admin', async () => {
       const commentsAtStart = await helper.commentsInDb()
       const adminUser = {
         username: 'admin',
@@ -644,9 +644,43 @@ describe.only('test comment function', () => {
     })
   })
 
+  describe.only('test when a post is deleted, related comments are deleted', () => {
+    let commentId
+    beforeEach(async () => {
+      const newComment = {
+        content: 'This is a test comment'
+      }
+      const response = await api
+        .post(`/api/posts/${postToComment.id}/comments`)
+        .set({ 'Authorization': `Bearer ${creatorToken}` })
+        .send(newComment)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      commentId = response.body.id
+    })
+
+    test.only('when a post is deleted, related comments are deleted', async () => {
+      const commentsAtStart = await helper.commentsInDb()
+      const comment = commentsAtStart.find(c => c.id === commentId)
+      assert(comment.commentableId === postToComment.id)
+      console.log(comment, postToComment)
+      await api
+        .delete(`/api/posts/${postToComment.id}`)
+        .set({ 'Authorization': `Bearer ${creatorToken}` })
+        .expect(204)
+      const commentsAtEnd = await helper.commentsInDb()
+      console.log(commentsAtEnd)
+      assert.strictEqual(commentsAtEnd.length, commentsAtStart.length - 1)
+      const ids = commentsAtEnd.map(c => c.id)
+      assert(!ids.includes(commentId))
+    })
+  })
+
 })
+
 
 after(async () => {
   await Post.destroy({ where: {} })
-  sequelize.close()
+  await sequelize.close()
+  process.exit(0)
 })

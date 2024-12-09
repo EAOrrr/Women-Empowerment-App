@@ -10,6 +10,10 @@ Article.init({
     allowNull: false,
     defaultValue: UUIDV4(),
   },
+  cover: {
+    type: DataTypes.UUID,
+    defaultValue: null
+  },
   title: { // 标题
     type: DataTypes.STRING,
     allowNull: false,

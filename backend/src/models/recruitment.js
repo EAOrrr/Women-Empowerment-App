@@ -53,7 +53,11 @@ Recruitment.init({
   views: {
     type: DataTypes.INTEGER,
     defaultValue: 0,
-  }
+  },
+  pictures: {
+    type: DataTypes.ARRAY(DataTypes.UUID),
+    defaultValue: []
+  },
 }, {
   sequelize,
   underscored: true,

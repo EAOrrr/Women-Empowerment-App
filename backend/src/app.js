@@ -1,6 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 require('express-async-errors')
+require('./utils/clean-images')
 const app = express()
 
 const middleware = require('./utils/middleware')

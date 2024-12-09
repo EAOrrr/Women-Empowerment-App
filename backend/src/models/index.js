@@ -24,7 +24,7 @@ Comment.belongsTo(User, { as: 'commenter', foreignKey: 'userId' })
 Post.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
-  onDelete: 'cascade',
+  onDelete: 'CASCADE',
   scope: {
     commentableType: 'post'
   }
@@ -35,11 +35,21 @@ Comment.belongsTo(Post, {
   foreignKey: 'commentableId'
 })
 
+Post.afterDestroy(async post => {
+  await Comment.destroy({
+    where: {
+      commentableId: post.id,
+      commentableType: 'post'
+    }
+  })
+}
+)
+
 
 Article.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
-  onDelete: 'cascade',
+  onDelete: 'CASCADE',
   scope: {
     commentableType: 'article'
   }
@@ -50,10 +60,19 @@ Comment.belongsTo(Article, {
   foreignKey: 'commentableId'
 })
 
+Article.afterDestroy(async article => {
+  await Comment.destroy({
+    where: {
+      commentableId: article.id,
+      commentableType: 'article'
+    }
+  })
+})
+
 Recruitment.hasMany(Comment, {
   foreignKey: 'commentableId',
   constraints: false,
-  onDelete: 'cascade',
+  onDelete: 'CASCADE',
   scope: {
     commentableType: 'recruitment'
   }
@@ -62,6 +81,15 @@ Recruitment.hasMany(Comment, {
 Comment.belongsTo(Recruitment, {
   foreignKey: 'commentableId',
   constraints: false,
+})
+
+Recruitment.afterDestroy(async recruitment => {
+  await Comment.destroy({
+    where: {
+      commentableId: recruitment.id,
+      commentableType: 'recruitment'
+    }
+  })
 })
 
 
@@ -100,6 +128,15 @@ Image.belongsTo(Article, {
   constraints: false,
 })
 
+Article.afterDestroy(async article => {
+  await Image.destroy({
+    where: {
+      referenceId: article.id,
+      referenceType: 'article'
+    }
+  })
+})
+
 Recruitment.hasMany(Image, {
   foreignKey: 'referenceId',
   constraints: false,
@@ -113,11 +150,20 @@ Image.belongsTo(Recruitment, {
   constraints: false,
 })
 
+Recruitment.afterDestroy(async recruitment => {
+  await Image.destroy({
+    where: {
+      referenceId: recruitment.id,
+      referenceType: 'recruitment'
+    }
+  })
+})
+
 Image.addHook('afterFind', findResult => {
   if (!findResult) {
     // 如果没有查询到数据，直接返回
-    console.log('No results found, skipping afterFind hook.');
-    return;
+    console.log('No results found, skipping afterFind hook.')
+    return
   }
   if (!Array.isArray(findResult)) findResult = [findResult]
   for (const instance of findResult) {

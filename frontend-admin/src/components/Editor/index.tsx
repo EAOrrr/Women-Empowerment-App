@@ -2,9 +2,6 @@ import React, { useCallback, useEffect } from 'react'
 import { Editor as TiptapEditor } from '@tiptap/react'
 import { Transaction } from '@tiptap/pm/state';
 
-import {
-  useBlocker
-} from 'react-router-dom'
 
 
 import type { EditorOptions } from "@tiptap/core";

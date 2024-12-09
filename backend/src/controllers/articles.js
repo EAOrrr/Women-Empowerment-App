@@ -1,5 +1,5 @@
 const { Op } = require('sequelize')
-const { Article, Follow } = require('../models')
+const { Article, Follow, Image } = require('../models')
 
 const nodejieba = require('nodejieba')
 const router = require('express').Router()
@@ -91,10 +91,18 @@ function buildWhereClause({ type, keywords, tags, cursor, isDraft }) {
 
 // POST /api/articles
 router.post('/', userExtractor, authorize(['admin']), async(req, res) => {
-  const images = req.body.images
-  const article = await Article.create({ ...req.body})
+  const { images, cover } = req.body
+  console.log(cover)
+  const article = await Article.create({ ...req.body })
   if (images) {
     await article.setImages(images)
+  }
+  if (cover) {
+    // await article.setCover(cover)
+    await Image.update(
+      { referenceType: 'article', referenceId: article.id },
+      { where: { id: cover } }
+    )
   }
   res.status(201).json(article)
 })
@@ -268,7 +276,7 @@ router.delete('/:id/activity/comments/:commentId', userExtractor, authorize(['ad
 
 router.put('/:id/activity/comments/:commentId', userExtractor, authorize(['admin', 'user']), checkFields(['id', 'likes']), async(req, res) => {
   const article = await Article.findByPk(req.params.id)
-  const comments = await article.getComments({ where: { id: req.params.commentId } }) 
+  const comments = await article.getComments({ where: { id: req.params.commentId } })
   const comment = comments[0]
   if (!article || !comment) {
     return res.status(404).end()

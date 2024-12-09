@@ -37,7 +37,7 @@ const VisuallyHiddenInput = styled('input')({
   width: 1,
 })
 
-const ArticleForm = ({ handleSubmit, article, buttonLable, afterSubmit=() => {} }) => {
+const ArticleForm = ({ handleSubmit, article, buttonLable, allowEditCover=true, afterSubmit=() => {} }) => {
   const dispatch = useDispatch()
   const editorRef = useRef(null)
 
@@ -167,24 +167,29 @@ const ArticleForm = ({ handleSubmit, article, buttonLable, afterSubmit=() => {} 
   const onSubmit = async (event) => {
     event.preventDefault()
     console.log('onSubmit')
-    if (editorRef.current) {
-      console.log('onSubmit开始')
-      const content = editorRef.current.getContent()
-      const images = editorRef.current.getImages()
-      console.log('onSubmit结束')
-      setChange(false)
-      await handleSubmit({
-        title: title.value,
-        abstract: abstract.value,
-        content,
-        author: author.value,
-        type,
-        tags,
-        isAnnouncement,
-        images,
-      })
-      await editorRef.current.cleanUpTempImages()
-      afterSubmit()
+    try {
+      if (editorRef.current) {
+        console.log('onSubmit开始')
+        const content = editorRef.current.getContent()
+        const images = editorRef.current.getImages()
+        console.log('onSubmit结束')
+        setChange(false)
+        await handleSubmit({
+          title: title.value,
+          abstract: abstract.value,
+          content,
+          author: author.value,
+          type,
+          tags,
+          isAnnouncement,
+          images,
+          cover,
+        })
+        await editorRef.current.cleanUpTempImages()
+        afterSubmit()
+      }
+    } catch (error) {
+      dispatch(createNotification('提交失败', 'error'))
     }
   }
 
@@ -199,21 +204,7 @@ const ArticleForm = ({ handleSubmit, article, buttonLable, afterSubmit=() => {} 
   //   }
   // })
 
-  // window.addEventListener('unload', () => {
-  //   if (change) {
-  //     console.log('hello')
-  //     const tempImageIds = [...(editorRef.current.getTempImageIds() || []), ...(cover ? [cover] : [])]
-  //     console.log('unload')
-  //     console.log(tempImageIds)
-  //     // imagesService.deleteBatch({ imageIds: tempImageIds })
-  //     const token = storage.getAccessToken()
-  //     const payload = {
-  //       imageIds: tempImageIds,
-  //       token: token
-  //     }
-  //     navigator.sendBeacon('/api/images/beacondelete', JSON.stringify(payload))
-  //   }
-  // })
+  console.log(cover)
 
   return (
     <Box component='form'
@@ -287,7 +278,7 @@ const ArticleForm = ({ handleSubmit, article, buttonLable, afterSubmit=() => {} 
         ))}
       </div>
       <div> 封面：
-        {cover
+        {allowEditCover && (cover
           ? (<Box  sx={{
             width: 300, // 设置图片容器的宽度
             height: 200, // 设置图片容器的高度
@@ -336,8 +327,26 @@ const ArticleForm = ({ handleSubmit, article, buttonLable, afterSubmit=() => {} 
               />
             </Button>
           )
-
+        )
         }
+        {!allowEditCover && <Box  sx={{
+          width: 300, // 设置图片容器的宽度
+          height: 200, // 设置图片容器的高度
+          overflow: 'hidden', // 隐藏超出的部分
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          position: 'relative',
+        }}>
+          <img
+            src={`/api/images/${cover}`}
+            alt='cover'
+            style={{
+              maxWidth: '100%',
+              maxHeight: '100%',
+              objectFit: 'cover', // 适应容器，保持裁剪比例
+            }} />
+        </Box>}
       </div>
       <div>
         <FormControlLabel control={<Checkbox checked={isAnnouncement} onChange={handelIsAnnouncement}/>} label="设为公告" />

@@ -24,7 +24,7 @@ module.exports = {
       },
       commentable_id: {
         type: DataTypes.UUID,
-        allowNull: false
+        allowNull: false,
       },
       created_at: {
         type: DataTypes.DATE,

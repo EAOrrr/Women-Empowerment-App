@@ -1,5 +1,5 @@
 const { Sequelize, Op } = require('sequelize')
-const { Recruitment, Job, Follow, Article } = require('../models')
+const { Recruitment, Job, Follow, Image } = require('../models')
 const router = require('express').Router()
 const { userExtractor, authorize, checkFields } = require('../utils/middleware')
 const { buildOrderClause, generateCursor, buildPaginationCondition } = require('../utils/helper')
@@ -47,7 +47,7 @@ router.get('/', async (req, res) => {
   // res.json(recruitments)
 })
 
-function buildWhereClause({ keywords, cursor}) {
+function buildWhereClause({ keywords, cursor }) {
   const where = {}
   if (keywords) {
     console.log(keywords)
@@ -80,7 +80,9 @@ function buildWhereClause({ keywords, cursor}) {
 // POST /api/recruitments
 router.post('/', userExtractor, authorize('admin'), async (req, res) => {
   const body = req.body
+  const pictures = body.pictures
   const recruitment = await Recruitment.create(body)
+  await recruitment.setImages(pictures)
   res.status(201).json(recruitment)
 })
 
@@ -106,8 +108,8 @@ router.put('/:id', userExtractor, authorize(['admin', 'user']), async (req, res)
   if (!recruitment) {
     return res.status(404).end()
   }
-  const { title, intro, province, city, district, street, address, views, likes, name, phone } = req.body
-  if (title || intro || province || city || district || street || address || name || phone) {
+  const { title, intro, province, city, district, street, address, views, likes, name, phone, pictures } = req.body
+  if (title || intro || province || city || district || street || address || name || phone || pictures) {
     if (!req.user || req.user.role !== 'admin') {
       return res.status(403).json({ error: 'title, intro, province, city, district, street or address can only be changed by admin' })
     }
@@ -120,6 +122,17 @@ router.put('/:id', userExtractor, authorize(['admin', 'user']), async (req, res)
     if (address) recruitment.address = address
     if (name) recruitment.name = name
     if (phone) recruitment.phone = phone
+    if (pictures) {
+      // await recruitment.setImages(pictures)
+      recruitment.pictures = pictures
+      await Image.update(
+        { referenceType: 'recruitment',
+          referenceId: recruitment.id
+        },
+        { where: { id: pictures } }
+
+      )
+    }
   }
   if (views) recruitment.views = views
   if (likes) recruitment.likes = likes

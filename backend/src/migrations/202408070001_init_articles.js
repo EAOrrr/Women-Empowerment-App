@@ -70,6 +70,10 @@ module.exports = {
         type: DataTypes.BOOLEAN,
         defaultValue: false
       },
+      cover: {
+        type: DataTypes.UUID,
+        defaultValue: null
+      }
     })
   },
 

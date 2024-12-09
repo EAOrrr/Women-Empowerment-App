@@ -33,7 +33,7 @@ Comment.init({
   },
   commentableId: {
     type: DataTypes.UUID,
-    allowNull: false
+    allowNull: false,
   }
 }, {
   sequelize,

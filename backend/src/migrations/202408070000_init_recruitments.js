@@ -60,6 +60,10 @@ module.exports = {
       updated_at: {
         type: DataTypes.DATE,
         allowNull: false
+      },
+      pictures: {
+        type: DataTypes.ARRAY(DataTypes.UUID),
+        defaultValue: []
       }
     })
   },
