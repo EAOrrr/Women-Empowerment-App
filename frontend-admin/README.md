@@ -13,6 +13,6 @@ Currently, two official plugins are available:
 
 TODO：
 
-2. 为招聘启示加上企业图片上传
-
+1. article preview 界面
+2. recruitment 界面分页
 4. 活动报名查看（需要增加后端api和数据库模型）

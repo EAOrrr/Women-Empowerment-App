@@ -121,10 +121,21 @@ const RecruitmentCreatePage = () => {
     }
   }
 
-  // const handleDeletePic = async (imageId) => {
-  //   // ...existing logic from RecruitmentForm.jsx...
-  // }
 
+  const handleDeletePic = async (imageId) => {
+    try {
+      await imagesService.remove(imageId)
+      setPictures(pictures.filter((picture) => picture !== imageId))
+      dispatch(createNotification('删除图片成功', 'success'))
+    } catch (error) {
+      // console.error(error)
+      switch(error.status) {
+      case 404:
+        setPictures(pictures.filter(p => p === imageId))
+      }
+      dispatch(createNotification('删除图片失败', 'error'))
+    }
+  }
   const handleSubmit = (newRecruitment) => {
     setSubmitting(true)
     createRecruitment(newRecruitment)
@@ -159,7 +170,7 @@ const RecruitmentCreatePage = () => {
       pictures={pictures}
       setPictures={setPictures}
       handleUploadPic={handleUploadPic}
-      // handleDeletePic={handleDeletePic}
+      handleDeletePic={handleDeletePic}
     />
   )
 }

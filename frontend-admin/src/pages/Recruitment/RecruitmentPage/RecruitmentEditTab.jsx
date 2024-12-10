@@ -1,16 +1,58 @@
 import { useDispatch } from 'react-redux'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useUpdateRecruitmentMutation } from '../../../services/recruitmentsApi'
 import { createNotification } from '../../../reducers/notificationReducer'
 import imagesService from '../../../services/images'
 
 import RecruitmentForm from '../utils/RecruitmentForm'
+import { useBlocker } from 'react-router-dom'
+import storage from '../../../services/storage'
 
 const EditRecruitmentTab = ({ recruitment }) => {
   const dispatch = useDispatch()
   const [updateRecruitment, ] = useUpdateRecruitmentMutation()
   const [pictures, setPictures] = useState((recruitment && recruitment.pictures) || [])
+  const [tempPictures, setTempPictures] = useState([])
+  // const [confirming, setConfirming] = useState(false)
+  const blocker = useBlocker(() => tempPictures.length > 0)
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      imagesService.deleteBatch({ imageIds: tempPictures })
+        .then(() => {
+          blocker.proceed()
+        })
+        .catch((error) => {
+          console.error('删除图片失败', error)
+        })
+    }
+  }, [blocker, tempPictures])
+
+  useEffect(() => {
+    const handleBeforeUnload = (event) => {
+      if (tempPictures.length > 0) {
+        event.preventDefault()
+        event.returnValue = '您有未保存的更改，确定要离开吗？'
+        const token = storage.getAccessToken()
+        // navigator.sendBeacon('/api/images/beacondelete', JSON.stringify({ imageIds: tempPictures,  token: token }))
+        imagesService.deleteBatch({ imageIds: tempPictures })
+          .then(() => {
+            console.log('删除图片成功')
+          })
+          .catch((error) => {
+            console.error('删除图片失败', error)
+          })
+      }
+    }
+
+    window.addEventListener('beforeunload', handleBeforeUnload)
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
+  }, [tempPictures])
+
   const handleSubmit = (newRecruitment) => {
     updateRecruitment(
       { ...newRecruitment,
@@ -52,10 +94,6 @@ const EditRecruitmentTab = ({ recruitment }) => {
 
     // 创建上传请求的数组
     const uploadPromises = files.map(file => {
-      // const referenceData = {
-      //   referenceId: recruitment.id,
-      //   referenceType: 'recruitment'
-      // }
 
       const formData = new FormData()
       formData.append('image', file)
@@ -84,11 +122,12 @@ const EditRecruitmentTab = ({ recruitment }) => {
       if (successCount > 0) {
         const updatedPictures = [...pictures, ...successfulImageIds]
         setPictures(updatedPictures)
-      
-          await updateRecruitment({
-            id: recruitment.id,
-            pictures: updatedPictures
-          })
+        setTempPictures([...tempPictures, ...successfulImageIds])
+
+        // await updateRecruitment({
+        //   id: recruitment.id,
+        //   pictures: updatedPictures
+        // })
       }
       if (successCount > 0 && failureCount === 0) {
         dispatch(createNotification(`成功上传 ${successCount} 张图片`, 'success'))
@@ -102,6 +141,11 @@ const EditRecruitmentTab = ({ recruitment }) => {
       dispatch(createNotification('上传图片失败', 'error'))
     }
   }
+
+  const handleDeletePic = async (imageId) => {
+    const updatedPictures = pictures.filter((id) => id !== imageId)
+    setPictures(updatedPictures)
+  }
   return (
     <div>
       <RecruitmentForm
@@ -110,6 +154,7 @@ const EditRecruitmentTab = ({ recruitment }) => {
         pictures={pictures}
         setPictures={setPictures}
         handleUploadPic={handleUploadPic}
+        handleDeletePic={handleDeletePic}
       />
     </div>
   )
