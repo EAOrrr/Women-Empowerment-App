@@ -37,7 +37,7 @@ const router = createBrowserRouter(
       <Route path='/articles/:id' element={<ProtectedRoute><ArticleEditPage /></ProtectedRoute>} />
       <Route path='/recruitment' element={<ProtectedRoute><RecruitmentsPage /></ProtectedRoute>} />
       <Route path='/recruitment/create' element={<ProtectedRoute><RecruitmentCreatePage /></ProtectedRoute>} />
-      <Route path='/recruitment/:id' element={<ProtectedRoute><RecruitmentPage /></ProtectedRoute>} />
+      <Route path='/recruitment/:id/:value' element={<ProtectedRoute><RecruitmentPage /></ProtectedRoute>} />
       <Route path='/about' element={<ProtectedRoute><ConstructingPage /></ProtectedRoute>} />
       <Route path='/other' element={<ProtectedRoute><OtherPage /></ProtectedRoute>} />
       <Route path='/posts' element={<ProtectedRoute><PostsPage /></ProtectedRoute>} />

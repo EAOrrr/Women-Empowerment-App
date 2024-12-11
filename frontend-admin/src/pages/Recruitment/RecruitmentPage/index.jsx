@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import { useGetRecruitmentQuery } from '../../../services/recruitmentsApi'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
@@ -8,12 +8,20 @@ import  JobsTab  from './RecruitmentTab'
 import EditRecruitmentTab from './RecruitmentEditTab'
 import CommentsTab from './RecruitmentCommentTab'
 import RecruitmentJobAddTab from './RecruitmentJobAddTab'
+const validValues = ['jobs', 'comments', 'edit', 'add']
 
 const RecruitmentPage = () => {
-  const [value, setValue] = useState('jobs')
+  // const [value, setValue] = useState('jobs')
+  const value = useParams().value
   const recruitmentId = useParams().id
+  const navigate = useNavigate()
   const handleChange = (event, newValue) => {
-    setValue(newValue)
+    // setValue(newValue)
+    navigate(`/recruitment/${recruitmentId}/${newValue}`)
+  }
+
+  if (!validValues.includes(value)) {
+    navigate(`/recruitment/${recruitmentId}/jobs`)
   }
 
   const {

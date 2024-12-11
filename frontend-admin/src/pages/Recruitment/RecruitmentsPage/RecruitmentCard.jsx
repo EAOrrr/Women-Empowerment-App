@@ -69,7 +69,7 @@ const RecruitmentCard = ({ recruitment }) => {
       <Card sx={{ display: 'flex', alignItems: 'center', p: 1 }}>
         <Box sx={{ display: 'flex', flexDirection: 'row', flexGrow: 1, cursor: 'pointer' }} fontFamily='Noto Serif SC'>
 
-          <CardActionArea component={Link} to={`/recruitment/${recruitment.id}`}>
+          <CardActionArea component={Link} to={`/recruitment/${recruitment.id}/jobs`}>
             <CardHeader
               title={recruitment.title}
               subheader={(new Date(recruitment.createdAt)).toLocaleDateString()}

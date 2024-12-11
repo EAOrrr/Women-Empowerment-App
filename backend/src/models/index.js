@@ -1,9 +1,11 @@
+const Activity = require('./activity')
 const Article = require('./article')
 const Comment = require('./comment')
 const Follow = require('./follow')
 const Image = require('./image')
 const Job = require('./job')
 const Notification = require('./notification')
+const Participate = require('./participate')
 const Post = require('./post')
 const Recruitment = require('./recruitment')
 const User = require('./user')
@@ -16,9 +18,19 @@ Job.belongsTo(Recruitment, { foreignKey: 'recruitmentId' })
 User.hasMany(Post, )
 Post.belongsTo(User, { as: 'poster', foreignKey: 'userId' })
 
-
 User.hasMany(Comment,)
 Comment.belongsTo(User, { as: 'commenter', foreignKey: 'userId' })
+
+// 与用户行为有关的关联
+User.belongsToMany(Activity, {
+  through: Participate,
+  foreignKey: 'userId',
+})
+
+Activity.belongsToMany(User, {
+  through: Participate,
+  foreignKey: 'activityId',
+})
 
 // 与评论有关的关联
 Post.hasMany(Comment, {
@@ -27,7 +39,7 @@ Post.hasMany(Comment, {
   onDelete: 'CASCADE',
   scope: {
     commentableType: 'post'
-  }
+  },
 })
 
 Comment.belongsTo(Post, {
@@ -92,6 +104,29 @@ Recruitment.afterDestroy(async recruitment => {
   })
 })
 
+Article.hasMany(Comment, {
+  foreignKey: 'commentableId',
+  constraints: false,
+  onDelete: 'CASCADE',
+  scope: {
+    commentableType: 'article'
+  }
+})
+
+Comment.belongsTo(Article, {
+  constraints: false,
+  foreignKey: 'commentableId'
+})
+
+Article.afterDestroy(async article => {
+  await Comment.destroy({
+    where: {
+      commentableId: article.id,
+      commentableType: 'article'
+    }
+  })
+})
+
 
 Comment.addHook('afterFind', findResult => {
   if (!Array.isArray(findResult)) findResult = [findResult]
@@ -105,6 +140,10 @@ Comment.addHook('afterFind', findResult => {
     if (instance.commentableType === 'recruitment' && instance.recruitment !== undefined) {
       instance.commentable = instance.recruitment
     }
+    if (instance.commentableType === 'activity' && instance.activity !== undefined) {
+      instance.commentable = instance.activity
+    }
+
     // To prevent mistakes:
     delete instance.post
     delete instance.dataValues.post
@@ -112,6 +151,8 @@ Comment.addHook('afterFind', findResult => {
     delete instance.dataValues.article
     delete instance.recruitment
     delete instance.dataValues.recruitment
+    delete instance.activity
+    delete instance.dataValues.activity
   }
 })
 
@@ -155,6 +196,28 @@ Recruitment.afterDestroy(async recruitment => {
     where: {
       referenceId: recruitment.id,
       referenceType: 'recruitment'
+    }
+  })
+})
+
+Activity.hasMany(Image, {
+  foreignKey: 'referenceId',
+  constraints: false,
+  scope: {
+    referenceType: 'activity'
+  }
+})
+
+Image.belongsTo(Activity, {
+  foreignKey: 'referenceId',
+  constraints: false,
+})
+
+Activity.afterDestroy(async activity => {
+  await Image.destroy({
+    where: {
+      referenceId: activity.id,
+      referenceType: 'activity'
     }
   })
 })
@@ -258,7 +321,6 @@ Recruitment.belongsToMany(User, {
   constraints: false,
   foreignKey: 'followableId',
 })
-
 
 module.exports = {
   Article,
